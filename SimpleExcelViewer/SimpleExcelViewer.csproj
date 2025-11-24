@@ -7,9 +7,27 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<LangVersion>12</LangVersion>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Costura.Fody" Version="6.0.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Fody" Version="6.9.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="RW.Base.WPF" Version="1.0.15" />
 		<PackageReference Include="RW.Common" Version="1.0.15" />
 		<PackageReference Include="RW.Common.WPF" Version="1.0.15" />
@@ -23,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\FastWpfGrid\FastWpfGrid\FastWpfGrid.csproj" />
+		<ProjectReference Include="..\FastWpfGrid\FastWpfGrid\FastWpfGrid.csproj" />
 	</ItemGroup>
 
 </Project>

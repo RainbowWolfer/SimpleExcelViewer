@@ -2,9 +2,12 @@
 using RW.Base.WPF.Configs;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.ViewModels;
+using SimpleExcelViewer.Views;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
+using System.Windows.Interop;
+using System.Windows.Media;
 
 namespace SimpleExcelViewer;
 
@@ -21,6 +24,8 @@ public partial class App : ApplicationBase {
 
 	public App() {
 		instance = this;
+		// reduce the memory from 100MB to 23MB. but it might reduce render performance.
+		//RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 	}
 
 	protected override Window GetMainWindow() => new MainWindow();

@@ -3,5 +3,12 @@
     <Project Path="FastWpfGrid/FastWpfGrid/FastWpfGrid.csproj" Id="e9d6f03c-bfb5-4d31-a15e-7f789b4bbcc3" />
     <Project Path="FastWpfGrid/WriteableBitmapEx/WriteableBitmapEx.Wpf.csproj" Id="b0aa6a94-6784-4221-81f0-244a68c374c0" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
   <Project Path="SimpleExcelViewer/SimpleExcelViewer.csproj" />
 </Solution>

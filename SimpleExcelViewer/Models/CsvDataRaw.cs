@@ -1,5 +1,4 @@
-﻿
-using SimpleExcelViewer.Interfaces;
+﻿using SimpleExcelViewer.Interfaces;
 using System.IO;
 using System.Text;
 
@@ -8,7 +7,9 @@ namespace SimpleExcelViewer.Models;
 public class CsvDataRaw(Encoding encoding) : ITableData {
 	private record struct CellSlice(int Start, int Length);
 
-	private List<string> _columnNames = new(256);
+	// 列名缓冲区和切片
+	private byte[]? _headerBuffer;
+	private CellSlice[]? _headerSlices;
 
 	// 每行存储原始字节
 	private readonly List<byte[]> _rowBuffers = new(1024 * 50);
@@ -17,9 +18,20 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 	private readonly List<CellSlice[]> _rowSlices = new(1024 * 50);
 
 	public int RowCount => _rowBuffers.Count;
-	public int ColumnCount => _columnNames.Count;
+	public int ColumnCount => _headerSlices?.Length ?? 0;
 
-	public string GetColumnName(int index) => index >= 0 && index < _columnNames.Count ? _columnNames[index] : string.Empty;
+	public string GetColumnName(int index) {
+		if (_headerBuffer == null || _headerSlices == null) {
+			return string.Empty;
+		}
+
+		if (index < 0 || index >= _headerSlices.Length) {
+			return string.Empty;
+		}
+
+		CellSlice slice = _headerSlices[index];
+		return encoding.GetString(_headerBuffer, slice.Start, slice.Length);
+	}
 
 	public object GetCell(int row, int column) {
 		byte[] buffer = _rowBuffers[row];
@@ -37,8 +49,9 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		return row;
 	}
 
-	private void SetColumnNames(string[] names) {
-		_columnNames = [.. names];
+	private void SetColumnNames(byte[] buffer, CellSlice[] slices) {
+		_headerBuffer = buffer;
+		_headerSlices = slices;
 	}
 
 	private void AddRow(byte[] buffer, CellSlice[] slices) {
@@ -53,6 +66,8 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		string? line;
 		bool isHeader = true;
 
+		byte splitter_byte = (byte)splitter;
+
 		while ((line = reader.ReadLine()) != null) {
 			// 原始字节
 			byte[] buffer = encoding.GetBytes(line);
@@ -61,7 +76,7 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 			List<CellSlice> slices = [];
 			int start = 0;
 			for (int i = 0; i < buffer.Length; i++) {
-				if (buffer[i] == (byte)splitter) {
+				if (buffer[i] == splitter_byte) {
 					slices.Add(new CellSlice(start, i - start));
 					start = i + 1;
 				}
@@ -69,13 +84,8 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 			slices.Add(new CellSlice(start, buffer.Length - start));
 
 			if (isHeader) {
-				// 列名直接解码
-				string[] names = new string[slices.Count];
-				for (int i = 0; i < slices.Count; i++) {
-					names[i] = encoding.GetString(buffer, slices[i].Start, slices[i].Length);
-				}
-
-				csv.SetColumnNames(names);
+				// 列名也存成原始字节 + 切片
+				csv.SetColumnNames(buffer, [.. slices]);
 				isHeader = false;
 			} else {
 				csv.AddRow(buffer, [.. slices]);

@@ -46,6 +46,7 @@ public class TabItemViewModel : BindableBase {
 					1024 * 10,
 					FileOptions.SequentialScan
 				);
+				//return CsvDataBuffer.Read(fileStream, Encoding.UTF8);
 				return CsvDataRaw.Read(fileStream, Encoding.UTF8);
 				//return CsvData.Read(fileStream, Encoding.UTF8, [',']);
 				//return CsvDataTableReader.Read(fileStream, Encoding.UTF8, [',']);

@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using FastWpfGrid;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.ViewModelServices;
 using RW.Common.WPF.Helpers;
@@ -16,6 +17,7 @@ public partial class TabView : UserControl {
 internal class TabViewModel : ViewModelBase {
 
 	public IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
+	public IUIObjectService<TabView> UserControlService => GetService<ITypedUIObjectService>(nameof(UserControlService)).As<TabView>();
 
 	public new TabItemViewModel Parameter {
 		get => GetProperty(() => Parameter);
@@ -28,7 +30,6 @@ internal class TabViewModel : ViewModelBase {
 	}
 
 	public TabViewModel() {
-
 
 	}
 
@@ -51,6 +52,8 @@ internal class TabViewModel : ViewModelBase {
 
 		try {
 			await Parameter.LoadAsync();
+
+			UserControlService.Object.MainFastGridControl.Focus();
 
 			DispatcherService.Invoke(AppHelper.ReleaseRAM);
 		} catch (Exception ex) {

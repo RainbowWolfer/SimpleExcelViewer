@@ -27,9 +27,9 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="RW.Base.WPF" Version="1.0.15" />
-		<PackageReference Include="RW.Common" Version="1.0.15" />
-		<PackageReference Include="RW.Common.WPF" Version="1.0.15" />
+		<PackageReference Include="RW.Base.WPF" Version="1.0.17" />
+		<PackageReference Include="RW.Common" Version="1.0.17" />
+		<PackageReference Include="RW.Common.WPF" Version="1.0.17" />
 	</ItemGroup>
 
 	<ItemGroup>

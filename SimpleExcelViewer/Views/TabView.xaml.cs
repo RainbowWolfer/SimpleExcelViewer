@@ -1,5 +1,7 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
+using RW.Base.WPF.ViewModelServices;
+using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.ViewModels;
 using System.Windows.Controls;
 
@@ -12,6 +14,8 @@ public partial class TabView : UserControl {
 }
 
 internal class TabViewModel : ViewModelBase {
+
+	public IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
 
 	public new TabItemViewModel Parameter {
 		get => GetProperty(() => Parameter);
@@ -47,6 +51,8 @@ internal class TabViewModel : ViewModelBase {
 
 		try {
 			await Parameter.LoadAsync();
+
+			DispatcherService.Invoke(AppHelper.ReleaseRAM);
 		} catch (Exception ex) {
 			DebugLoggerManager.LogHandledException(ex);
 		}

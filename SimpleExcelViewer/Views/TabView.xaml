@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="RW.Base.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:fgc="clr-namespace:FastWpfGrid;assembly=FastWpfGrid"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,8 +14,12 @@
 	DataContext="{base:DISource Type=local:TabViewModel}"
 	mc:Ignorable="d">
 
+	<dxmvvm:Interaction.Behaviors>
+		<base:DispatcherServiceEx/>
+	</dxmvvm:Interaction.Behaviors>
+
 	<Grid>
-		<fgc:FastGridControl Model="{Binding Parameter.TableModel}"/>
+		<fgc:FastGridControl IsReadOnly="True" Model="{Binding Parameter.TableModel}"/>
 	</Grid>
 
 </UserControl>

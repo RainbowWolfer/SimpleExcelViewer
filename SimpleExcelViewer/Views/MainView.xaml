@@ -62,8 +62,8 @@
 
 					<TabControl.ContentTemplate>
 						<DataTemplate>
-							<Border>
-								<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>
+							<Border x:Name="PART_Border">
+								<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding ElementName=PART_Border, Path=DataContext}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>
 							</Border>
 						</DataTemplate>
 					</TabControl.ContentTemplate>

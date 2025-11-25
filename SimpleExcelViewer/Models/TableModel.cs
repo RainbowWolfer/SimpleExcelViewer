@@ -1,26 +1,24 @@
 ﻿using FastWpfGrid;
 using RW.Common.Helpers;
+using SimpleExcelViewer.Interfaces;
 
 namespace SimpleExcelViewer.Models;
 
-public class TableModel : FastGridModelBase {
-	public override int ColumnCount { get; }
-	public override int RowCount { get; }
+public class TableModel(ITableData data) : FastGridModelBase {
+	public override int ColumnCount { get; } = data.ColumnCount;
+	public override int RowCount { get; } = data.RowCount;
 
-	public CsvData Data { get; }
+	public ITableData Data { get; } = data;
 
-	public override int RightAlignBlockCount => 1;
+	//public override int RightAlignBlockCount => 1;
 
-	public TableModel(CsvData data) {
-		Data = data;
-
-		ColumnCount = data.ColumnCount;
-		RowCount = data.RowCount;
-
+	public override IFastGridCell GetCell(IFastGridView view, int row, int column) {
+		IFastGridCell cell = base.GetCell(view, row, column);
+		return cell;
 	}
 
 	public override string GetColumnHeaderText(int column) {
-		return Data.ColumnNames.ElementAtOrDefault(column);
+		return Data.GetColumnName(column);
 	}
 
 	public override string GetRowHeaderText(int row) {
@@ -28,6 +26,6 @@ public class TableModel : FastGridModelBase {
 	}
 
 	public override string GetCellText(int row, int column) {
-		return Data.GetRow(row).ElementAtOrDefault(column).SafeToString();
+		return Data.GetCell(row, column).SafeToString();
 	}
 }

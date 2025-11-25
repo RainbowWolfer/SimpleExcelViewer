@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using SimpleExcelViewer.Interfaces;
 using SimpleExcelViewer.Models;
 using System.IO;
 using System.Text;
@@ -36,7 +37,7 @@ public class TabItemViewModel : BindableBase {
 
 		IsLoading = true;
 		try {
-			CsvData data = await Task.Run(() => {
+			ITableData data = await Task.Run(() => {
 				using FileStream fileStream = new(
 					FilePath,
 					FileMode.Open,
@@ -45,7 +46,9 @@ public class TabItemViewModel : BindableBase {
 					1024 * 10,
 					FileOptions.SequentialScan
 				);
-				return CsvData.Read(fileStream, Encoding.UTF8, false, [',']);
+				return CsvDataRaw.Read(fileStream, Encoding.UTF8);
+				//return CsvData.Read(fileStream, Encoding.UTF8, [',']);
+				//return CsvDataTableReader.Read(fileStream, Encoding.UTF8, [',']);
 			});
 
 			//long v = data.EstimateMemoryUsage();

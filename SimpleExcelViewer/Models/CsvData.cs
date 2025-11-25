@@ -1,29 +1,47 @@
-﻿using RW.Common.Helpers;
+﻿using RW.Common.Data;
+using SimpleExcelViewer.Interfaces;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 
 namespace SimpleExcelViewer.Models;
 
-public class CsvData {
-	public List<string> ColumnNames { get; private set; } = new(256);
-	private readonly List<object[]> _rows = new(1024 * 50);
+public class CsvData : ITableData {
+	private List<string> _columnNames = new(256);
+	private readonly List<string[]> _rows = new(1024 * 50);
+
+	//private readonly Dictionary<Vector2Int, string> _stringPool = [];
 
 	public int RowCount => _rows.Count;
-	public int ColumnCount => ColumnNames.Count;
-	public IReadOnlyList<object[]> Rows => _rows;
+	public int ColumnCount => _columnNames.Count;
 
-	public void SetColumnNames(object[] names) {
-		ColumnNames = [.. names.Select(x => x.TrimmedSafeToString())];
+	public string GetColumnName(int index) {
+		if (index >= 0 && index < _columnNames.Count) {
+			return _columnNames[index];
+		} else {
+			return string.Empty;
+		}
 	}
 
-	public void AddRow(object[] row) {
-		_rows.Add(row);
+	public object GetCell(int row, int column) {
+		if (row >= 0 && row < _rows.Count && column >= 0 && column < _rows[row].Length) {
+			return _rows[row][column];
+		} else {
+			return string.Empty;
+		}
 	}
 
 	public object[] GetRow(int index) => _rows[index];
 
-	public static CsvData Read(Stream stream, Encoding encoding, bool convert, char[] splitters) {
+	private void AddRow(string[] row) {
+		_rows.Add(row);
+	}
+
+	private void SetColumnNames(string[] names) {
+		_columnNames = [.. names];
+	}
+
+	public static CsvData Read(Stream stream, Encoding encoding, char[] splitters) {
 		try {
 			using StreamReader reader = new(stream, encoding);
 			CsvData csv = new();
@@ -32,19 +50,12 @@ public class CsvData {
 			bool isHeader = true;
 
 			while ((line = reader.ReadLine()) != null) {
-				object[] values = [.. line.Split(splitters).Cast<object>()];
+				string[] values = line.Split(splitters, StringSplitOptions.None);
 
 				if (isHeader) {
 					csv.SetColumnNames(values);
 					isHeader = false;
 				} else {
-					if (convert) {
-						for (int i = 0; i < values.Length; i++) {
-							if (NumberHelper.ConvertDouble(values[i], out double value)) {
-								values[i] = value;
-							}
-						}
-					}
 					csv.AddRow(values);
 				}
 			}
@@ -55,4 +66,5 @@ public class CsvData {
 			throw;
 		}
 	}
+
 }

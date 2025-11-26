@@ -4,17 +4,14 @@ using System.Reflection;
 
 namespace SimpleExcelViewer;
 
-public static class AppConfig
-{
+public static class AppConfig {
 
 	public const string Author = "RainbowWolfer";
 	public const string AppName = "SimpleExcelViewer";
 
 
-	public static bool IsRelease
-	{
-		get
-		{
+	public static bool IsRelease {
+		get {
 #if RELEASE
 			return true;
 #else
@@ -27,8 +24,7 @@ public static class AppConfig
 	public static DateTime AppStartTime { get; }
 	public static VersionStruct Version { get; }
 
-	static AppConfig()
-	{
+	static AppConfig() {
 		SessionID = Guid.NewGuid();
 		AppStartTime = DateTime.Now;
 

@@ -1,156 +1,158 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
-namespace FastWpfGrid
-{
-    partial class FastGridControl
-    {
-        public event EventHandler<SelectionChangedEventArgs> SelectedCellsChanged;
+namespace FastWpfGrid;
 
-        private HashSet<FastGridCellAddress> _selectedCells = new HashSet<FastGridCellAddress>();
-        private Dictionary<int, int> _selectedRows = new Dictionary<int, int>();
-        private Dictionary<int, int> _selectedColumns = new Dictionary<int, int>();
+public partial class FastGridControl {
+	public event EventHandler<SelectionChangedEventArgs> SelectedCellsChanged;
 
-        int? _selectedRealRowCountLimit;
-        bool _selectedRealRowCountLimitLoaded;
-        public int? SelectedRealRowCountLimit
-        {
-            get
-            {
-                if (_selectedRealRowCountLimitLoaded) return _selectedRealRowCountLimit;
-                _selectedRealRowCountLimitLoaded = true;
-                if (Model == null)
-                {
-                    _selectedRealRowCountLimit = null;
-                }
-                else
-                {
-                    _selectedRealRowCountLimit = IsTransposed ? Model.SelectedColumnCountLimit : Model.SelectedRowCountLimit;
-                }
-                return _selectedRealRowCountLimit;
-            }
-        }
+	private HashSet<FastGridCellAddress> _selectedCells = [];
+	private Dictionary<int, int> _selectedRows = [];
+	private Dictionary<int, int> _selectedColumns = [];
 
-        int? _selectedRealColumnCountLimit;
-        bool _selectedRealColumnCountLimitLoaded;
-        public int? SelectedRealColumnCountLimit
-        {
-            get
-            {
-                if (_selectedRealColumnCountLimitLoaded) return _selectedRealColumnCountLimit;
-                _selectedRealColumnCountLimitLoaded = true;
-                if (Model == null)
-                {
-                    _selectedRealColumnCountLimit = null;
-                }
-                else
-                {
-                    _selectedRealColumnCountLimit = IsTransposed ? Model.SelectedRowCountLimit : Model.SelectedColumnCountLimit;
-                }
-                return _selectedRealColumnCountLimit;
-            }
-        }
+	private int? _selectedRealRowCountLimit;
+	private bool _selectedRealRowCountLimitLoaded;
+	public int? SelectedRealRowCountLimit {
+		get {
+			if (_selectedRealRowCountLimitLoaded) {
+				return _selectedRealRowCountLimit;
+			}
 
-        private bool _isLimitedSelection = false;
+			_selectedRealRowCountLimitLoaded = true;
+			if (Model == null) {
+				_selectedRealRowCountLimit = null;
+			} else {
+				_selectedRealRowCountLimit = IsTransposed ? Model.SelectedColumnCountLimit : Model.SelectedRowCountLimit;
+			}
+			return _selectedRealRowCountLimit;
+		}
+	}
 
-        private void CheckChangedLimitedSelection()
-        {
-            if (IsLimitedSelection != _isLimitedSelection)
-            {
-                InvalidateAll();
-                _isLimitedSelection = IsLimitedSelection;
-            }
-        }
+	private int? _selectedRealColumnCountLimit;
+	private bool _selectedRealColumnCountLimitLoaded;
+	public int? SelectedRealColumnCountLimit {
+		get {
+			if (_selectedRealColumnCountLimitLoaded) {
+				return _selectedRealColumnCountLimit;
+			}
 
-        private void ClearSelectedCells()
-        {
-            _selectedCells.Clear();
-            _selectedRows.Clear();
-            _selectedColumns.Clear();
+			_selectedRealColumnCountLimitLoaded = true;
+			if (Model == null) {
+				_selectedRealColumnCountLimit = null;
+			} else {
+				_selectedRealColumnCountLimit = IsTransposed ? Model.SelectedRowCountLimit : Model.SelectedColumnCountLimit;
+			}
+			return _selectedRealColumnCountLimit;
+		}
+	}
 
-            CheckChangedLimitedSelection();
-        }
+	private bool _isLimitedSelection = false;
 
-        private void AddSelectedCell(FastGridCellAddress cell)
-        {
-            if (!cell.IsCell) return;
+	private void CheckChangedLimitedSelection() {
+		if (IsLimitedSelection != _isLimitedSelection) {
+			InvalidateAll();
+			_isLimitedSelection = IsLimitedSelection;
+		}
+	}
 
-            if (SelectedRealRowCountLimit.HasValue && _selectedRows.Count >= SelectedRealRowCountLimit.Value && !_selectedRows.ContainsKey(cell.Row.Value)) return;
-            if (SelectedRealColumnCountLimit.HasValue && _selectedColumns.Count >= SelectedRealColumnCountLimit.Value && !_selectedColumns.ContainsKey(cell.Column.Value)) return;
+	private void ClearSelectedCells() {
+		_selectedCells.Clear();
+		_selectedRows.Clear();
+		_selectedColumns.Clear();
 
-            if (_selectedCells.Contains(cell)) return;
+		CheckChangedLimitedSelection();
+	}
 
-            _selectedCells.Add(cell);
+	private void AddSelectedCell(FastGridCellAddress cell) {
+		if (!cell.IsCell) {
+			return;
+		}
 
-            if (!_selectedRows.ContainsKey(cell.Row.Value)) _selectedRows[cell.Row.Value] = 0;
-            _selectedRows[cell.Row.Value]++;
+		if (SelectedRealRowCountLimit.HasValue && _selectedRows.Count >= SelectedRealRowCountLimit.Value && !_selectedRows.ContainsKey(cell.Row.Value)) {
+			return;
+		}
 
-            if (!_selectedColumns.ContainsKey(cell.Column.Value)) _selectedColumns[cell.Column.Value] = 0;
-            _selectedColumns[cell.Column.Value]++;
+		if (SelectedRealColumnCountLimit.HasValue && _selectedColumns.Count >= SelectedRealColumnCountLimit.Value && !_selectedColumns.ContainsKey(cell.Column.Value)) {
+			return;
+		}
 
-            CheckChangedLimitedSelection();
-        }
+		if (_selectedCells.Contains(cell)) {
+			return;
+		}
 
-        private void RemoveSelectedCell(FastGridCellAddress cell)
-        {
-            if (!cell.IsCell) return;
+		_selectedCells.Add(cell);
 
-            if (!_selectedCells.Contains(cell)) return;
+		if (!_selectedRows.ContainsKey(cell.Row.Value)) {
+			_selectedRows[cell.Row.Value] = 0;
+		}
 
-            _selectedCells.Remove(cell);
+		_selectedRows[cell.Row.Value]++;
 
-            if (_selectedRows.ContainsKey(cell.Row.Value))
-            {
-                _selectedRows[cell.Row.Value]--;
-                if (_selectedRows[cell.Row.Value] == 0) _selectedRows.Remove(cell.Row.Value);
-            }
+		if (!_selectedColumns.ContainsKey(cell.Column.Value)) {
+			_selectedColumns[cell.Column.Value] = 0;
+		}
 
-            if (_selectedColumns.ContainsKey(cell.Column.Value))
-            {
-                _selectedColumns[cell.Column.Value]--;
-                if (_selectedColumns[cell.Column.Value] == 0) _selectedColumns.Remove(cell.Column.Value);
-            }
+		_selectedColumns[cell.Column.Value]++;
 
-            CheckChangedLimitedSelection();
-        }
+		CheckChangedLimitedSelection();
+	}
 
-        public bool IsLimitedSelection
-        {
-            get
-            {
-                return (SelectedRealRowCountLimit.HasValue && _selectedRows.Count >= SelectedRealRowCountLimit.Value)
-                    ||
-                     (SelectedRealColumnCountLimit.HasValue && _selectedColumns.Count >= SelectedRealColumnCountLimit.Value);
-            }
-        }
+	private void RemoveSelectedCell(FastGridCellAddress cell) {
+		if (!cell.IsCell) {
+			return;
+		}
 
-        private void SetSelectedRectangle(FastGridCellAddress origin, FastGridCellAddress cell)
-        {
-            var newSelected = GetCellRange(origin, cell);
-            foreach (var added in newSelected)
-            {
-                if (_selectedCells.Contains(added)) continue;
-                InvalidateCell(added);
-                AddSelectedCell(added);
-            }
-            foreach (var removed in _selectedCells.ToList())
-            {
-                if (newSelected.Contains(removed)) continue;
-                InvalidateCell(removed);
-                RemoveSelectedCell(removed);
-            }
-            SetCurrentCell(cell);
-            OnChangeSelectedCells(true);
-        }
+		if (!_selectedCells.Contains(cell)) {
+			return;
+		}
 
-        private void OnChangeSelectedCells(bool isInvokedByUser)
-        {
-            if (SelectedCellsChanged != null) SelectedCellsChanged(this, new SelectionChangedEventArgs { IsInvokedByUser = isInvokedByUser });
-        }
-    }
+		_selectedCells.Remove(cell);
+
+		if (_selectedRows.ContainsKey(cell.Row.Value)) {
+			_selectedRows[cell.Row.Value]--;
+			if (_selectedRows[cell.Row.Value] == 0) {
+				_selectedRows.Remove(cell.Row.Value);
+			}
+		}
+
+		if (_selectedColumns.ContainsKey(cell.Column.Value)) {
+			_selectedColumns[cell.Column.Value]--;
+			if (_selectedColumns[cell.Column.Value] == 0) {
+				_selectedColumns.Remove(cell.Column.Value);
+			}
+		}
+
+		CheckChangedLimitedSelection();
+	}
+
+	public bool IsLimitedSelection =>
+		(SelectedRealRowCountLimit.HasValue && _selectedRows.Count >= SelectedRealRowCountLimit.Value) ||
+		(SelectedRealColumnCountLimit.HasValue && _selectedColumns.Count >= SelectedRealColumnCountLimit.Value);
+
+	private void SetSelectedRectangle(FastGridCellAddress origin, FastGridCellAddress cell) {
+		HashSet<FastGridCellAddress> newSelected = GetCellRange(origin, cell);
+		foreach (FastGridCellAddress added in newSelected) {
+			if (_selectedCells.Contains(added)) {
+				continue;
+			}
+
+			InvalidateCell(added);
+			AddSelectedCell(added);
+		}
+		foreach (FastGridCellAddress removed in _selectedCells.ToList()) {
+			if (newSelected.Contains(removed)) {
+				continue;
+			}
+
+			InvalidateCell(removed);
+			RemoveSelectedCell(removed);
+		}
+		SetCurrentCell(cell);
+		OnChangeSelectedCells(true);
+	}
+
+	private void OnChangeSelectedCells(bool isInvokedByUser) {
+		SelectedCellsChanged?.Invoke(this, new SelectionChangedEventArgs { IsInvokedByUser = isInvokedByUser });
+	}
 }

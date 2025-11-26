@@ -1,228 +1,228 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Threading;
 
-namespace FastWpfGrid
-{
-    partial class FastGridControl
-    {
-        private bool _isInvalidated;
-        private bool _isInvalidatedAll;
-        private bool _InvalidatedGridHeader;
-        private List<int> _invalidatedRows = new List<int>();
-        private List<int> _invalidatedColumns = new List<int>();
-        private List<Tuple<int, int>> _invalidatedCells = new List<Tuple<int, int>>();
-        private List<int> _invalidatedRowHeaders = new List<int>();
-        private List<int> _invalidatedColumnHeaders = new List<int>();
+namespace FastWpfGrid;
 
-        private class InvalidationContext : IDisposable
-        {
-            private FastGridControl _grid;
+public partial class FastGridControl {
+	private bool _isInvalidated;
+	private bool _isInvalidatedAll;
+	private bool _InvalidatedGridHeader;
+	private List<int> _invalidatedRows = [];
+	private List<int> _invalidatedColumns = [];
+	private List<Tuple<int, int>> _invalidatedCells = [];
+	private List<int> _invalidatedRowHeaders = [];
+	private List<int> _invalidatedColumnHeaders = [];
 
-            internal InvalidationContext(FastGridControl grid)
-            {
-                _grid = grid;
-                _grid.EnterInvalidation();
-            }
+	private class InvalidationContext : IDisposable {
+		private FastGridControl _grid;
 
-            public void Dispose()
-            {
-                _grid.LeaveInvalidation();
-            }
-        }
+		internal InvalidationContext(FastGridControl grid) {
+			_grid = grid;
+			_grid.EnterInvalidation();
+		}
 
-        private int _invalidationCount;
+		public void Dispose() {
+			_grid.LeaveInvalidation();
+		}
+	}
 
-        private void LeaveInvalidation()
-        {
-            _invalidationCount--;
-            if (_invalidationCount == 0)
-            {
-                if (_isInvalidated)
-                {
-                    RenderGrid();
-                }
-            }
-        }
+	private int _invalidationCount;
 
-        private void EnterInvalidation()
-        {
-            _invalidationCount++;
-        }
+	private void LeaveInvalidation() {
+		_invalidationCount--;
+		if (_invalidationCount == 0) {
+			if (_isInvalidated) {
+				RenderGrid();
+			}
+		}
+	}
 
-        private InvalidationContext CreateInvalidationContext()
-        {
-            return new InvalidationContext(this);
-        }
+	private void EnterInvalidation() {
+		_invalidationCount++;
+	}
 
-        private void CheckInvalidation()
-        {
-            if (_isInvalidated) return;
-            if (_invalidationCount > 0) return;
-            Dispatcher.BeginInvoke(DispatcherPriority.Render, (Action) RenderInvoked);
-        }
+	private InvalidationContext CreateInvalidationContext() {
+		return new InvalidationContext(this);
+	}
 
-        private void RenderInvoked()
-        {
-            if (!_isInvalidated) return;
-            RenderGrid();
-        }
+	private void CheckInvalidation() {
+		if (_isInvalidated) {
+			return;
+		}
 
-        public void InvalidateAll()
-        {
-            CheckInvalidation();
-            _isInvalidatedAll = true;
-            _isInvalidated = true;
-        }
+		if (_invalidationCount > 0) {
+			return;
+		}
 
-        public void InvalidateRowHeader(int row)
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _invalidatedRowHeaders.Add(row);
-        }
+		Dispatcher.BeginInvoke(DispatcherPriority.Render, RenderInvoked);
+	}
 
-        public void InvalidateColumnHeader(int column)
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _invalidatedColumnHeaders.Add(column);
-        }
+	private void RenderInvoked() {
+		if (!_isInvalidated) {
+			return;
+		}
 
-        public void InvalidateColumn(int column)
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _invalidatedColumns.Add(column);
-            _invalidatedColumnHeaders.Add(column);
-        }
+		RenderGrid();
+	}
 
-        public void InvalidateRow(int row)
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _invalidatedRows.Add(row);
-            _invalidatedRowHeaders.Add(row);
-        }
+	public void InvalidateAll() {
+		CheckInvalidation();
+		_isInvalidatedAll = true;
+		_isInvalidated = true;
+	}
 
-        public void InvalidateCell(int row, int column)
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _invalidatedCells.Add(Tuple.Create(row, column));
-        }
+	public void InvalidateRowHeader(int row) {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_invalidatedRowHeaders.Add(row);
+	}
 
-        public void InvalidateGridHeader()
-        {
-            CheckInvalidation();
-            _isInvalidated = true;
-            _InvalidatedGridHeader = true;
-        }
+	public void InvalidateColumnHeader(int column) {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_invalidatedColumnHeaders.Add(column);
+	}
 
-        public void InvalidateCell(FastGridCellAddress cell)
-        {
-            if (cell.IsEmpty) return;
-            if (cell.IsGridHeader)
-            {
-                InvalidateGridHeader();
-                return;
-            }
-            if (cell.IsRowHeader)
-            {
-                InvalidateRowHeader(cell.Row.Value);
-                return;
-            }
-            if (cell.IsColumnHeader)
-            {
-                InvalidateColumnHeader(cell.Column.Value);
-                return;
-            }
-            InvalidateCell(cell.Row.Value, cell.Column.Value);
-        }
+	public void InvalidateColumn(int column) {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_invalidatedColumns.Add(column);
+		_invalidatedColumnHeaders.Add(column);
+	}
 
-        private void ClearInvalidation()
-        {
-            _invalidatedRows.Clear();
-            _invalidatedColumns.Clear();
-            _invalidatedCells.Clear();
-            _invalidatedColumnHeaders.Clear();
-            _invalidatedRowHeaders.Clear();
-            _isInvalidated = false;
-            _isInvalidatedAll = false;
-            _InvalidatedGridHeader = false;
-        }
+	public void InvalidateRow(int row) {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_invalidatedRows.Add(row);
+		_invalidatedRowHeaders.Add(row);
+	}
 
-        private bool ShouldDrawCell(int row, int column)
-        {
-            if (!_isInvalidated || _isInvalidatedAll) return true;
+	public void InvalidateCell(int row, int column) {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_invalidatedCells.Add(Tuple.Create(row, column));
+	}
 
-            if (_invalidatedRows.Contains(row)) return true;
-            if (_invalidatedColumns.Contains(column)) return true;
-            if (_invalidatedCells.Contains(Tuple.Create(row, column))) return true;
-            return false;
-        }
+	public void InvalidateGridHeader() {
+		CheckInvalidation();
+		_isInvalidated = true;
+		_InvalidatedGridHeader = true;
+	}
 
-        private bool ShouldDrawRowHeader(int row)
-        {
-            if (!_isInvalidated || _isInvalidatedAll) return true;
+	public void InvalidateCell(FastGridCellAddress cell) {
+		if (cell.IsEmpty) {
+			return;
+		}
 
-            if (_invalidatedRows.Contains(row)) return true;
-            if (_invalidatedRowHeaders.Contains(row)) return true;
-            return false;
-        }
+		if (cell.IsGridHeader) {
+			InvalidateGridHeader();
+			return;
+		}
+		if (cell.IsRowHeader) {
+			InvalidateRowHeader(cell.Row.Value);
+			return;
+		}
+		if (cell.IsColumnHeader) {
+			InvalidateColumnHeader(cell.Column.Value);
+			return;
+		}
+		InvalidateCell(cell.Row.Value, cell.Column.Value);
+	}
 
-        private bool ShouldDrawColumnHeader(int column)
-        {
-            if (!_isInvalidated || _isInvalidatedAll) return true;
+	private void ClearInvalidation() {
+		_invalidatedRows.Clear();
+		_invalidatedColumns.Clear();
+		_invalidatedCells.Clear();
+		_invalidatedColumnHeaders.Clear();
+		_invalidatedRowHeaders.Clear();
+		_isInvalidated = false;
+		_isInvalidatedAll = false;
+		_InvalidatedGridHeader = false;
+	}
 
-            if (_invalidatedColumns.Contains(column)) return true;
-            if (_invalidatedColumnHeaders.Contains(column)) return true;
-            return false;
-        }
+	private bool ShouldDrawCell(int row, int column) {
+		if (!_isInvalidated || _isInvalidatedAll) {
+			return true;
+		}
 
-        private bool ShouldDrawGridHeader()
-        {
-            if (!_isInvalidated || _isInvalidatedAll) return true;
-            return _InvalidatedGridHeader;
-        }
+		if (_invalidatedRows.Contains(row)) {
+			return true;
+		}
 
-        public void InvalidateModelCell(int row, int column)
-        {
-            InvalidateCell(ModelToReal(new FastGridCellAddress(row, column)));
-        }
+		if (_invalidatedColumns.Contains(column)) {
+			return true;
+		}
 
-        public void InvalidateModelRowHeader(int row)
-        {
-            InvalidateCell(ModelToReal(new FastGridCellAddress(row, null)));
-        }
-        public void InvalidateModelRow(int row)
-        {
-            if (IsTransposed)
-            {
-                InvalidateColumn(_columnSizes.ModelToReal(row));
-            }
-            else
-            {
-                InvalidateRow(_rowSizes.ModelToReal(row));
-            }
-        }
-        public void InvalidateModelColumnHeader(int column)
-        {
-            InvalidateCell(ModelToReal(new FastGridCellAddress(null, column)));
-        }
-        public void InvalidateModelColumn(int column)
-        {
-            if (IsTransposed)
-            {
-                InvalidateRow(_rowSizes.ModelToReal(column));
-            }
-            else
-            {
-                InvalidateColumn(_columnSizes.ModelToReal(column));
-            }
-        }
-    }
+		if (_invalidatedCells.Contains(Tuple.Create(row, column))) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDrawRowHeader(int row) {
+		if (!_isInvalidated || _isInvalidatedAll) {
+			return true;
+		}
+
+		if (_invalidatedRows.Contains(row)) {
+			return true;
+		}
+
+		if (_invalidatedRowHeaders.Contains(row)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDrawColumnHeader(int column) {
+		if (!_isInvalidated || _isInvalidatedAll) {
+			return true;
+		}
+
+		if (_invalidatedColumns.Contains(column)) {
+			return true;
+		}
+
+		if (_invalidatedColumnHeaders.Contains(column)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool ShouldDrawGridHeader() {
+		if (!_isInvalidated || _isInvalidatedAll) {
+			return true;
+		}
+
+		return _InvalidatedGridHeader;
+	}
+
+	public void InvalidateModelCell(int row, int column) {
+		InvalidateCell(ModelToReal(new FastGridCellAddress(row, column)));
+	}
+
+	public void InvalidateModelRowHeader(int row) {
+		InvalidateCell(ModelToReal(new FastGridCellAddress(row, null)));
+	}
+	public void InvalidateModelRow(int row) {
+		if (IsTransposed) {
+			InvalidateColumn(_columnSizes.ModelToReal(row));
+		} else {
+			InvalidateRow(_rowSizes.ModelToReal(row));
+		}
+	}
+	public void InvalidateModelColumnHeader(int column) {
+		InvalidateCell(ModelToReal(new FastGridCellAddress(null, column)));
+	}
+	public void InvalidateModelColumn(int column) {
+		if (IsTransposed) {
+			InvalidateRow(_rowSizes.ModelToReal(column));
+		} else {
+			InvalidateColumn(_columnSizes.ModelToReal(column));
+		}
+	}
 }

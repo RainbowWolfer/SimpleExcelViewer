@@ -1,42 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
-namespace FastWpfGrid
-{
-    public enum CellDecoration
-    {
-        None,
-        StrikeOutHorizontal,
-    }
+namespace FastWpfGrid;
 
-    public enum TooltipVisibilityMode
-    {
-        Always,
-        OnlyWhenTrimmed,
-    }
+public enum CellDecoration {
+	None,
+	StrikeOutHorizontal,
+}
 
-    public interface IFastGridCell
-    {
-        Color? BackgroundColor { get; }
+public enum TooltipVisibilityMode {
+	Always,
+	OnlyWhenTrimmed,
+}
 
-        int BlockCount { get; }
-        int RightAlignBlockCount { get; }
-        IFastGridCellBlock GetBlock(int blockIndex);
-        CellDecoration Decoration { get; }
-        Color? DecorationColor { get; }
+public interface IFastGridCell {
+	Color? BackgroundColor { get; }
 
-        /// <summary>
-        /// return NULL disables inline editor
-        /// </summary>
-        /// <returns></returns>
-        string GetEditText();
-        void SetEditText(string value);
+	int BlockCount { get; }
+	int RightAlignBlockCount { get; }
+	IFastGridCellBlock GetBlock(int blockIndex);
+	CellDecoration Decoration { get; }
+	Color? DecorationColor { get; }
 
-        string ToolTipText { get; }
-        TooltipVisibilityMode ToolTipVisibility { get; }
-    }
+	/// <summary>
+	/// return NULL disables inline editor
+	/// </summary>
+	/// <returns></returns>
+	string GetEditText();
+	void SetEditText(string value);
+
+	string ToolTipText { get; }
+	TooltipVisibilityMode ToolTipVisibility { get; }
 }

@@ -1,85 +1,70 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
-namespace FastWpfGrid
-{
-    partial class FastGridControl
-    {
-        #region property Model
+namespace FastWpfGrid;
 
-        public IFastGridModel Model
-        {
-            get { return (IFastGridModel) this.GetValue(ModelProperty); }
-            set { this.SetValue(ModelProperty, value); }
-        }
+public partial class FastGridControl {
+	#region property Model
 
-        public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
-            "Model", typeof (IFastGridModel), typeof (FastGridControl), new PropertyMetadata(null, OnModelPropertyChanged));
+	public IFastGridModel Model {
+		get { return (IFastGridModel)this.GetValue(ModelProperty); }
+		set { this.SetValue(ModelProperty, value); }
+	}
 
-        private static void OnModelPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            ((FastGridControl) dependencyObject).OnModelPropertyChanged();
-        }
+	public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
+		"Model", typeof(IFastGridModel), typeof(FastGridControl), new PropertyMetadata(null, OnModelPropertyChanged));
 
-        #endregion
+	private static void OnModelPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+		((FastGridControl)dependencyObject).OnModelPropertyChanged();
+	}
 
-        #region property IsTransposed
+	#endregion
 
-        public bool IsTransposed
-        {
-            get { return (bool)this.GetValue(IsTransposedProperty); }
-            set { this.SetValue(IsTransposedProperty, value); }
-        }
+	#region property IsTransposed
 
-        public static readonly DependencyProperty IsTransposedProperty = DependencyProperty.Register(
-            "IsTransposed", typeof(bool), typeof(FastGridControl), new PropertyMetadata(false, OnIsTransposedPropertyChanged));
+	public bool IsTransposed {
+		get { return (bool)this.GetValue(IsTransposedProperty); }
+		set { this.SetValue(IsTransposedProperty, value); }
+	}
 
-        private static void OnIsTransposedPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            ((FastGridControl)dependencyObject).OnIsTransposedPropertyChanged();
-        }
+	public static readonly DependencyProperty IsTransposedProperty = DependencyProperty.Register(
+		"IsTransposed", typeof(bool), typeof(FastGridControl), new PropertyMetadata(false, OnIsTransposedPropertyChanged));
 
-        #endregion
+	private static void OnIsTransposedPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+		((FastGridControl)dependencyObject).OnIsTransposedPropertyChanged();
+	}
 
-        #region property UseClearType
+	#endregion
 
-        public bool UseClearType
-        {
-            get { return (bool)this.GetValue(UseClearTypeProperty); }
-            set { this.SetValue(UseClearTypeProperty, value); }
-        }
+	#region property UseClearType
 
-        public static readonly DependencyProperty UseClearTypeProperty = DependencyProperty.Register(
-            "UseClearType", typeof(bool), typeof(FastGridControl), new PropertyMetadata(true, OnUseClearTypePropertyChanged));
+	public bool UseClearType {
+		get { return (bool)this.GetValue(UseClearTypeProperty); }
+		set { this.SetValue(UseClearTypeProperty, value); }
+	}
 
-        private static void OnUseClearTypePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            ((FastGridControl)dependencyObject).OnUseClearTypePropertyChanged();
-        }
+	public static readonly DependencyProperty UseClearTypeProperty = DependencyProperty.Register(
+		"UseClearType", typeof(bool), typeof(FastGridControl), new PropertyMetadata(true, OnUseClearTypePropertyChanged));
 
-        #endregion
+	private static void OnUseClearTypePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+		((FastGridControl)dependencyObject).OnUseClearTypePropertyChanged();
+	}
 
-        #region property AllowFlexibleRows
+	#endregion
 
-        public bool AllowFlexibleRows
-        {
-            get { return (bool)this.GetValue(AllowFlexibleRowsProperty); }
-            set { this.SetValue(AllowFlexibleRowsProperty, value); }
-        }
+	#region property AllowFlexibleRows
 
-        public static readonly DependencyProperty AllowFlexibleRowsProperty = DependencyProperty.Register(
-            "AllowFlexibleRows", typeof(bool), typeof(FastGridControl), new PropertyMetadata(false, OnAllowFlexibleRowsPropertyChanged));
+	public bool AllowFlexibleRows {
+		get { return (bool)this.GetValue(AllowFlexibleRowsProperty); }
+		set { this.SetValue(AllowFlexibleRowsProperty, value); }
+	}
 
-        private static void OnAllowFlexibleRowsPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            ((FastGridControl)dependencyObject).OnAllowFlexibleRowsPropertyChanged();
-        }
+	public static readonly DependencyProperty AllowFlexibleRowsProperty = DependencyProperty.Register(
+		"AllowFlexibleRows", typeof(bool), typeof(FastGridControl), new PropertyMetadata(false, OnAllowFlexibleRowsPropertyChanged));
 
-        #endregion
+	private static void OnAllowFlexibleRowsPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e) {
+		((FastGridControl)dependencyObject).OnAllowFlexibleRowsPropertyChanged();
+	}
 
-    }
+	#endregion
+
 }

@@ -1,5 +1,4 @@
 ﻿using DevExpress.Mvvm;
-using FastWpfGrid;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.ViewModelServices;
 using RW.Common.WPF.Helpers;

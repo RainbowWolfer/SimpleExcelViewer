@@ -1,4 +1,4 @@
-#region Header
+ï»¿#region Header
 //
 //   Project:           WriteableBitmapEx - WriteableBitmap extensions
 //   Description:       Collection of extension methods for the WriteableBitmap class.
@@ -10,7 +10,7 @@
 //   Id:                $Id$
 //
 //
-//   Copyright © 2009-2015 Rene Schulte and WriteableBitmapEx Contributors
+//   Copyright ?2009-2015 Rene Schulte and WriteableBitmapEx Contributors
 //
 //   This code is open source. Please read the License.txt for details. No worries, we won't sue you! ;)
 //
@@ -858,10 +858,10 @@ namespace System.Windows.Media.Imaging
 
         #endregion
 
-        #region Beziér
+        #region Bezié–ž
 
         /// <summary>
-        /// Draws a filled, cubic Beziér spline defined by start, end and two control points.
+        /// Draws a filled, cubic Bezié–ž spline defined by start, end and two control points.
         /// </summary>
         /// <param name="x1">The x-coordinate of the start point.</param>
         /// <param name="y1">The y-coordinate of the start point.</param>
@@ -882,7 +882,7 @@ namespace System.Windows.Media.Imaging
         }
 
         /// <summary>
-        /// Draws a filled, cubic Beziér spline defined by start, end and two control points.
+        /// Draws a filled, cubic Bezié–ž spline defined by start, end and two control points.
         /// </summary>
         /// <param name="x1">The x-coordinate of the start point.</param>
         /// <param name="y1">The y-coordinate of the start point.</param>
@@ -939,7 +939,7 @@ namespace System.Windows.Media.Imaging
         }
 
         /// <summary>
-        /// Draws a series of filled, cubic Beziér splines each defined by start, end and two control points. 
+        /// Draws a series of filled, cubic Bezié–ž splines each defined by start, end and two control points. 
         /// The ending point of the previous curve is used as starting point for the next. 
         /// Therfore the inital curve needs four points and the subsequent 3 (2 control and 1 end point).
         /// </summary>
@@ -953,7 +953,7 @@ namespace System.Windows.Media.Imaging
         }
 
         /// <summary>
-        /// Draws a series of filled, cubic Beziér splines each defined by start, end and two control points. 
+        /// Draws a series of filled, cubic Bezié–ž splines each defined by start, end and two control points. 
         /// The ending point of the previous curve is used as starting point for the next. 
         /// Therfore the inital curve needs four points and the subsequent 3 (2 control and 1 end point).
         /// </summary>

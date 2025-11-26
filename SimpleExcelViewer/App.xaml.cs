@@ -6,8 +6,6 @@ using SimpleExcelViewer.Views;
 using System.Diagnostics;
 using System.Globalization;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 
 namespace SimpleExcelViewer;
 

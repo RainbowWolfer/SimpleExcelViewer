@@ -31,7 +31,7 @@ public partial class FastGridControl {
 	private object _tooltipTarget;
 	private string _tooltipText;
 	private DispatcherTimer _tooltipTimer;
-	private DispatcherTimer _dragTimer;
+	private readonly DispatcherTimer _dragTimer;
 	private FastGridCellAddress _dragStartCell;
 	private FastGridCellAddress _mouseOverCell;
 	private bool _mouseOverCellIsTrimmed;

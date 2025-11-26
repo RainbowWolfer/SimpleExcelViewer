@@ -1,12 +1,14 @@
 ﻿using DevExpress.Mvvm;
+using DevExpress.Mvvm.UI;
 using SimpleExcelViewer.Interfaces;
 using SimpleExcelViewer.Models;
+using SimpleExcelViewer.Views;
 using System.IO;
 using System.Text;
 
 namespace SimpleExcelViewer.ViewModels;
 
-public class TabItemViewModel : BindableBase {
+internal class TabItemViewModel : BindableBase {
 	public string FilePath { get; }
 	public string FileName { get; }
 
@@ -21,10 +23,14 @@ public class TabItemViewModel : BindableBase {
 		set => SetProperty(() => IsLoading, value);
 	}
 
+	public TabView View { get; } = new();
 
-	public TabItemViewModel(string filePath) {
+	public TabItemViewModel(MainViewModel mainViewModel, string filePath) {
 		FilePath = filePath;
 		FileName = Path.GetFileName(filePath);
+
+		ViewModelExtensions.SetParameter(View, this);
+		ViewModelExtensions.SetParentViewModel(View, mainViewModel);
 	}
 
 	public async Task LoadAsync() {

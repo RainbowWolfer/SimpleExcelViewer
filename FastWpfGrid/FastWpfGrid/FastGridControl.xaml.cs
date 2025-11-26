@@ -19,8 +19,8 @@ public partial class FastGridControl : UserControl, IFastGridView {
 
 	private int _headerHeight;
 	private int _headerWidth;
-	private Dictionary<Tuple<bool, bool>, GlyphFont> _glyphFonts = [];
-	private Dictionary<Color, Brush> _solidBrushes = [];
+	private readonly Dictionary<Tuple<bool, bool>, GlyphFont> _glyphFonts = [];
+	private readonly Dictionary<Color, Brush> _solidBrushes = [];
 	private int _rowHeightReserve = 5;
 	//private Color _headerBackground = Color.FromRgb(0xDD, 0xDD, 0xDD);
 	private WriteableBitmap _drawBuffer;
@@ -29,7 +29,7 @@ public partial class FastGridControl : UserControl, IFastGridView {
 
 	private bool _isReadOnly;
 
-	private static Dictionary<string, ImageHolder> _imageCache = [];
+	private static readonly Dictionary<string, ImageHolder> _imageCache = [];
 
 	public FastGridControl() {
 		InitializeComponent();
@@ -144,7 +144,6 @@ public partial class FastGridControl : UserControl, IFastGridView {
 		//RenderGrid();
 		ScrollContent(rowIndex, columnIndex);
 		AdjustInlineEditorPosition();
-		AdjustSelectionMenuPosition();
 	}
 
 
@@ -455,36 +454,6 @@ public partial class FastGridControl : UserControl, IFastGridView {
 		}
 	}
 
-	private void AdjustSelectionMenuPosition() {
-		FastGridCellAddress maxaddr = FastGridCellAddress.Empty;
-
-		foreach (FastGridCellAddress addr in _selectedCells) {
-			if (!addr.IsCell) {
-				continue;
-			}
-
-			if (!maxaddr.IsCell) {
-				maxaddr = addr;
-			}
-
-			if (addr.Row.Value + addr.Column.Value > maxaddr.Row.Value + maxaddr.Column.Value) {
-				maxaddr = addr;
-			}
-		}
-
-		if (!maxaddr.IsCell) {
-			return;
-		}
-
-		int left = GetColumnLeft(maxaddr.Column.Value);
-		int top = GetRowTop(maxaddr.Row.Value + 1);
-
-		mnuSelection.Margin = new Thickness {
-			Left = left / DpiDetector.DpiXKoef,
-			Top = top / DpiDetector.DpiYKoef,
-		};
-	}
-
 	private void InvalidateCurrentCell() {
 		if (_currentCell.IsCell) {
 			InvalidateCell(_currentCell);
@@ -752,14 +721,4 @@ public partial class FastGridControl : UserControl, IFastGridView {
 		set => CurrentCell = ModelToReal(value);
 	}
 
-	public void ShowSelectionMenu(IEnumerable<string> commands) {
-		if (commands == null) {
-			mnuSelection.ItemsSource = null;
-			mnuSelection.Visibility = Visibility.Hidden;
-		} else {
-			mnuSelection.ItemsSource = commands.Select(x => new SelectionQuickCommand(Model, x)).ToList();
-			mnuSelection.Visibility = Visibility.Visible;
-			AdjustSelectionMenuPosition();
-		}
-	}
 }

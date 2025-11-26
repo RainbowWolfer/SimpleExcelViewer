@@ -16,8 +16,8 @@ public partial class FastGridControl {
 	//private int _frozenRowCount;
 	//private int _frozenColumnCount;
 
-	private SeriesSizes _rowSizes = new();
-	private SeriesSizes _columnSizes = new();
+	private readonly SeriesSizes _rowSizes = new();
+	private readonly SeriesSizes _columnSizes = new();
 
 	public int VisibleRowCount => _rowSizes.GetVisibleScrollCount(FirstVisibleRowScrollIndex, GridScrollAreaHeight);
 
@@ -131,7 +131,7 @@ public partial class FastGridControl {
 
 		return series.GetScrollIndexOnPosition(
 			(int)Math.Round(position - headerSize - frozenSize) + series.GetPositionByScrollIndex(firstVisible)
-				   ) + series.FrozenCount;
+		) + series.FrozenCount;
 	}
 
 	public FastGridCellAddress GetCellAddress(Point pt) {
@@ -175,23 +175,22 @@ public partial class FastGridControl {
 		}
 
 		AdjustInlineEditorPosition();
-		AdjustSelectionMenuPosition();
 		AdjustScrollBarPositions();
 	}
 
-	public FastGridCellAddress CurrentCell {
-		get { return _currentCell; }
-		set { MoveCurrentCell(value.Row, value.Column); }
+	public FastGridCellAddress CurrentCell { 
+		get => _currentCell;
+		set => MoveCurrentCell(value.Row, value.Column);
 	}
 
 	public int? CurrentRow {
-		get { return _currentCell.IsCell ? _currentCell.Row : null; }
-		set { CurrentCell = _currentCell.ChangeRow(value); }
+		get => _currentCell.IsCell ? _currentCell.Row : null; 
+		set => CurrentCell = _currentCell.ChangeRow(value);
 	}
 
 	public int? CurrentColumn {
-		get { return _currentCell.IsCell ? _currentCell.Column : null; }
-		set { CurrentCell = _currentCell.ChangeColumn(value); }
+		get => _currentCell.IsCell ? _currentCell.Column : null; 
+		set => CurrentCell = _currentCell.ChangeColumn(value);
 	}
 
 	public void NotifyColumnArrangeChanged() {
@@ -261,7 +260,6 @@ public partial class FastGridControl {
 			AdjustScrollbars();
 			AdjustScrollBarPositions();
 			AdjustInlineEditorPosition();
-			AdjustSelectionMenuPosition();
 		}
 	}
 
@@ -343,7 +341,6 @@ public partial class FastGridControl {
 		AdjustScrollbars();
 		AdjustScrollBarPositions();
 		AdjustInlineEditorPosition();
-		AdjustSelectionMenuPosition();
 		InvalidateAll();
 	}
 

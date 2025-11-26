@@ -26,6 +26,7 @@
 			SizeChanged="imageGridResized">
 
 			<Image x:Name="image"
+				FocusVisualStyle="{x:Null}"
 				Focusable="True"
 				KeyDown="imageKeyDown"
 				Mouse.MouseLeave="imageMouseLeave"
@@ -44,24 +45,6 @@
 				TextChanged="edTextChanged"
 				Visibility="Hidden"/>
 
-			<ItemsControl x:Name="mnuSelection" SnapsToDevicePixels="True" Visibility="Hidden">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
-								<ColumnDefinition Width="*"/>
-							</Grid.ColumnDefinitions>
-							<TextBlock Background="Wheat"><Hyperlink Click="selectionCommandClick">
-									<Run Text="{Binding Text}"/>
-								</Hyperlink></TextBlock>
-						</Grid>
-						<!--
-                        <Button Content="{Binding Text}" Click="selectionCommandClick" Width="100" HorizontalAlignment="Left"/>
-						-->
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
 		</Grid>
 
 

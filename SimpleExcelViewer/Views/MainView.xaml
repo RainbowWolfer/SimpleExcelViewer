@@ -46,7 +46,7 @@
 			</Border>
 
 			<Border Grid.Row="1">
-				<TabControl ItemsSource="{Binding TabItems}">
+				<TabControl SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding TabItems}">
 
 					<TabControl.ItemTemplate>
 						<DataTemplate>
@@ -63,7 +63,8 @@
 					<TabControl.ContentTemplate>
 						<DataTemplate>
 							<Border x:Name="PART_Border">
-								<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding ElementName=PART_Border, Path=DataContext}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>
+								<!--<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding ElementName=PART_Border, Path=DataContext}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>-->
+								<ContentControl Content="{Binding View}" Focusable="False" IsTabStop="False"/>
 							</Border>
 						</DataTemplate>
 					</TabControl.ContentTemplate>

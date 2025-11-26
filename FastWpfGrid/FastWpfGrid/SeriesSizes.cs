@@ -24,7 +24,7 @@ public class SeriesSizeItem {
 /// Grid uses mostly RealIndex
 /// </summary>
 public class SeriesSizes {
-	private Dictionary<int, int> _sizeOverridesByModelIndex = [];
+	private readonly Dictionary<int, int> _sizeOverridesByModelIndex = [];
 	private int _count;
 	public int DefaultSize;
 	public int? MaxSize;
@@ -32,11 +32,11 @@ public class SeriesSizes {
 	private List<int> _frozenModelIndexes;
 
 	// these items are updated in BuildIndex()
-	private List<SeriesSizeItem> _scrollItems = [];
+	private readonly List<SeriesSizeItem> _scrollItems = [];
 	//private Dictionary<int, SeriesSizeItem> _itemByIndex = new Dictionary<int, SeriesSizeItem>();
 	private List<int> _positions = [];
 	private List<int> _scrollIndexes = [];
-	private List<SeriesSizeItem> _frozenItems = [];
+	private readonly List<SeriesSizeItem> _frozenItems = [];
 
 	public int Count {
 		get { return _count; }

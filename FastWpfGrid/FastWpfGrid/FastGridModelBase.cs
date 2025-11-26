@@ -5,7 +5,7 @@ using System.Windows.Media;
 namespace FastWpfGrid;
 
 public abstract class FastGridModelBase : IFastGridModel, IFastGridCell, IFastGridCellBlock {
-	private List<IFastGridView> _grids = [];
+	private readonly List<IFastGridView> _grids = [];
 	private int? _requestedRow;
 	private int? _requestedColumn;
 	private HashSet<int> _frozenRows = [];

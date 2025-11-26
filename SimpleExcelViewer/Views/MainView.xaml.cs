@@ -20,6 +20,11 @@ internal class MainViewModel : ViewModelBase {
 
 	public ObservableCollection<TabItemViewModel> TabItems { get; } = [];
 
+	public TabItemViewModel SelectedItem {
+		get => GetProperty(() => SelectedItem);
+		set => SetProperty(() => SelectedItem, value);
+	}
+
 	public MainViewModel() {
 
 	}
@@ -37,7 +42,9 @@ internal class MainViewModel : ViewModelBase {
 			OpenFileDialogService.Filter = filterString;
 			if (OpenFileDialogService.ShowDialog()) {
 				string filePath = OpenFileDialogService.GetFullFileName();
-				TabItems.Add(new TabItemViewModel(filePath));
+				TabItemViewModel item = new(this, filePath);
+				TabItems.Add(item);
+				SelectedItem = item;
 			}
 		} catch (Exception ex) {
 			DebugLoggerManager.LogHandledException(ex);

@@ -8,14 +8,14 @@ public partial class FastGridControl {
 	private bool _isInvalidated;
 	private bool _isInvalidatedAll;
 	private bool _InvalidatedGridHeader;
-	private List<int> _invalidatedRows = [];
-	private List<int> _invalidatedColumns = [];
-	private List<Tuple<int, int>> _invalidatedCells = [];
-	private List<int> _invalidatedRowHeaders = [];
-	private List<int> _invalidatedColumnHeaders = [];
+	private readonly List<int> _invalidatedRows = [];
+	private readonly List<int> _invalidatedColumns = [];
+	private readonly List<Tuple<int, int>> _invalidatedCells = [];
+	private readonly List<int> _invalidatedRowHeaders = [];
+	private readonly List<int> _invalidatedColumnHeaders = [];
 
 	private class InvalidationContext : IDisposable {
-		private FastGridControl _grid;
+		private readonly FastGridControl _grid;
 
 		internal InvalidationContext(FastGridControl grid) {
 			_grid = grid;

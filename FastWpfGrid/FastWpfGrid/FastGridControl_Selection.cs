@@ -7,9 +7,9 @@ namespace FastWpfGrid;
 public partial class FastGridControl {
 	public event EventHandler<SelectionChangedEventArgs> SelectedCellsChanged;
 
-	private HashSet<FastGridCellAddress> _selectedCells = [];
-	private Dictionary<int, int> _selectedRows = [];
-	private Dictionary<int, int> _selectedColumns = [];
+	private readonly HashSet<FastGridCellAddress> _selectedCells = [];
+	private readonly Dictionary<int, int> _selectedRows = [];
+	private readonly Dictionary<int, int> _selectedColumns = [];
 
 	private int? _selectedRealRowCountLimit;
 	private bool _selectedRealRowCountLimitLoaded;

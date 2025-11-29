@@ -34,9 +34,9 @@ internal class MainViewModel : ViewModelBase {
 	private void Open() {
 		try {
 			string filterString = string.Join("|", [
-				"CSV 文件 (*.csv)|*.csv",
-				"Excel 文件 (*.xlsx;*.xls)|*.xlsx;*.xls",
-				"所有文件 (*.*)|*.*",
+				"CSV File (*.csv)|*.csv",
+				"Excel File (*.xlsx;*.xls)|*.xlsx;*.xls",
+				"All File (*.*)|*.*",
 			]);
 
 			OpenFileDialogService.Filter = filterString;
@@ -51,6 +51,30 @@ internal class MainViewModel : ViewModelBase {
 			MessageBox.Show(ex.ToString(), "ERROR");
 		}
 	}
+
+
+
+	private DelegateCommand<TabItemViewModel>? closeCommand;
+	public IDelegateCommand CloseCommand => closeCommand ??= new(Close, CanClose);
+	private void Close(TabItemViewModel item) {
+		if (CanClose(item)) {
+			if (MessageBox.Show($"Are you sure to close ({item.FileName}) ？", "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) {
+				TabItems.Remove(item);
+			}
+		}
+	}
+	private bool CanClose(TabItemViewModel item) => item != null;
+
+
+
+	private DelegateCommand<TabItemViewModel>? reloadCommand;
+	public IDelegateCommand ReloadCommand => reloadCommand ??= new(Reload, CanReload);
+	private void Reload(TabItemViewModel item) {
+		if (CanReload(item)) {
+
+		}
+	}
+	private bool CanReload(TabItemViewModel item) => item != null;
 
 
 }

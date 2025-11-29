@@ -20,6 +20,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Segoe Fluent Icons.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Costura.Fody" Version="6.0.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
@@ -41,6 +45,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\FastWpfGrid\FastWpfGrid\FastWpfGrid.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Segoe Fluent Icons.ttf" />
 	</ItemGroup>
 
 </Project>

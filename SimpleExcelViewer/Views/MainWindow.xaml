@@ -12,6 +12,9 @@
 	DataContext="{base:DISource Type=local:MainWindowViewModel}"
 	Width="800"
 	Height="450"
+	MinWidth="200"
+	MinHeight="160"
+	ResizeMode="CanResizeWithGrip"
 	mc:Ignorable="d">
 
 	<Grid>

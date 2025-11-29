@@ -23,6 +23,9 @@
 
 	<UserControl.Resources>
 		<wpf:BindingProxy x:Key="ViewModel" Data="{Binding}"/>
+
+		<wpf:CommandProxy x:Key="CloseCommand" Command="{Binding CloseCommand}"/>
+		<wpf:CommandProxy x:Key="ReloadCommand" Command="{Binding ReloadCommand}"/>
 	</UserControl.Resources>
 
 	<Grid>
@@ -46,17 +49,51 @@
 			</Border>
 
 			<Border Grid.Row="1">
-				<TabControl SelectedItem="{Binding SelectedItem}" ItemsSource="{Binding TabItems}">
+				<TabControl
+					d:SelectedIndex="0"
+					SelectedItem="{Binding SelectedItem}"
+					ItemsSource="{Binding TabItems}"
+					d:ItemsSource="{d:SampleData ItemCount=5}">
 
 					<TabControl.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding FileName}"/>
+							<DockPanel>
+								<Border Margin="4,0,0,0" DockPanel.Dock="Right">
+									<Button
+										Width="16"
+										Height="16"
+										Padding="0"
+										BorderThickness="0"
+										Background="Transparent"
+										Command="{StaticResource CloseCommand}"
+										CommandParameter="{Binding}"
+										Cursor="Hand"
+										ToolTip="Close">
+										<wpf:FontIcon
+											FontFamily="{StaticResource IconPack}"
+											FontSize="14"
+											FontWeight="Bold"
+											Foreground="Red"
+											Text="&#xE894;"/>
+									</Button>
+								</Border>
+								<TextBlock Text="{Binding FileName}"/>
+							</DockPanel>
 						</DataTemplate>
 					</TabControl.ItemTemplate>
 
 					<TabControl.ItemContainerStyle>
 						<Style TargetType="TabItem">
 							<Setter Property="ToolTip" Value="{Binding FilePath}"/>
+							<Setter Property="ContextMenu">
+								<Setter.Value>
+									<ContextMenu>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ReloadCommand}" CommandParameter="{Binding}" Header="Reload"/>
+										<Separator/>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseCommand}" CommandParameter="{Binding}" Header="Close"/>
+									</ContextMenu>
+								</Setter.Value>
+							</Setter>
 						</Style>
 					</TabControl.ItemContainerStyle>
 
@@ -73,14 +110,22 @@
 			</Border>
 
 			<Border Grid.Row="2">
-				<DockPanel>
+				<DockPanel Margin="4,2">
 					<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
 						<TextBlock Text="By RainbowWolfer"/>
 					</wpf:SpacingStackPanel>
 
-					<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
+					<wpf:SpacingStackPanel
+						Margin="0,0,10,0"
+						DockPanel.Dock="Right"
+						HorizontalSpacing="4"
+						Orientation="Horizontal">
 						<TextBlock Text="v1.0.0"/>
 					</wpf:SpacingStackPanel>
+
+					<Border>
+
+					</Border>
 
 				</DockPanel>
 			</Border>

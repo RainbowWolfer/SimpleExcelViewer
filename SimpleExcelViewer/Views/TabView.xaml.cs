@@ -1,5 +1,4 @@
 ﻿using DevExpress.Mvvm;
-using RW.Base.WPF.Extensions;
 using RW.Base.WPF.ViewModelServices;
 using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.ViewModels;
@@ -49,15 +48,11 @@ internal class TabViewModel : ViewModelBase {
 			return;
 		}
 
-		try {
-			await Parameter.LoadAsync();
+		await Parameter.LoadAsync();
 
-			UserControlService.Object.MainFastGridControl.Focus();
+		UserControlService.Object.MainFastGridControl.Focus();
 
-			DispatcherService.Invoke(AppHelper.ReleaseRAM);
-		} catch (Exception ex) {
-			DebugLoggerManager.LogHandledException(ex);
-		}
+		DispatcherService.Invoke(AppHelper.ReleaseRAM);
 	}
 
 }

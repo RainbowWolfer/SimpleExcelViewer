@@ -1,9 +1,13 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
+using RW.Base.WPF.ViewModelServices;
 using SimpleExcelViewer.ViewModels;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SimpleExcelViewer.Views;
 
@@ -17,6 +21,7 @@ public partial class MainView : UserControl {
 internal class MainViewModel : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
+	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 
 	public ObservableCollection<TabItemViewModel> TabItems { get; } = [];
 
@@ -29,6 +34,26 @@ internal class MainViewModel : ViewModelBase {
 
 	}
 
+
+
+	private DelegateCommand<DragEventArgs>? dropCommand;
+	public IDelegateCommand DropCommand => dropCommand ??= new(Drop);
+	private void Drop(DragEventArgs args) {
+		if (args.Data is DataObject dataObject) {
+			if (dataObject.ContainsFileDropList()) {
+				StringCollection filePaths = dataObject.GetFileDropList();
+				foreach (string? filePath in filePaths) {
+					if (File.Exists(filePath)) {
+						TabItemViewModel item = new(this, filePath);
+						TabItems.Add(item);
+						SelectedItem = item;
+					}
+				}
+			}
+		}
+	}
+
+
 	private DelegateCommand? openCommand;
 	public IDelegateCommand OpenCommand => openCommand ??= new(Open);
 	private void Open() {
@@ -40,15 +65,18 @@ internal class MainViewModel : ViewModelBase {
 			]);
 
 			OpenFileDialogService.Filter = filterString;
+			OpenFileDialogService.Multiselect = true;
 			if (OpenFileDialogService.ShowDialog()) {
-				string filePath = OpenFileDialogService.GetFullFileName();
-				TabItemViewModel item = new(this, filePath);
-				TabItems.Add(item);
-				SelectedItem = item;
+				foreach (IFileInfo? fileInfo in OpenFileDialogService.Files) {
+					string filePath = fileInfo.GetFullName();
+					TabItemViewModel item = new(this, filePath);
+					TabItems.Add(item);
+					SelectedItem = item;
+				}
 			}
 		} catch (Exception ex) {
 			DebugLoggerManager.LogHandledException(ex);
-			MessageBox.Show(ex.ToString(), "ERROR");
+			MessageBoxService.ShowError("Opening file failed.", ex);
 		}
 	}
 
@@ -58,12 +86,44 @@ internal class MainViewModel : ViewModelBase {
 	public IDelegateCommand CloseCommand => closeCommand ??= new(Close, CanClose);
 	private void Close(TabItemViewModel item) {
 		if (CanClose(item)) {
-			if (MessageBox.Show($"Are you sure to close ({item.FileName}) ？", "Confirm", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) {
+			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")) {
+				item.Dispose();
 				TabItems.Remove(item);
 			}
 		}
 	}
 	private bool CanClose(TabItemViewModel item) => item != null;
+
+
+
+	private DelegateCommand<TabItemViewModel>? closeOthersCommand;
+	public IDelegateCommand CloseOthersCommand => closeOthersCommand ??= new(CloseOthers, CanCloseOthers);
+	private void CloseOthers(TabItemViewModel item) {
+		if (CanCloseOthers(item)) {
+			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")) {
+				TabItemViewModel[] others = TabItems.Where(x => x != item).ToArray();
+				foreach (TabItemViewModel _item in others) {
+					_item.Dispose();
+					TabItems.Remove(_item);
+				}
+			}
+		}
+	}
+	private bool CanCloseOthers(TabItemViewModel item) => item != null;
+
+
+	private DelegateCommand<TabItemViewModel>? closeAllCommand;
+	public IDelegateCommand CloseAllCommand => closeAllCommand ??= new(CloseAll, CanCloseAll);
+	private void CloseAll(TabItemViewModel item) {
+		if (CanCloseAll(item)) {
+			foreach (TabItemViewModel _item in TabItems) {
+				_item.Dispose();
+			}
+			TabItems.Clear();
+		}
+	}
+	private bool CanCloseAll(TabItemViewModel item) => item != null;
+
 
 
 
@@ -76,5 +136,17 @@ internal class MainViewModel : ViewModelBase {
 	}
 	private bool CanReload(TabItemViewModel item) => item != null;
 
+
+	private DelegateCommand<MouseButtonEventArgs>? tabItemMouseDownCommand;
+	public IDelegateCommand TabItemMouseDownCommand => tabItemMouseDownCommand ??= new(TabItemMouseDown);
+	private void TabItemMouseDown(MouseButtonEventArgs args) {
+		if (args.ChangedButton is MouseButton.Middle
+			&& args.Source is FrameworkElement frameworkElement
+			&& frameworkElement.DataContext is TabItemViewModel tabItemViewModel
+		) {
+			Close(tabItemViewModel);
+			args.Handled = true;
+		}
+	}
 
 }

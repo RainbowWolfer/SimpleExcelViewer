@@ -1,5 +1,6 @@
 ﻿using DevExpress.Mvvm;
 using DevExpress.Mvvm.UI;
+using RW.Base.WPF.Extensions;
 using SimpleExcelViewer.Interfaces;
 using SimpleExcelViewer.Models;
 using SimpleExcelViewer.Views;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace SimpleExcelViewer.ViewModels;
 
-internal class TabItemViewModel : BindableBase {
+internal class TabItemViewModel : BindableBase, IDisposable {
 	public string FilePath { get; }
 	public string FileName { get; }
 
@@ -17,10 +18,14 @@ internal class TabItemViewModel : BindableBase {
 		set => SetProperty(() => TableModel, value);
 	}
 
-
 	public bool IsLoading {
 		get => GetProperty(() => IsLoading);
 		set => SetProperty(() => IsLoading, value);
+	}
+
+	public string ErrorMessage {
+		get => GetProperty(() => ErrorMessage);
+		set => SetProperty(() => ErrorMessage, value);
 	}
 
 	public TabView View { get; } = new();
@@ -34,10 +39,14 @@ internal class TabItemViewModel : BindableBase {
 	}
 
 	public async Task LoadAsync() {
+		ErrorMessage = string.Empty;
+
 		if (IsLoading) {
 			return;
 		}
+
 		if (!File.Exists(FilePath)) {
+			ErrorMessage = $"File does not exist.\n{FilePath}";
 			return;
 		}
 
@@ -61,8 +70,15 @@ internal class TabItemViewModel : BindableBase {
 			//long v = data.EstimateMemoryUsage();
 
 			TableModel = new TableModel(data);
+		} catch (Exception ex) {
+			ErrorMessage = $"File load error\n{ex}";
+			DebugLoggerManager.LogHandledException(ex);
 		} finally {
 			IsLoading = false;
 		}
+	}
+
+	public void Dispose() {
+
 	}
 }

@@ -1,6 +1,8 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
+using RW.Base.WPF.ViewModels;
 using RW.Base.WPF.ViewModelServices;
+using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.ViewModels;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -23,6 +25,17 @@ internal class MainViewModel : ViewModelBase {
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 
+	public string AuthorText => $"By {AppManager.Author}";
+	public string VersionText {
+		get {
+			if (SystemHelper.IsAdministratorSafe) {
+				return (AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion) + " (Administrator)";
+			} else {
+				return AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion;
+			}
+		}
+	}
+
 	public ObservableCollection<TabItemViewModel> TabItems { get; } = [];
 
 	public TabItemViewModel SelectedItem {
@@ -44,9 +57,11 @@ internal class MainViewModel : ViewModelBase {
 				StringCollection filePaths = dataObject.GetFileDropList();
 				foreach (string? filePath in filePaths) {
 					if (File.Exists(filePath)) {
-						TabItemViewModel item = new(this, filePath);
-						TabItems.Add(item);
-						SelectedItem = item;
+						if (AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
+							TabItemViewModel item = new(this, filePath);
+							TabItems.Add(item);
+							SelectedItem = item;
+						}
 					}
 				}
 			}
@@ -58,17 +73,15 @@ internal class MainViewModel : ViewModelBase {
 	public IDelegateCommand OpenCommand => openCommand ??= new(Open);
 	private void Open() {
 		try {
-			string filterString = string.Join("|", [
-				"CSV File (*.csv)|*.csv",
-				"Excel File (*.xlsx;*.xls)|*.xlsx;*.xls",
-				"All File (*.*)|*.*",
-			]);
-
-			OpenFileDialogService.Filter = filterString;
+			OpenFileDialogService.Filter = AppConfig.ValidFileFilterString;
 			OpenFileDialogService.Multiselect = true;
 			if (OpenFileDialogService.ShowDialog()) {
 				foreach (IFileInfo? fileInfo in OpenFileDialogService.Files) {
 					string filePath = fileInfo.GetFullName();
+					if (!AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
+						continue;
+					}
+
 					TabItemViewModel item = new(this, filePath);
 					TabItems.Add(item);
 					SelectedItem = item;
@@ -101,7 +114,7 @@ internal class MainViewModel : ViewModelBase {
 	private void CloseOthers(TabItemViewModel item) {
 		if (CanCloseOthers(item)) {
 			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")) {
-				TabItemViewModel[] others = TabItems.Where(x => x != item).ToArray();
+				TabItemViewModel[] others = [.. TabItems.Where(x => x != item)];
 				foreach (TabItemViewModel _item in others) {
 					_item.Dispose();
 					TabItems.Remove(_item);

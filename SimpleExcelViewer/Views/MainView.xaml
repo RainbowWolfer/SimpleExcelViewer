@@ -56,13 +56,14 @@
 			<Border Grid.Row="1">
 				<TabControl
 					d:SelectedIndex="0"
+					HorizontalContentAlignment="Stretch"
 					SelectedItem="{Binding SelectedItem}"
 					ItemsSource="{Binding TabItems}"
 					d:ItemsSource="{d:SampleData ItemCount=5}">
 
 					<TabControl.ItemTemplate>
 						<DataTemplate>
-							<Grid>
+							<Grid Background="Transparent">
 
 								<DockPanel>
 									<Border Margin="4,0,0,0" DockPanel.Dock="Right">
@@ -84,7 +85,7 @@
 												Text="&#xE894;"/>
 										</Button>
 									</Border>
-									<Grid>
+									<Grid HorizontalAlignment="Left">
 										<ProgressBar
 											Width="auto"
 											Margin="-2,0"
@@ -134,7 +135,7 @@
 			<Border Grid.Row="2">
 				<DockPanel Margin="4,2">
 					<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
-						<TextBlock Text="By RainbowWolfer"/>
+						<TextBlock Text="{Binding AuthorText}"/>
 					</wpf:SpacingStackPanel>
 
 					<wpf:SpacingStackPanel
@@ -142,7 +143,7 @@
 						DockPanel.Dock="Right"
 						HorizontalSpacing="4"
 						Orientation="Horizontal">
-						<TextBlock Text="v1.0.0"/>
+						<TextBlock Text="{Binding VersionText}"/>
 					</wpf:SpacingStackPanel>
 
 					<Border>

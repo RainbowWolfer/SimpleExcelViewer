@@ -5,10 +5,7 @@ using System.Reflection;
 namespace SimpleExcelViewer;
 
 public static class AppConfig {
-
-	public const string Author = "RainbowWolfer";
 	public const string AppName = "SimpleExcelViewer";
-
 
 	public static bool IsRelease {
 		get {
@@ -34,4 +31,20 @@ public static class AppConfig {
 
 		Debug.WriteLine(location);
 	}
+
+
+
+
+	public static IReadOnlyCollection<string> ValidExtensionsSet { get; } = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {
+		".csv",
+		//"",
+		//"",
+	};
+
+	public static string ValidFileFilterString { get; } = string.Join("|", [
+		"CSV File (*.csv)|*.csv",
+		"Excel File (*.xlsx;*.xls)|*.xlsx;*.xls",
+		"All File (*.*)|*.*",
+	]);
+
 }

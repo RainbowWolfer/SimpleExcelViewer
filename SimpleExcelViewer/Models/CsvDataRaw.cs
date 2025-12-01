@@ -1,4 +1,6 @@
-﻿using SimpleExcelViewer.Interfaces;
+﻿using RW.Base.WPF.Interfaces;
+using SimpleExcelViewer.Interfaces;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -34,9 +36,14 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 	}
 
 	public object GetCell(int row, int column) {
-		byte[] buffer = _rowBuffers[row];
-		CellSlice slice = _rowSlices[row][column];
-		return encoding.GetString(buffer, slice.Start, slice.Length);
+		try {
+			byte[] buffer = _rowBuffers[row];
+			CellSlice slice = _rowSlices[row][column];
+			return encoding.GetString(buffer, slice.Start, slice.Length);
+		} catch (Exception ex) {
+			Debug.WriteLine(ex);
+			return "!ERROR!";
+		}
 	}
 
 	public object[] GetRow(int index) {
@@ -59,7 +66,7 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		_rowSlices.Add(slices);
 	}
 
-	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',') {
+	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',', IStatusReport? statusReport = null) {
 		using StreamReader reader = new(stream, encoding);
 		CsvDataRaw csv = new(encoding);
 
@@ -68,7 +75,10 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 
 		byte splitter_byte = (byte)splitter;
 
+		int rowCount = 1;
+
 		while ((line = reader.ReadLine()) != null) {
+			statusReport?.SetStatus($"Reading line: {rowCount++}");
 			// 原始字节
 			byte[] buffer = encoding.GetBytes(line);
 

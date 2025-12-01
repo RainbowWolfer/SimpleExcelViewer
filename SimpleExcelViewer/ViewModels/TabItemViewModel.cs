@@ -1,6 +1,7 @@
 ﻿using DevExpress.Mvvm;
 using DevExpress.Mvvm.UI;
 using RW.Base.WPF.Extensions;
+using RW.Base.WPF.ViewModels;
 using SimpleExcelViewer.Interfaces;
 using SimpleExcelViewer.Models;
 using SimpleExcelViewer.Views;
@@ -27,6 +28,8 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 		get => GetProperty(() => ErrorMessage);
 		set => SetProperty(() => ErrorMessage, value);
 	}
+
+	public StatusReport StatusReport { get; } = new();
 
 	public TabView View { get; } = new();
 
@@ -62,7 +65,7 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 					FileOptions.SequentialScan
 				);
 				//return CsvDataBuffer.Read(fileStream, Encoding.UTF8);
-				return CsvDataRaw.Read(fileStream, Encoding.UTF8);
+				return CsvDataRaw.Read(fileStream, Encoding.UTF8, ',', StatusReport);
 				//return CsvData.Read(fileStream, Encoding.UTF8, [',']);
 				//return CsvDataTableReader.Read(fileStream, Encoding.UTF8, [',']);
 			});

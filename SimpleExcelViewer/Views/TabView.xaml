@@ -20,7 +20,25 @@
 	</dxmvvm:Interaction.Behaviors>
 
 	<Grid>
-		<fgc:FastGridControl x:Name="MainFastGridControl" IsReadOnly="True" Model="{Binding Parameter.TableModel}"/>
+		<Border Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityReConverter}}">
+			<fgc:FastGridControl x:Name="MainFastGridControl" IsReadOnly="True" Model="{Binding Parameter.TableModel}"/>
+		</Border>
+
+		<Grid Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}">
+			<Border
+				Margin="10,0"
+				Padding="8"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="#d0d0d0">
+				<StackPanel Orientation="Vertical">
+					<ProgressBar Height="20" MinWidth="250" IsIndeterminate="True"/>
+					<Border Height="8"/>
+					<TextBlock d:Text="Loading" Text="{Binding Parameter.StatusReport.Status}" TextAlignment="Center"/>
+				</StackPanel>
+			</Border>
+		</Grid>
+
 	</Grid>
 
 </UserControl>

@@ -9,6 +9,12 @@
 		<LangVersion>12</LangVersion>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+
+		<Version>0.1.0.0</Version>
+		<Authors>RainbowWolfer</Authors>
+		<Company>RainbowWolfer</Company>
+		<Copyright>RainbowWolfer</Copyright>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -20,7 +26,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Segoe Fluent Icons.ttf" />
+		<None Remove="Resources\Segoe Fluent Icons.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RW.Base.WPF" Version="1.0.18" />
+		<PackageReference Include="RW.Common" Version="1.0.18" />
+		<PackageReference Include="RW.Common.WPF" Version="1.0.18" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -31,9 +43,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="RW.Base.WPF" Version="1.0.18" />
-		<PackageReference Include="RW.Common" Version="1.0.18" />
-		<PackageReference Include="RW.Common.WPF" Version="1.0.18" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -48,7 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Resource Include="Resources\Segoe Fluent Icons.ttf" />
+		<Resource Include="Resources\Segoe Fluent Icons.ttf" />
 	</ItemGroup>
 
 </Project>

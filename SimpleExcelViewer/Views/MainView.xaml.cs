@@ -1,5 +1,6 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
+using RW.Base.WPF.Interfaces;
 using RW.Base.WPF.ViewModels;
 using RW.Base.WPF.ViewModelServices;
 using RW.Common.WPF.Helpers;
@@ -20,22 +21,12 @@ public partial class MainView : UserControl {
 }
 
 
-internal class MainViewModel : ViewModelBase {
+internal class MainViewModel(IAppManager appManager) : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 
-	public string VersionText {
-		get {
-			//$"By {AppManager.Author}"
-			string version = AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion;
-			if (SystemHelper.IsAdministratorSafe) {
-				return version + " (Administrator)";
-			} else {
-				return version;
-			}
-		}
-	}
+	public IAppManager AppManager { get; } = appManager;
 
 	public ObservableCollection<TabItemViewModel> TabItems { get; } = [];
 
@@ -43,11 +34,6 @@ internal class MainViewModel : ViewModelBase {
 		get => GetProperty(() => SelectedItem);
 		set => SetProperty(() => SelectedItem, value);
 	}
-
-	public MainViewModel() {
-
-	}
-
 
 
 	private DelegateCommand<DragEventArgs>? dropCommand;

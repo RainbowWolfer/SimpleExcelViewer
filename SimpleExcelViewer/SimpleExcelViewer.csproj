@@ -15,6 +15,9 @@
 		<Company>RainbowWolfer</Company>
 		<Copyright>RainbowWolfer</Copyright>
 
+
+		<RW_Common_Version>1.0.22</RW_Common_Version>
+
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,9 +33,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="RW.Base.WPF" Version="1.0.18" />
-		<PackageReference Include="RW.Common" Version="1.0.18" />
-		<PackageReference Include="RW.Common.WPF" Version="1.0.18" />
+		<PackageReference Include="RW.Base.WPF" Version="$(RW_Common_Version)" />
+		<PackageReference Include="RW.Common" Version="$(RW_Common_Version)" />
+		<PackageReference Include="RW.Common.WPF" Version="$(RW_Common_Version)" />
 	</ItemGroup>
 
 	<ItemGroup>

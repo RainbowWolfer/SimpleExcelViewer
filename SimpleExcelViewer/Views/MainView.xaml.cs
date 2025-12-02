@@ -1,9 +1,8 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.Interfaces;
-using RW.Base.WPF.ViewModels;
 using RW.Base.WPF.ViewModelServices;
-using RW.Common.WPF.Helpers;
+using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -21,12 +20,17 @@ public partial class MainView : UserControl {
 }
 
 
-internal class MainViewModel(IAppManager appManager) : ViewModelBase {
+internal class MainViewModel(
+	IAppManager appManager,
+	IRecentFilesService recentFilesService
+) : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 
 	public IAppManager AppManager { get; } = appManager;
+	public IRecentFilesService RecentFilesService { get; } = recentFilesService;
+
 
 	public ObservableCollection<TabItemViewModel> TabItems { get; } = [];
 
@@ -39,19 +43,21 @@ internal class MainViewModel(IAppManager appManager) : ViewModelBase {
 	private DelegateCommand<DragEventArgs>? dropCommand;
 	public IDelegateCommand DropCommand => dropCommand ??= new(Drop);
 	private void Drop(DragEventArgs args) {
-		if (args.Data is DataObject dataObject) {
-			if (dataObject.ContainsFileDropList()) {
-				StringCollection filePaths = dataObject.GetFileDropList();
-				foreach (string? filePath in filePaths) {
-					if (File.Exists(filePath)) {
-						if (AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
-							TabItemViewModel item = new(this, filePath);
-							TabItems.Add(item);
-							SelectedItem = item;
-						}
-					}
-				}
+		if (args.Data is not DataObject dataObject || !dataObject.ContainsFileDropList()) {
+			return;
+		}
+
+		StringCollection filePaths = dataObject.GetFileDropList();
+		foreach (string? filePath in filePaths) {
+			if (!File.Exists(filePath) || !AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
+				continue;
 			}
+
+			TabItemViewModel item = new(this, filePath);
+			TabItems.Add(item);
+			SelectedItem = item;
+
+			RecentFilesService.Update(filePath);
 		}
 	}
 
@@ -72,6 +78,8 @@ internal class MainViewModel(IAppManager appManager) : ViewModelBase {
 					TabItemViewModel item = new(this, filePath);
 					TabItems.Add(item);
 					SelectedItem = item;
+
+					RecentFilesService.Update(filePath);
 				}
 			}
 		} catch (Exception ex) {
@@ -148,5 +156,20 @@ internal class MainViewModel(IAppManager appManager) : ViewModelBase {
 			args.Handled = true;
 		}
 	}
+
+
+
+
+	private DelegateCommand? clearAllRecentFilesCommand;
+	public IDelegateCommand ClearAllRecentFilesCommand => clearAllRecentFilesCommand ??= new(ClearAllRecentFiles, CanClearAllRecentFiles);
+	private void ClearAllRecentFiles() {
+		if (CanClearAllRecentFiles()) {
+			if (MessageBoxService.ShowOkCancelQuestion("Are you sure to clear all recent files list？")) {
+				RecentFilesService.ClearAllRecords();
+			}
+		}
+	}
+	private bool CanClearAllRecentFiles() => !RecentFilesService.IsEmpty;
+
 
 }

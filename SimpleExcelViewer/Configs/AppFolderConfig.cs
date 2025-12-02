@@ -6,6 +6,6 @@ namespace SimpleExcelViewer.Configs;
 
 public class AppFolderConfig(IAppManager appManager) : FolderConfig(appManager) {
 
-	public string RecentFilesConfigFilePath => Path.Combine(DataFolder, "RecentFiles.json");
+	public string RecentFilesConfigFilePath => Path.Combine(DataFolder, "RecentFiles.db");
 
 }

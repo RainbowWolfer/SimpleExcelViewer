@@ -58,9 +58,15 @@
 
 					<MenuItem Header="File">
 						<MenuItem Command="{Binding OpenCommand}" Header="Open File"/>
-						<MenuItem Header="Recent Files">
-							<MenuItem Header="1"/>
-							<MenuItem Header="2"/>
+						<MenuItem Header="Recent Files" IsEnabled="{Binding RecentFilesService.IsEmpty, Converter={StaticResource Boolean2BooleanReConverter}}">
+							<MenuItem.ItemsSource>
+								<CompositeCollection>
+									<CollectionContainer Collection="{Binding RecentFilesService.CollectionView}"/>
+									<MenuItem Header="{Binding RecentFilesService.CollectionView}"/>
+									<Separator/>
+									<MenuItem Command="{Binding ClearAllRecentFilesCommand}" Header="Clear All"/>
+								</CompositeCollection>
+							</MenuItem.ItemsSource>
 						</MenuItem>
 						<Separator/>
 						<MenuItem Header="Reload File"/>

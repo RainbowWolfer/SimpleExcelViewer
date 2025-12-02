@@ -31,6 +31,13 @@
 		<wpf:CommandProxy x:Key="CloseCommand" Command="{Binding CloseCommand}"/>
 		<wpf:CommandProxy x:Key="ReloadCommand" Command="{Binding ReloadCommand}"/>
 		<wpf:CommandProxy x:Key="TabItemMouseDownCommand" Command="{Binding TabItemMouseDownCommand}"/>
+
+		<Style x:Key="ToolBarButton" TargetType="Button">
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Height" Value="22"/>
+			<Setter Property="Width" Value="22"/>
+		</Style>
+
 	</UserControl.Resources>
 
 	<Grid>
@@ -46,16 +53,48 @@
 					<Button Content="Open"/>
 				</wpf:SpacingStackPanel>-->
 
-				<ToolBarTray>
-					<ToolBar>
-						<Button Command="{Binding OpenCommand}" Content="Open"/>
-					</ToolBar>
-				</ToolBarTray>
+				<Menu>
+
+					<MenuItem Header="File">
+						<MenuItem Command="{Binding OpenCommand}" Header="Open File"/>
+						<MenuItem Header="Recent Files">
+							<MenuItem Header="1"/>
+							<MenuItem Header="2"/>
+						</MenuItem>
+						<Separator/>
+						<MenuItem Header="Reload File"/>
+						<Separator/>
+						<MenuItem Header="Close"/>
+						<MenuItem Header="Close Others"/>
+						<MenuItem Header="Close All"/>
+						<Separator/>
+						<MenuItem Command="{Binding}" Header="Settings"/>
+						<Separator/>
+						<MenuItem Command="{Binding}" Header="Exit"/>
+					</MenuItem>
+
+					<MenuItem Header="Config">
+						<MenuItem Command="{Binding}" Header="Config Highlight"/>
+					</MenuItem>
+
+					<MenuItem Header="More">
+						<MenuItem Command="{Binding}" Header="Open Source Libraries"/>
+						<MenuItem Command="{Binding}" Header="Source Code"/>
+						<Separator/>
+						<MenuItem Command="{Binding}" Header="About"/>
+					</MenuItem>
+
+					<!--<MenuItem DataContext="{Binding SelectedItem}" Header="Current" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
+
+					</MenuItem>-->
+
+				</Menu>
 			</Border>
 
 			<Border Grid.Row="1">
 				<TabControl
 					d:SelectedIndex="0"
+					Padding="0"
 					HorizontalContentAlignment="Stretch"
 					SelectedItem="{Binding SelectedItem}"
 					ItemsSource="{Binding TabItems}"
@@ -135,7 +174,7 @@
 			<Border Grid.Row="2">
 				<DockPanel Margin="4,2">
 					<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
-						<TextBlock Text="{Binding AuthorText}"/>
+						<TextBlock Text="{Binding SelectedItem.FilePath}"/>
 					</wpf:SpacingStackPanel>
 
 					<wpf:SpacingStackPanel

@@ -111,15 +111,15 @@ public partial class FastGridControl : UserControl, IFastGridView {
 	}
 
 	private void CountTransposedHeaderWidth() {
-		int maxw = 0;
+		int maxWidth = 0;
 		for (int col = 0; col < _modelColumnCount; col++) {
 			IFastGridCell cell = Model.GetColumnHeader(this, col);
 			int width = GetCellContentWidth(cell) + (2 * CellPaddingHorizontal);
-			if (width > maxw) {
-				maxw = width;
+			if (width > maxWidth) {
+				maxWidth = width;
 			}
 		}
-		HeaderWidth = maxw;
+		HeaderWidth = maxWidth;
 	}
 
 	//public int RowHeight
@@ -163,6 +163,8 @@ public partial class FastGridControl : UserControl, IFastGridView {
 		_model?.DetachView(this);
 		_model = Model;
 		_model?.AttachView(this);
+
+		RecountColumnWidths();
 		NotifyRefresh();
 	}
 
@@ -623,7 +625,7 @@ public partial class FastGridControl : UserControl, IFastGridView {
 			_drawBuffer = null;
 		}
 		image.Source = _drawBuffer;
-		image.Margin = new Thickness(0);
+		//image.Margin = new Thickness(0);
 		image.Width = Math.Max(0, width);
 		image.Height = Math.Max(0, height);
 

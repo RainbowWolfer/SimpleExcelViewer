@@ -5,7 +5,7 @@ namespace FastWpfGrid;
 
 public partial class FastGridControl {
 	private Color _cellFontColor = Colors.Black;
-	private Color _headerBackground = Color.FromRgb(0xF6, 0xF7, 0xF9);
+	private Color _headerBackground = Color.FromRgb(246, 247, 249);
 	private Color _headerCurrentBackground = Color.FromRgb(190, 207, 220);
 	private Color _selectedColor = Color.FromRgb(51, 153, 255);
 	private Color _selectedTextColor = Colors.White;
@@ -18,30 +18,25 @@ public partial class FastGridControl {
 	private int _cellPaddingHorizontal = 2;
 	private int _cellPaddingVertical = 1;
 	private int _blockPadding = 2;
-	private int _columnResizeThreshold = 2;
 	private int? _minColumnWidthOverride;
 
 	private Color[] _alternatingColors =
 	[
 		Colors.White,
-		Colors.White,
-		Color.FromRgb(235, 235, 235),
-		Colors.White,
-		Colors.White,
-		Color.FromRgb(235, 245, 255)
+		//Colors.White,
+		//Color.FromRgb(235, 235, 235),
+		//Colors.White,
+		//Colors.White,
+		//Color.FromRgb(235, 245, 255)
 	];
 
 	private Color _activeRegionFrameColor = Color.FromRgb(0xAA, 0xAA, 0xFF);
 	private Color _activeRegionHoverFillColor = Color.FromRgb(0xAA, 0xFF, 0xFF);
-	private int _wideColumnsLimit = 250;
 
-	public int ColumnResizeThreshold {
-		get { return _columnResizeThreshold; }
-		set { _columnResizeThreshold = value; }
-	}
+	public int ColumnResizeThreshold { get; set; } = 2;
 
 	public string CellFontName {
-		get { return _cellFontName; }
+		get => _cellFontName;
 		set {
 			_cellFontName = value;
 			RecalculateDefaultCellSize();
@@ -50,7 +45,7 @@ public partial class FastGridControl {
 	}
 
 	public int? MinColumnWidthOverride {
-		get { return _minColumnWidthOverride; }
+		get => _minColumnWidthOverride;
 		set {
 			_minColumnWidthOverride = value;
 			RecalculateDefaultCellSize();
@@ -61,7 +56,7 @@ public partial class FastGridControl {
 	public int MinColumnWidth => _minColumnWidthOverride ?? _columnSizes.DefaultSize;
 
 	public int CellFontSize {
-		get { return _cellFontSize; }
+		get => _cellFontSize;
 		set {
 			_cellFontSize = value;
 			RecalculateDefaultCellSize();
@@ -70,7 +65,7 @@ public partial class FastGridControl {
 	}
 
 	public int RowHeightReserve {
-		get { return _rowHeightReserve; }
+		get => _rowHeightReserve;
 		set {
 			_rowHeightReserve = value;
 			RecalculateDefaultCellSize();
@@ -79,7 +74,7 @@ public partial class FastGridControl {
 	}
 
 	public Color CellFontColor {
-		get { return _cellFontColor; }
+		get => _cellFontColor;
 		set {
 			_cellFontColor = value;
 			RenderGrid();
@@ -87,7 +82,7 @@ public partial class FastGridControl {
 	}
 
 	public Color SelectedColor {
-		get { return _selectedColor; }
+		get => _selectedColor;
 		set {
 			_selectedColor = value;
 			RenderGrid();
@@ -95,7 +90,7 @@ public partial class FastGridControl {
 	}
 
 	public Color SelectedTextColor {
-		get { return _selectedTextColor; }
+		get => _selectedTextColor;
 		set {
 			_selectedTextColor = value;
 			RenderGrid();
@@ -103,7 +98,7 @@ public partial class FastGridControl {
 	}
 
 	public Color LimitedSelectedColor {
-		get { return _limitedSelectedColor; }
+		get => _limitedSelectedColor;
 		set {
 			_limitedSelectedColor = value;
 			RenderGrid();
@@ -111,7 +106,7 @@ public partial class FastGridControl {
 	}
 
 	public Color LimitedSelectedTextColor {
-		get { return _limitedSelectedTextColor; }
+		get => _limitedSelectedTextColor;
 		set {
 			_limitedSelectedTextColor = value;
 			RenderGrid();
@@ -119,12 +114,11 @@ public partial class FastGridControl {
 	}
 
 	public Color MouseOverRowColor {
-		get { return _mouseOverRowColor; }
-		set { _mouseOverRowColor = value; }
+		get => _mouseOverRowColor; set => _mouseOverRowColor = value;
 	}
 
 	public Color GridLineColor {
-		get { return _gridLineColor; }
+		get => _gridLineColor;
 		set {
 			_gridLineColor = value;
 			RenderChanged();
@@ -132,7 +126,7 @@ public partial class FastGridControl {
 	}
 
 	public Color[] AlternatingColors {
-		get { return _alternatingColors; }
+		get => _alternatingColors;
 		set {
 			if (value.Length < 1) {
 				throw new Exception("Invalid value");
@@ -144,7 +138,7 @@ public partial class FastGridControl {
 	}
 
 	public int CellPaddingHorizontal {
-		get { return _cellPaddingHorizontal; }
+		get => _cellPaddingHorizontal;
 		set {
 			_cellPaddingHorizontal = value;
 			RenderChanged();
@@ -152,7 +146,7 @@ public partial class FastGridControl {
 	}
 
 	public int CellPaddingVertical {
-		get { return _cellPaddingVertical; }
+		get => _cellPaddingVertical;
 		set {
 			_cellPaddingVertical = value;
 			RenderChanged();
@@ -160,7 +154,7 @@ public partial class FastGridControl {
 	}
 
 	public int BlockPadding {
-		get { return _blockPadding; }
+		get => _blockPadding;
 		set {
 			_blockPadding = value;
 			RenderChanged();
@@ -168,7 +162,7 @@ public partial class FastGridControl {
 	}
 
 	public Color HeaderBackground {
-		get { return _headerBackground; }
+		get => _headerBackground;
 		set {
 			_headerBackground = value;
 			RenderChanged();
@@ -176,7 +170,7 @@ public partial class FastGridControl {
 	}
 
 	public Color HeaderCurrentBackground {
-		get { return _headerCurrentBackground; }
+		get => _headerCurrentBackground;
 		set {
 			_headerCurrentBackground = value;
 			RenderChanged();
@@ -184,7 +178,7 @@ public partial class FastGridControl {
 	}
 
 	public Color ActiveRegionFrameColor {
-		get { return _activeRegionFrameColor; }
+		get => _activeRegionFrameColor;
 		set {
 			_activeRegionFrameColor = value;
 			RenderChanged();
@@ -192,12 +186,9 @@ public partial class FastGridControl {
 	}
 
 	public Color ActiveRegionHoverFillColor {
-		get { return _activeRegionHoverFillColor; }
-		set { _activeRegionHoverFillColor = value; }
+		get => _activeRegionHoverFillColor;
+		set => _activeRegionHoverFillColor = value;
 	}
 
-	public int WideColumnsLimit {
-		get { return _wideColumnsLimit; }
-		set { _wideColumnsLimit = value; }
-	}
+	public int WideColumnsLimit { get; set; } = 250;
 }

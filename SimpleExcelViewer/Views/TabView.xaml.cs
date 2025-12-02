@@ -2,13 +2,23 @@
 using RW.Base.WPF.ViewModelServices;
 using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.ViewModels;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace SimpleExcelViewer.Views;
 
 public partial class TabView : UserControl {
 	public TabView() {
 		InitializeComponent();
+
+		FontFamily defaultFontFamily = SystemFonts.MessageFontFamily;
+		string fontName = defaultFontFamily.Source;
+		//double defaultFontSize = SystemFonts.MessageFontSize;
+
+		MainFastGridControl.FontFamily = defaultFontFamily;
+		MainFastGridControl.CellFontName = fontName;
+
 	}
 }
 

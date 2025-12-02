@@ -264,7 +264,7 @@ public partial class FastGridControl {
 	}
 
 	public int HeaderHeight {
-		get { return _headerHeight; }
+		get => _headerHeight;
 		set {
 			_headerHeight = value;
 			SetScrollbarMargin();
@@ -272,7 +272,7 @@ public partial class FastGridControl {
 	}
 
 	public int HeaderWidth {
-		get { return _headerWidth; }
+		get => _headerWidth;
 		set {
 			_headerWidth = value;
 			SetScrollbarMargin();
@@ -306,13 +306,13 @@ public partial class FastGridControl {
 				address.Column.HasValue ? _columnSizes.RealToModel(address.Column.Value) : null,
 				address.Row.HasValue ? _rowSizes.RealToModel(address.Row.Value) : null,
 				address.IsGridHeader
-				);
+			);
 		} else {
 			return new FastGridCellAddress(
 				address.Row.HasValue ? _rowSizes.RealToModel(address.Row.Value) : null,
 				address.Column.HasValue ? _columnSizes.RealToModel(address.Column.Value) : null,
 				address.IsGridHeader
-				);
+			);
 
 		}
 	}
@@ -323,13 +323,13 @@ public partial class FastGridControl {
 				address.Column.HasValue ? _rowSizes.ModelToReal(address.Column.Value) : null,
 				address.Row.HasValue ? _columnSizes.ModelToReal(address.Row.Value) : null,
 				address.IsGridHeader
-				);
+			);
 		} else {
 			return new FastGridCellAddress(
 				address.Row.HasValue ? _rowSizes.ModelToReal(address.Row.Value) : null,
 				address.Column.HasValue ? _columnSizes.ModelToReal(address.Column.Value) : null,
 				address.IsGridHeader
-				);
+			);
 
 		}
 	}

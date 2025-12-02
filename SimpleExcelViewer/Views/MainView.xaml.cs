@@ -25,13 +25,14 @@ internal class MainViewModel : ViewModelBase {
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 
-	public string AuthorText => $"By {AppManager.Author}";
 	public string VersionText {
 		get {
+			//$"By {AppManager.Author}"
+			string version = AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion;
 			if (SystemHelper.IsAdministratorSafe) {
-				return (AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion) + " (Administrator)";
+				return version + " (Administrator)";
 			} else {
-				return AppConfig.IsRelease ? AppConfig.Version.ShortVersion : AppConfig.Version.FullVersion;
+				return version;
 			}
 		}
 	}

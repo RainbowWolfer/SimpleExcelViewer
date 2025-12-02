@@ -21,7 +21,13 @@
 
 	<Grid>
 		<Border Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityReConverter}}">
-			<fgc:FastGridControl x:Name="MainFastGridControl" IsReadOnly="True" Model="{Binding Parameter.TableModel}"/>
+			<fgc:FastGridControl x:Name="MainFastGridControl"
+				Margin="0,0,0,0"
+				CellPaddingHorizontal="6"
+				HeaderWidth="80"
+				IsReadOnly="True"
+				Model="{Binding Parameter.TableModel}"
+				UseClearType="True"/>
 		</Border>
 
 		<Grid Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}">

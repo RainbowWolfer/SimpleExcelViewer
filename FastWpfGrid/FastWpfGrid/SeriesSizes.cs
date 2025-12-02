@@ -221,7 +221,7 @@ public class SeriesSizes {
 	}
 
 	public bool ModelIndexIsInScrollArea(int modelIndex) {
-		var realIndex = ModelToReal(modelIndex);
+		int realIndex = ModelToReal(modelIndex);
 		return realIndex >= FrozenCount;
 	}
 

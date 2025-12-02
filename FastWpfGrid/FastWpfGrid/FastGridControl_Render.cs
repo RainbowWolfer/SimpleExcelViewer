@@ -232,7 +232,7 @@ public partial class FastGridControl {
 
 		int count = cell.BlockCount;
 
-		int witdh = 0;
+		int width = 0;
 		for (int i = 0; i < count; i++) {
 			IFastGridCellBlock block = cell.GetBlock(i);
 			if (block == null) {
@@ -240,22 +240,22 @@ public partial class FastGridControl {
 			}
 
 			if (i > 0) {
-				witdh += BlockPadding;
+				width += BlockPadding;
 			}
 
 			switch (block.BlockType) {
 				case FastGridBlockType.Text:
 					string text = block.TextData;
 					GlyphFont font = GetFont(block.IsBold, block.IsItalic);
-					witdh += font.GetTextWidth(text, maxSize);
+					width += font.GetTextWidth(text, maxSize);
 					break;
 				case FastGridBlockType.Image:
-					witdh += block.ImageWidth;
+					width += block.ImageWidth;
 					break;
 			}
 
 		}
-		return witdh;
+		return width;
 	}
 
 	private int RenderBlock(int leftPos, int rightPos, Color? selectedTextColor, Color bgColor, IntRect rectContent, IFastGridCellBlock block, FastGridCellAddress cellAddr, bool leftAlign, bool isHoverCell) {

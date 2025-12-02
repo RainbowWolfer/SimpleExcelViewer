@@ -25,9 +25,11 @@
 		<Grid x:Name="imageGrid"
 			Grid.Row="0"
 			Grid.Column="0"
+			Margin="-2,0,0,0"
 			SizeChanged="imageGridResized">
 
 			<Image x:Name="image"
+				Margin="0,0,-3,-1"
 				FocusVisualStyle="{x:Null}"
 				Focusable="True"
 				KeyDown="imageKeyDown"
@@ -48,7 +50,6 @@
 				Visibility="Hidden"/>
 
 		</Grid>
-
 
 		<ScrollBar x:Name="hscroll"
 			Grid.Row="1"

@@ -221,7 +221,7 @@ public partial class FastGridControl {
 				int newRow = FirstVisibleRowScrollIndex + 1;
 				if (!_rowSizes.IsWholeInView(FirstVisibleRowScrollIndex, _rowSizes.ScrollCount - 1, GridScrollAreaHeight)) {
 					ScrollContent(newRow, FirstVisibleColumnScrollIndex);
-					var row = FirstVisibleRowScrollIndex + VisibleRowCount - 1 + _rowSizes.FrozenCount;
+					int row = FirstVisibleRowScrollIndex + VisibleRowCount - 1 + _rowSizes.FrozenCount;
 					SetSelectedRectangle(_dragStartCell, new FastGridCellAddress(row, _mouseMoveColumn ?? _currentCell.Column));
 					AdjustScrollBarPositions();
 				}
@@ -230,7 +230,7 @@ public partial class FastGridControl {
 				int newRow = FirstVisibleRowScrollIndex - 1;
 				if (newRow >= 0) {
 					ScrollContent(newRow, FirstVisibleColumnScrollIndex);
-					var row = newRow + _rowSizes.FrozenCount;
+					int row = newRow + _rowSizes.FrozenCount;
 					SetSelectedRectangle(_dragStartCell, new FastGridCellAddress(row, _mouseMoveColumn ?? _currentCell.Column));
 					AdjustScrollBarPositions();
 				}
@@ -241,7 +241,7 @@ public partial class FastGridControl {
 				int newColumn = FirstVisibleColumnScrollIndex + 1;
 				if (!_columnSizes.IsWholeInView(FirstVisibleColumnScrollIndex, _columnSizes.ScrollCount - 1, GridScrollAreaWidth)) {
 					ScrollContent(FirstVisibleRowScrollIndex, newColumn);
-					var col = FirstVisibleColumnScrollIndex + VisibleColumnCount - 1 + _columnSizes.FrozenCount;
+					int col = FirstVisibleColumnScrollIndex + VisibleColumnCount - 1 + _columnSizes.FrozenCount;
 					SetSelectedRectangle(_dragStartCell, new FastGridCellAddress(_mouseMoveRow ?? _currentCell.Row, col));
 					AdjustScrollBarPositions();
 				}
@@ -250,7 +250,7 @@ public partial class FastGridControl {
 				int newColumn = FirstVisibleColumnScrollIndex - 1;
 				if (newColumn >= 0) {
 					ScrollContent(FirstVisibleRowScrollIndex, newColumn);
-					var col = newColumn + _columnSizes.FrozenCount;
+					int col = newColumn + _columnSizes.FrozenCount;
 					SetSelectedRectangle(_dragStartCell, new FastGridCellAddress(_mouseMoveRow ?? _currentCell.Row, col));
 					AdjustScrollBarPositions();
 				}

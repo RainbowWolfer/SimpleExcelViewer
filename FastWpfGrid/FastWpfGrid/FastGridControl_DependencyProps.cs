@@ -6,8 +6,8 @@ public partial class FastGridControl {
 	#region property Model
 
 	public IFastGridModel Model {
-		get { return (IFastGridModel)this.GetValue(ModelProperty); }
-		set { this.SetValue(ModelProperty, value); }
+		get => (IFastGridModel)GetValue(ModelProperty);
+		set => SetValue(ModelProperty, value);
 	}
 
 	public static readonly DependencyProperty ModelProperty = DependencyProperty.Register(
@@ -22,8 +22,8 @@ public partial class FastGridControl {
 	#region property IsTransposed
 
 	public bool IsTransposed {
-		get { return (bool)this.GetValue(IsTransposedProperty); }
-		set { this.SetValue(IsTransposedProperty, value); }
+		get => (bool)GetValue(IsTransposedProperty);
+		set => SetValue(IsTransposedProperty, value);
 	}
 
 	public static readonly DependencyProperty IsTransposedProperty = DependencyProperty.Register(
@@ -38,8 +38,8 @@ public partial class FastGridControl {
 	#region property UseClearType
 
 	public bool UseClearType {
-		get { return (bool)this.GetValue(UseClearTypeProperty); }
-		set { this.SetValue(UseClearTypeProperty, value); }
+		get => (bool)GetValue(UseClearTypeProperty);
+		set => SetValue(UseClearTypeProperty, value);
 	}
 
 	public static readonly DependencyProperty UseClearTypeProperty = DependencyProperty.Register(
@@ -54,8 +54,8 @@ public partial class FastGridControl {
 	#region property AllowFlexibleRows
 
 	public bool AllowFlexibleRows {
-		get { return (bool)this.GetValue(AllowFlexibleRowsProperty); }
-		set { this.SetValue(AllowFlexibleRowsProperty, value); }
+		get => (bool)GetValue(AllowFlexibleRowsProperty);
+		set => SetValue(AllowFlexibleRowsProperty, value);
 	}
 
 	public static readonly DependencyProperty AllowFlexibleRowsProperty = DependencyProperty.Register(

@@ -7,6 +7,7 @@ using SimpleExcelViewer.Configs;
 using SimpleExcelViewer.Views;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -53,8 +54,22 @@ public partial class App : ApplicationBase {
 		public override bool IsRelease => AppConfig.IsRelease;
 	}
 
-	private class _DllLoader : DllLoader {
+	private class _DllLoader() : DllLoader() {
+		protected override void AfterInitialized(IReadOnlyDictionary<string, Assembly> pool, IReadOnlyDictionary<string, Type> types) {
+			base.AfterInitialized(pool, types);
 
+			Debug.WriteLine(new string('-', 30));
+
+			foreach (KeyValuePair<string, Assembly> entry in pool) {
+				Debug.WriteLine($"Assembly: {entry}");
+			}
+
+			foreach (KeyValuePair<string, Type> entry in types) {
+				Debug.WriteLine($"Type: {entry}");
+			}
+
+			Debug.WriteLine(new string('-', 30));
+		}
 	}
 
 	private class _IoCInitializer(IApplication application) : IoCInitializer(application) {

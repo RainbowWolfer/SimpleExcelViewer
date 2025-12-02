@@ -17,19 +17,8 @@ public static class AppConfig {
 		}
 	}
 
-	public static Guid SessionID { get; }
-	public static DateTime AppStartTime { get; }
-	public static VersionStruct Version { get; }
-
 	static AppConfig() {
-		SessionID = Guid.NewGuid();
-		AppStartTime = DateTime.Now;
-
-		string location = Assembly.GetEntryAssembly()!.Location;
-		FileVersionInfo info = FileVersionInfo.GetVersionInfo(location);
-		Version = new VersionStruct(info.FileMajorPart, info.ProductMinorPart, info.FileBuildPart, info.FilePrivatePart);
-
-		Debug.WriteLine(location);
+		
 	}
 
 

@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="RW.Base.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dialogs="clr-namespace:SimpleExcelViewer.Views.Dialogs"
 	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,6 +23,8 @@
 
 		<dxmvvm:OpenFileDialogService/>
 		<vms:MessageBoxServiceEx/>
+
+		<vms:DialogService x:Name="AppSettingsDialogService" ContentType="{x:Type dialogs:AppSettingsDialog}"/>
 
 	</dxmvvm:Interaction.Behaviors>
 
@@ -80,7 +83,7 @@
 						<MenuItem Header="Close Others"/>
 						<MenuItem Header="Close All"/>
 						<Separator/>
-						<MenuItem Command="{Binding}" Header="Settings"/>
+						<MenuItem Command="{Binding OpenAppSettingsCommand}" Header="Settings"/>
 						<Separator/>
 						<MenuItem Command="{Binding}" Header="Exit"/>
 					</MenuItem>

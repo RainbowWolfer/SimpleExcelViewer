@@ -8,6 +8,7 @@ using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.Events;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
+using SimpleExcelViewer.ViewModelServices;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -32,6 +33,7 @@ internal class MainViewModel(
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
+	private IDialogServiceEx AppSettingsDialogService => GetService<IDialogServiceEx>(nameof(AppSettingsDialogService));
 
 	public IAppManager AppManager { get; } = appManager;
 	public IRecentFilesService RecentFilesService { get; } = recentFilesService;
@@ -239,5 +241,15 @@ internal class MainViewModel(
 	}
 	private bool CanClearAllRecentFiles() => !RecentFilesService.IsEmpty;
 
+
+
+
+	private DelegateCommand? openAppSettingsCommand;
+	public IDelegateCommand OpenAppSettingsCommand => openAppSettingsCommand ??= new(OpenAppSettings);
+	private void OpenAppSettings() {
+		if (AppSettingsDialogService.ShowOKCancel(this, new object())) {
+
+		}
+	}
 
 }

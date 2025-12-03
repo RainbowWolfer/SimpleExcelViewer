@@ -1,6 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:c="clr-namespace:SimpleExcelViewer.Controls"
+	xmlns:vm="clr-namespace:SimpleExcelViewer.ViewModels"
 	xmlns:wpf="RW.Common.WPF">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -18,5 +20,56 @@
 	</Style>
 
 	<Style TargetType="{x:Type wpf:FontIcon}" BasedOn="{StaticResource FontIcon}"/>
+
+
+	<Style TargetType="c:DialogWindowWrapper">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="c:DialogWindowWrapper">
+					<Border
+						Padding="{TemplateBinding Padding}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						Background="{TemplateBinding Background}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="auto"/>
+							</Grid.RowDefinitions>
+
+							<Border Grid.Row="0">
+								<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+							</Border>
+
+							<Border Grid.Row="1">
+								<ItemsControl Margin="4" HorizontalAlignment="Right" ItemsSource="{TemplateBinding DialogCommands}">
+
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Orientation="Horizontal"/>
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate DataType="{x:Type vm:DialogCommand}">
+											<Button
+												Height="20"
+												MinWidth="70"
+												Margin="4"
+												Command="{Binding RelativeSource={RelativeSource AncestorType=c:DialogWindowWrapper}, Path=DialogButtonCommand}"
+												CommandParameter="{Binding}"
+												Content="{Binding Content}"
+												IsEnabled="{Binding IsEnabled}"/>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+
+								</ItemsControl>
+							</Border>
+						</Grid>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 </ResourceDictionary>

@@ -1,7 +1,11 @@
 ﻿using DevExpress.Mvvm;
+using RW.Base.WPF.Events;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.Interfaces;
 using RW.Base.WPF.ViewModelServices;
+using RW.Common.Helpers;
+using RW.Common.WPF.Helpers;
+using SimpleExcelViewer.Events;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
 using System.Collections.ObjectModel;
@@ -22,7 +26,8 @@ public partial class MainView : UserControl {
 
 internal class MainViewModel(
 	IAppManager appManager,
-	IRecentFilesService recentFilesService
+	IRecentFilesService recentFilesService,
+	IEventAggregator eventAggregator
 ) : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
@@ -39,28 +44,41 @@ internal class MainViewModel(
 		set => SetProperty(() => SelectedItem, value);
 	}
 
+	protected override void OnInitializeInRuntime() {
+		base.OnInitializeInRuntime();
+
+		eventAggregator.GetEvent<MainWindowPreviewKeyDownEvent>().Subscribe(OnMainWindowPreviewKeyDown);
+	}
+
+	private void OnMainWindowPreviewKeyDown(KeyEventArgs args) {
+		if (KeyboardHelper.ControlPressed) {
+			if (args.Key is Key.O) {
+				Open();
+			} else if (args.Key is Key.V) {
+				OpenPastedFilePath();
+			} else if (args.Key is Key.W) {
+				Close(SelectedItem);
+			}
+		}
+	}
 
 	private DelegateCommand<DragEventArgs>? dropCommand;
 	public IDelegateCommand DropCommand => dropCommand ??= new(Drop);
 	private void Drop(DragEventArgs args) {
-		if (args.Data is not DataObject dataObject || !dataObject.ContainsFileDropList()) {
-			return;
-		}
-
-		StringCollection filePaths = dataObject.GetFileDropList();
-		foreach (string? filePath in filePaths) {
-			if (!File.Exists(filePath) || !AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
-				continue;
+		try {
+			if (args.Data is not DataObject dataObject || !dataObject.ContainsFileDropList()) {
+				return;
 			}
 
-			TabItemViewModel item = new(this, filePath);
-			TabItems.Add(item);
-			SelectedItem = item;
-
-			RecentFilesService.Update(filePath);
+			StringCollection filePaths = dataObject.GetFileDropList();
+			foreach (string? filePath in filePaths) {
+				HandleFilePath(filePath);
+			}
+		} catch (Exception ex) {
+			DebugLoggerManager.LogHandledException(ex);
+			MessageBoxService.ShowError("Opening file failed.", ex);
 		}
 	}
-
 
 	private DelegateCommand? openCommand;
 	public IDelegateCommand OpenCommand => openCommand ??= new(Open);
@@ -71,15 +89,7 @@ internal class MainViewModel(
 			if (OpenFileDialogService.ShowDialog()) {
 				foreach (IFileInfo? fileInfo in OpenFileDialogService.Files) {
 					string filePath = fileInfo.GetFullName();
-					if (!AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
-						continue;
-					}
-
-					TabItemViewModel item = new(this, filePath);
-					TabItems.Add(item);
-					SelectedItem = item;
-
-					RecentFilesService.Update(filePath);
+					HandleFilePath(filePath);
 				}
 			}
 		} catch (Exception ex) {
@@ -88,6 +98,64 @@ internal class MainViewModel(
 		}
 	}
 
+
+	private DelegateCommand<RecentFileItemModel>? openFileCommand;
+	public IDelegateCommand OpenFileCommand => openFileCommand ??= new(OpenFile, CanOpenFile);
+	private void OpenFile(RecentFileItemModel item) {
+		try {
+			if (CanOpenFile(item)) {
+				string filePath = item.FilePath;
+				if (!File.Exists(filePath)) {
+					MessageBoxService.ShowError($"File does not exist.\n{filePath}");
+					return;
+				}
+
+				HandleFilePath(filePath);
+			}
+		} catch (Exception ex) {
+			DebugLoggerManager.LogHandledException(ex);
+			MessageBoxService.ShowError("Opening file failed.", ex);
+		}
+	}
+	private bool CanOpenFile(RecentFileItemModel item) => item.FilePath.IsNotBlank();
+
+
+	private DelegateCommand? openPastedFilePathCommand;
+	public IDelegateCommand OpenPastedFilePathCommand => openPastedFilePathCommand ??= new(OpenPastedFilePath);
+	private void OpenPastedFilePath() {
+		try {
+			if (Clipboard.ContainsFileDropList()) {
+				StringCollection fileList = Clipboard.GetFileDropList();
+				foreach (string filePath in fileList) {
+					HandleFilePath(filePath);
+				}
+				return;
+			}
+
+			string text = Clipboard.GetText();
+			if (text.IsNotBlank()) {
+				HandleFilePath(text);
+				return;
+			}
+
+		} catch (Exception ex) {
+			DebugLoggerManager.LogHandledException(ex);
+			MessageBoxService.ShowError("Opening file failed.", ex);
+		}
+	}
+
+
+	private void HandleFilePath(string filePath) {
+		if (!File.Exists(filePath) || !AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
+			return;
+		}
+
+		TabItemViewModel item = new(this, filePath);
+		TabItems.Add(item);
+		SelectedItem = item;
+
+		RecentFilesService.Update(filePath);
+	}
 
 
 	private DelegateCommand<TabItemViewModel>? closeCommand;

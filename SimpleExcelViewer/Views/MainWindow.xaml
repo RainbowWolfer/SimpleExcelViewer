@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="RW.Base.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sev="clr-namespace:SimpleExcelViewer"
@@ -16,6 +17,12 @@
 	MinHeight="220"
 	ResizeMode="CanResizeWithGrip"
 	mc:Ignorable="d">
+
+	<dxmvvm:Interaction.Behaviors>
+
+		<dxmvvm:EventToCommand Command="{Binding PreviewKeyDownCommand}" EventName="PreviewKeyDown" PassEventArgsToCommand="True"/>
+
+	</dxmvvm:Interaction.Behaviors>
 
 	<Grid>
 		<local:MainView/>

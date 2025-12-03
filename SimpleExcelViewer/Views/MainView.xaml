@@ -18,7 +18,6 @@
 	mc:Ignorable="d">
 
 	<dxmvvm:Interaction.Behaviors>
-		<dxmvvm:KeyToCommand Command="{Binding OpenCommand}" KeyGesture="Ctrl+O"/>
 		<dxmvvm:EventToCommand Command="{Binding DropCommand}" EventName="PreviewDrop" PassEventArgsToCommand="True"/>
 
 		<dxmvvm:OpenFileDialogService/>
@@ -61,12 +60,18 @@
 						<MenuItem Header="Recent Files" IsEnabled="{Binding RecentFilesService.IsEmpty, Converter={StaticResource Boolean2BooleanReConverter}}">
 							<MenuItem.ItemsSource>
 								<CompositeCollection>
-									<CollectionContainer Collection="{Binding RecentFilesService.CollectionView}"/>
-									<MenuItem Header="{Binding RecentFilesService.CollectionView}"/>
+									<CollectionContainer Collection="{Binding Source={StaticResource ViewModel}, Path=Data.RecentFilesService.CollectionView}"/>
 									<Separator/>
 									<MenuItem Command="{Binding ClearAllRecentFilesCommand}" Header="Clear All"/>
 								</CompositeCollection>
 							</MenuItem.ItemsSource>
+							<MenuItem.ItemContainerStyle>
+								<Style TargetType="MenuItem">
+									<Setter Property="Header" Value="{Binding FilePath}"/>
+									<Setter Property="Command" Value="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=MenuItem}}"/>
+									<Setter Property="CommandParameter" Value="{Binding}"/>
+								</Style>
+							</MenuItem.ItemContainerStyle>
 						</MenuItem>
 						<Separator/>
 						<MenuItem Header="Reload File"/>

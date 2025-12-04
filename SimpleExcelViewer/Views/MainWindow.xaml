@@ -23,6 +23,9 @@
 
 		<dxmvvm:EventToCommand Command="{Binding PreviewKeyDownCommand}" EventName="PreviewKeyDown" PassEventArgsToCommand="True"/>
 		<dxmvvm:EventToCommand Command="{Binding ClosedCommand}" EventName="Closed" PassEventArgsToCommand="True"/>
+		<dxmvvm:EventToCommand Command="{Binding StateChangedCommand}" EventName="StateChanged" PassEventArgsToCommand="True"/>
+
+		<base:CurrentWindowServiceEx/>
 
 	</dxmvvm:Interaction.Behaviors>
 
@@ -31,3 +34,6 @@
 	</Grid>
 
 </c:WindowBase>
+
+
+

@@ -4,7 +4,7 @@ using SimpleExcelViewer.Interfaces;
 
 namespace SimpleExcelViewer.Models;
 
-public class TableModel(ITableData data) : FastGridModelBase {
+public class TableModel(ITableData data) : FastGridModelBase, IDisposable {
 	public override int ColumnCount { get; } = data.ColumnCount;
 	public override int RowCount { get; } = data.RowCount;
 
@@ -27,5 +27,9 @@ public class TableModel(ITableData data) : FastGridModelBase {
 
 	public override string GetCellText(int row, int column) {
 		return Data.GetCell(row, column).SafeToString();
+	}
+
+	public void Dispose() {
+		Data.Dispose();
 	}
 }

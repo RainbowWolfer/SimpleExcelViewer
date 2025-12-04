@@ -28,12 +28,14 @@ public partial class MainView : UserControl {
 internal class MainViewModel(
 	IAppManager appManager,
 	IRecentFilesService recentFilesService,
-	IEventAggregator eventAggregator
+	IEventAggregator eventAggregator,
+	IApplication application
 ) : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 	private IDialogServiceEx AppSettingsDialogService => GetService<IDialogServiceEx>(nameof(AppSettingsDialogService));
+	private IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
 
 	public IAppManager AppManager { get; } = appManager;
 	public IRecentFilesService RecentFilesService { get; } = recentFilesService;
@@ -167,6 +169,8 @@ internal class MainViewModel(
 			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")) {
 				item.Dispose();
 				TabItems.Remove(item);
+
+				DispatcherService.Invoke(AppHelper.ReleaseRAM);
 			}
 		}
 	}
@@ -184,10 +188,11 @@ internal class MainViewModel(
 					_item.Dispose();
 					TabItems.Remove(_item);
 				}
+				DispatcherService.Invoke(AppHelper.ReleaseRAM);
 			}
 		}
 	}
-	private bool CanCloseOthers(TabItemViewModel item) => item != null;
+	private bool CanCloseOthers(TabItemViewModel item) => item != null && TabItems.Count > 1;
 
 
 	private DelegateCommand<TabItemViewModel>? closeAllCommand;
@@ -198,21 +203,68 @@ internal class MainViewModel(
 				_item.Dispose();
 			}
 			TabItems.Clear();
+			DispatcherService.Invoke(AppHelper.ReleaseRAM);
 		}
 	}
-	private bool CanCloseAll(TabItemViewModel item) => item != null;
+	private bool CanCloseAll(TabItemViewModel item) => item != null && TabItems.IsNotEmpty();
 
 
 
+	private DelegateCommand<TabItemViewModel>? copyFilePathCommand;
+	public IDelegateCommand CopyFilePathCommand => copyFilePathCommand ??= new(CopyFilePath, CanCopyFilePath);
+	private void CopyFilePath(TabItemViewModel item) {
+		if (CanCopyFilePath(item)) {
+			item.FilePath.CopyToClipboard();
+		}
+	}
+	private bool CanCopyFilePath(TabItemViewModel item) => item != null;
 
-	private DelegateCommand<TabItemViewModel>? reloadCommand;
+
+
+	private DelegateCommand<TabItemViewModel>? copyFileNameCommand;
+	public IDelegateCommand CopyFileNameCommand => copyFileNameCommand ??= new(CopyFileName, CanCopyFileName);
+	private void CopyFileName(TabItemViewModel item) {
+		if (CanCopyFileName(item)) {
+			item.FileName.CopyToClipboard();
+		}
+	}
+	private bool CanCopyFileName(TabItemViewModel item) => item != null;
+
+
+
+	private DelegateCommand<TabItemViewModel>? openInFileExplorerCommand;
+	public IDelegateCommand OpenInFileExplorerCommand => openInFileExplorerCommand ??= new(OpenInFileExplorer, CanOpenInFileExplorer);
+	private void OpenInFileExplorer(TabItemViewModel item) {
+		if (CanOpenInFileExplorer(item)) {
+			Exception? exception = item.FilePath.ShowInExplorer();
+			if (exception != null) {
+				MessageBoxService.ShowError("Fail to open in file explorer", exception);
+			}
+		}
+	}
+	private bool CanOpenInFileExplorer(TabItemViewModel item) => item != null;
+
+
+
+	private DelegateCommand<TabItemViewModel>? viewFileInfoCommand;
+	public IDelegateCommand ViewFileInfoCommand => viewFileInfoCommand ??= new(ViewFileInfo, CanViewFileInfo);
+	private void ViewFileInfo(TabItemViewModel item) {
+		if (CanViewFileInfo(item)) {
+
+		}
+	}
+	private bool CanViewFileInfo(TabItemViewModel item) => item != null;
+
+
+
+	private AsyncCommand<TabItemViewModel>? reloadCommand;
 	public IDelegateCommand ReloadCommand => reloadCommand ??= new(Reload, CanReload);
-	private void Reload(TabItemViewModel item) {
+	private async Task Reload(TabItemViewModel item) {
 		if (CanReload(item)) {
-
+			await item.LoadAsync(DispatcherService);
 		}
 	}
-	private bool CanReload(TabItemViewModel item) => item != null;
+	private bool CanReload(TabItemViewModel item) => item != null && !item.IsLoading;
 
 
 	private DelegateCommand<MouseButtonEventArgs>? tabItemMouseDownCommand;
@@ -251,5 +303,44 @@ internal class MainViewModel(
 
 		}
 	}
+
+
+	private DelegateCommand? exitCommand;
+	public IDelegateCommand ExitCommand => exitCommand ??= new(Exit);
+	private void Exit() {
+		application.TotalShutdown();
+	}
+
+
+
+	private DelegateCommand? configHighlightCommand;
+	public IDelegateCommand ConfigHighlightCommand => configHighlightCommand ??= new(ConfigHighlight);
+	private void ConfigHighlight() {
+
+	}
+
+
+
+	private DelegateCommand? openSourceLibrariesCommand;
+	public IDelegateCommand OpenSourceLibrariesCommand => openSourceLibrariesCommand ??= new(OpenSourceLibraries);
+	private void OpenSourceLibraries() {
+
+	}
+
+
+
+	private DelegateCommand? sourceCodeCommand;
+	public IDelegateCommand SourceCodeCommand => sourceCodeCommand ??= new(SourceCode);
+	private void SourceCode() {
+
+	}
+
+
+	private DelegateCommand? aboutCommand;
+	public IDelegateCommand AboutCommand => aboutCommand ??= new(About);
+	private void About() {
+
+	}
+
 
 }

@@ -6,14 +6,24 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views.Dialogs"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wpf="RW.Common.WPF"
+	d:Background="White"
 	d:DataContext="{d:DesignInstance Type=local:AppSettingsDialogViewModel}"
-	d:DesignHeight="450"
-	d:DesignWidth="800"
+	Style="{StaticResource DialogStyle}"
 	DataContext="{base:DISource Type=local:AppSettingsDialogViewModel}"
 	mc:Ignorable="d">
 
 	<Grid Width="600" Height="400">
+		<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
 
+			<GroupBox Header="System">
+				<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
+					<Button Command="{Binding RegisterContextMenuCommand}" Content="Register Context Menu"/>
+					<Button Command="{Binding UnregisterContextMenuCommand}" Content="Unregister Context Menu"/>
+				</wpf:SpacingStackPanel>
+			</GroupBox>
+
+		</wpf:SpacingStackPanel>
 	</Grid>
 
 </UserControl>

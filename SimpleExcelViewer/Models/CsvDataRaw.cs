@@ -66,7 +66,20 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		_rowSlices.Add(slices);
 	}
 
-	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',', IStatusReport? statusReport = null) {
+	public void Dispose() {
+		_headerBuffer = null;
+		_headerSlices = null;
+		foreach (byte[] item in _rowBuffers) {
+			Array.Clear(item, 0, item.Length);
+		}
+		foreach (CellSlice[] item in _rowSlices) {
+			Array.Clear(item, 0, item.Length);
+		}
+		_rowBuffers.Clear();
+		_rowSlices.Clear();
+	}
+
+	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',', IStatusReport? statusReport = null, CancellationToken token = default) {
 		using StreamReader reader = new(stream, encoding);
 		CsvDataRaw csv = new(encoding);
 
@@ -78,6 +91,7 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		int rowCount = 1;
 
 		while ((line = reader.ReadLine()) != null) {
+			token.ThrowIfCancellationRequested();
 			statusReport?.SetStatus($"Reading line: {rowCount++}");
 			// 原始字节
 			byte[] buffer = encoding.GetBytes(line);

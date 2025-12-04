@@ -23,6 +23,7 @@
 
 		<dxmvvm:OpenFileDialogService/>
 		<vms:MessageBoxServiceEx/>
+		<base:DispatcherServiceEx/>
 
 		<vms:DialogService x:Name="AppSettingsDialogService" ContentType="{x:Type dialogs:AppSettingsDialog}"/>
 
@@ -77,26 +78,28 @@
 							</MenuItem.ItemContainerStyle>
 						</MenuItem>
 						<Separator/>
-						<MenuItem Header="Reload File"/>
+						<MenuItem Command="{Binding ReloadCommand}" CommandParameter="{Binding SelectedItem}" Header="Reload File"/>
+						<MenuItem Command="{Binding OpenInFileExplorerCommand}" CommandParameter="{Binding SelectedItem}" Header="Open In File Explorer"/>
+						<MenuItem Command="{Binding ViewFileInfoCommand}" CommandParameter="{Binding SelectedItem}" Header="View File Info"/>
 						<Separator/>
-						<MenuItem Header="Close"/>
-						<MenuItem Header="Close Others"/>
-						<MenuItem Header="Close All"/>
+						<MenuItem Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem}" Header="Close"/>
+						<MenuItem Command="{Binding CloseOthersCommand}" CommandParameter="{Binding SelectedItem}" Header="Close Others"/>
+						<MenuItem Command="{Binding CloseAllCommand}" CommandParameter="{Binding SelectedItem}" Header="Close All"/>
 						<Separator/>
 						<MenuItem Command="{Binding OpenAppSettingsCommand}" Header="Settings"/>
 						<Separator/>
-						<MenuItem Command="{Binding}" Header="Exit"/>
+						<MenuItem Command="{Binding ExitCommand}" Header="Exit"/>
 					</MenuItem>
 
 					<MenuItem Header="Config">
-						<MenuItem Command="{Binding}" Header="Config Highlight"/>
+						<MenuItem Command="{Binding ConfigHighlightCommand}" Header="Config Highlight"/>
 					</MenuItem>
 
 					<MenuItem Header="More">
-						<MenuItem Command="{Binding}" Header="Open Source Libraries"/>
-						<MenuItem Command="{Binding}" Header="Source Code"/>
+						<MenuItem Command="{Binding OpenSourceLibrariesCommand}" Header="Open Source Libraries"/>
+						<MenuItem Command="{Binding SourceCodeCommand}" Header="Source Code"/>
 						<Separator/>
-						<MenuItem Command="{Binding}" Header="About"/>
+						<MenuItem Command="{Binding AboutCommand}" Header="About"/>
 					</MenuItem>
 
 					<!--<MenuItem DataContext="{Binding SelectedItem}" Header="Current" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
@@ -111,6 +114,7 @@
 					d:SelectedIndex="0"
 					Padding="0"
 					HorizontalContentAlignment="Stretch"
+					BorderThickness="0,1,0,1"
 					SelectedItem="{Binding SelectedItem}"
 					ItemsSource="{Binding TabItems}"
 					d:ItemsSource="{d:SampleData ItemCount=5}">
@@ -163,6 +167,12 @@
 							<Setter Property="ContextMenu">
 								<Setter.Value>
 									<ContextMenu>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFileNameCommand}" CommandParameter="{Binding}" Header="Copy File Name"/>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFilePathCommand}" CommandParameter="{Binding}" Header="Copy File Path"/>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.OpenInFileExplorerCommand}" CommandParameter="{Binding}" Header="Open in File Explorer"/>
+										<Separator/>
+										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ViewFileInfoCommand}" CommandParameter="{Binding}" Header="View File Info"/>
+										<Separator/>
 										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ReloadCommand}" CommandParameter="{Binding}" Header="Reload"/>
 										<Separator/>
 										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseCommand}" CommandParameter="{Binding}" Header="Close"/>
@@ -187,14 +197,46 @@
 			</Border>
 
 			<Border Grid.Row="2">
-				<DockPanel Margin="4,2">
-					<Border DockPanel.Dock="Left">
-						<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
-							<TextBlock Text="{Binding SelectedItem.FilePath}"/>
-						</wpf:SpacingStackPanel>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="auto"/>
+					</Grid.ColumnDefinitions>
+
+					<Border Grid.Column="0">
+						<DockPanel>
+
+							<Border Padding="4,2" Background="Gainsboro">
+								<Grid DataContext="{Binding SelectedItem}">
+									<StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
+										<TextBlock Text="{Binding FileInfo.Length, Converter={StaticResource FileSizeConverter}}" ToolTip="File Size"/>
+										<TextBlock
+											Margin="4,0,0,0"
+											VerticalAlignment="Center"
+											ToolTip="Table Size (Row, Column)"
+											Visibility="{Binding TableModel, Converter={StaticResource Object2VisibilityConverter}}">
+											<Run Text="("/><Run Text="{Binding TableModel.RowCount, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding TableModel.ColumnCount, Mode=OneWay}"/><Run Text=")"/>
+										</TextBlock>
+									</StackPanel>
+
+									<Border Visibility="{Binding Converter={StaticResource Object2VisibilityReConverter}}">
+										<TextBlock Text="No File"/>
+									</Border>
+								</Grid>
+							</Border>
+
+							<Border Padding="4,2">
+								<TextBlock
+									VerticalAlignment="Center"
+									Text="{Binding SelectedItem.FilePath}"
+									TextTrimming="CharacterEllipsis"
+									ToolTip="{Binding SelectedItem.FilePath}"/>
+							</Border>
+
+						</DockPanel>
 					</Border>
 
-					<Border DockPanel.Dock="Right">
+					<Border Grid.Column="1" Padding="4,2">
 						<Border.Style>
 							<Style TargetType="Border">
 								<Setter Property="Margin" Value="0,0,12,0"/>
@@ -206,15 +248,11 @@
 							</Style>
 						</Border.Style>
 						<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
-							<TextBlock Text="{Binding AppManager.AppFullVersion}"/>
+							<TextBlock VerticalAlignment="Center" Text="{Binding AppManager.AppFullVersion}"/>
 						</wpf:SpacingStackPanel>
 					</Border>
 
-					<Border>
-
-					</Border>
-
-				</DockPanel>
+				</Grid>
 			</Border>
 		</Grid>
 	</Grid>

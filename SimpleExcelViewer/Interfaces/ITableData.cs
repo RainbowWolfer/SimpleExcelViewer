@@ -1,6 +1,6 @@
 ﻿namespace SimpleExcelViewer.Interfaces;
 
-public interface ITableData {
+public interface ITableData : IDisposable {
 	int RowCount { get; }
 	int ColumnCount { get; }
 

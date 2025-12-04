@@ -66,4 +66,7 @@ public class CsvData : ITableData {
 		}
 	}
 
+	public void Dispose() {
+	
+	}
 }

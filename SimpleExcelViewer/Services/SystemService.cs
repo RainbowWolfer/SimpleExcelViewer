@@ -15,11 +15,11 @@ internal class SystemService : ISingletonDependency {
 	/// <summary>
 	/// 注册右键菜单：重复点击可修复路径
 	/// </summary>
-	public bool RegisterCsvContextMenu() {
+	public void RegisterCsvContextMenu() {
 		string? exePath = Assembly.GetEntryAssembly().Location;
 
 		if (exePath is null) {
-			return false;
+			throw new ArgumentNullException(nameof(exePath));
 		}
 
 		// 确保 .csv 文件有正确的 ProgId
@@ -43,7 +43,6 @@ internal class SystemService : ISingletonDependency {
 			cmdKey.SetValue("", $"\"{exePath}\" \"%1\"");
 		}
 
-		return true;
 	}
 
 	/// <summary>

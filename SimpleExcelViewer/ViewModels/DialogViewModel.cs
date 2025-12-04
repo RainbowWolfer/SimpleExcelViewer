@@ -1,5 +1,7 @@
 ﻿using DevExpress.Mvvm;
+using RW.Base.WPF.ViewModelServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -12,6 +14,8 @@ public interface IDialogViewModel {
 	DialogWindowParameter DialogWindowParameter { get; }
 
 	IReadOnlyList<DialogCommand> DialogCommands { get; }
+
+	IDelegateCommand LoadedCommand { get; }
 
 	void InitializeDialogCommands();
 
@@ -104,6 +108,13 @@ public record class DialogWindowParameter(
 }
 
 public abstract class DialogViewModel<T> : ViewModelBase, IDialogViewModel {
+	protected IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
+	protected IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
+	protected IUIObjectService<UserControl> DialogUserControlService => GetService<ITypedUIObjectService>().As<UserControl>();
+
+
+
+
 
 	private bool isParameterLoaded = false;
 	private bool isParentViewModelLoaded = false;
@@ -197,6 +208,14 @@ public abstract class DialogViewModel<T> : ViewModelBase, IDialogViewModel {
 
 		return result;
 	}
+
+
+	private DelegateCommand? loadedCommand;
+	public IDelegateCommand LoadedCommand => loadedCommand ??= new(Loaded);
+	protected virtual void Loaded() {
+
+	}
+
 
 }
 

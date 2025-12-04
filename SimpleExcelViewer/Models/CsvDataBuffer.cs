@@ -80,4 +80,7 @@ public class CsvDataBuffer : ITableData {
 
 		return csv;
 	}
+	public void Dispose() {
+
+	}
 }

@@ -58,11 +58,10 @@ internal class TabViewModel : ViewModelBase {
 			return;
 		}
 
-		await Parameter.LoadAsync();
+		await Parameter.LoadAsync(DispatcherService);
 
 		UserControlService.Object.MainFastGridControl.Focus();
 
-		DispatcherService.Invoke(AppHelper.ReleaseRAM);
 	}
 
 }

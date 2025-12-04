@@ -95,7 +95,7 @@ public partial class FastGridControl : UserControl, IFastGridView {
 	}
 
 	private void RecalculateHeaderSize() {
-		HeaderWidth = GetTextWidth("0000000", false, false);
+		HeaderWidth = GetTextWidth("000000000", false, false);
 		HeaderHeight = _rowSizes.DefaultSize;
 
 		if (IsTransposed) {

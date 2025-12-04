@@ -27,6 +27,8 @@
 
 		<vms:DialogService x:Name="AppSettingsDialogService" ContentType="{x:Type dialogs:AppSettingsDialog}"/>
 
+		<vms:DialogService x:Name="FileInfoDialogService" ContentType="{x:Type dialogs:FileInfoDialog}"/>
+
 	</dxmvvm:Interaction.Behaviors>
 
 	<UserControl.Resources>

@@ -9,7 +9,7 @@
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sev="clr-namespace:SimpleExcelViewer"
-	Title="{x:Static sev:AppConfig.AppName}"
+	Title="{x:Static sev:AppConfig.DisplayAppName}"
 	d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
 	DataContext="{base:DISource Type=local:MainWindowViewModel}"
 	Width="800"

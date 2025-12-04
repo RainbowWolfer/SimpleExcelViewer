@@ -9,6 +9,7 @@ using SimpleExcelViewer.Events;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
 using SimpleExcelViewer.ViewModelServices;
+using SimpleExcelViewer.Views.Dialogs;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.IO;
@@ -34,8 +35,11 @@ internal class MainViewModel(
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
-	private IDialogServiceEx AppSettingsDialogService => GetService<IDialogServiceEx>(nameof(AppSettingsDialogService));
 	private IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
+
+	private IDialogServiceEx AppSettingsDialogService => GetService<IDialogServiceEx>(nameof(AppSettingsDialogService));
+	private IDialogServiceEx FileInfoDialogService => GetService<IDialogServiceEx>(nameof(FileInfoDialogService));
+
 
 	public IAppManager AppManager { get; } = appManager;
 	public IRecentFilesService RecentFilesService { get; } = recentFilesService;
@@ -258,7 +262,8 @@ internal class MainViewModel(
 	public IDelegateCommand ViewFileInfoCommand => viewFileInfoCommand ??= new(ViewFileInfo, CanViewFileInfo);
 	private void ViewFileInfo(TabItemViewModel item) {
 		if (CanViewFileInfo(item)) {
-
+			FileInfoDialogParameter parameter = new(item.FileInfo);
+			FileInfoDialogService.ShowDialog(this, parameter);
 		}
 	}
 	private bool CanViewFileInfo(TabItemViewModel item) => item != null;

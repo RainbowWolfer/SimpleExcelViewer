@@ -29,7 +29,7 @@
 	<Style TargetType="{x:Type wpf:FontIcon}" BasedOn="{StaticResource FontIcon}"/>
 
 	<Style x:Key="DialogStyle" TargetType="UserControl">
-		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Padding" Value="4"/>
 		<Setter Property="dxmvvm:Interaction.BehaviorsTemplate">
 			<Setter.Value>
 				<DataTemplate DataType="{x:Type vm:IDialogViewModel}">

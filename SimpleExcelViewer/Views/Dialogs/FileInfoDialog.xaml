@@ -1,0 +1,69 @@
+﻿<UserControl
+	x:Class="SimpleExcelViewer.Views.Dialogs.FileInfoDialog"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:base="RW.Base.WPF"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:SimpleExcelViewer.Views.Dialogs"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wpf="RW.Common.WPF"
+	d:Background="White"
+	d:DataContext="{d:DesignInstance Type=local:FileInfoDialogViewModel}"
+	Style="{StaticResource DialogStyle}"
+	DataContext="{base:DISource Type=local:FileInfoDialogViewModel}"
+	mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<Style TargetType="wpf:TitleContent" BasedOn="{StaticResource TitleContentBaseStyle}">
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="Placement" Value="Left"/>
+			<Setter Property="TitleWidth" Value="140"/>
+		</Style>
+		<Style TargetType="TextBox">
+			<Setter Property="IsReadOnly" Value="True"/>
+		</Style>
+	</UserControl.Resources>
+
+	<Grid Width="400">
+		<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
+
+			<wpf:TitleContent Title="File Name">
+				<TextBox Text="{Binding FileInfo.Name, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="File Full Path">
+				<TextBox
+					Height="40"
+					Text="{Binding FileInfo.FullName, Mode=OneWay}"
+					TextWrapping="Wrap"
+					VerticalScrollBarVisibility="Auto"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="File Size">
+				<TextBox Text="{Binding FileInfo.Length, Converter={StaticResource FileSizeConverter}, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="Creation Date Time">
+				<TextBox Text="{Binding FileInfo.CreationTime, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="Last Modify Date Time">
+				<TextBox Text="{Binding FileInfo.LastWriteTime, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="Last Access Date Time">
+				<TextBox Text="{Binding FileInfo.LastAccessTime, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="Is Readonly">
+				<TextBox Text="{Binding FileInfo.IsReadOnly, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="File Attributes">
+				<TextBox Text="{Binding FileInfo.Attributes, Mode=OneWay}"/>
+			</wpf:TitleContent>
+
+		</wpf:SpacingStackPanel>
+	</Grid>
+
+</UserControl>

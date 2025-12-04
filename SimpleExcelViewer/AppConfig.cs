@@ -6,6 +6,7 @@ namespace SimpleExcelViewer;
 
 public static class AppConfig {
 	public const string AppName = "SimpleExcelViewer";
+	public const string DisplayAppName = "Simple Excel Viewer";
 
 	public static bool IsRelease {
 		get {

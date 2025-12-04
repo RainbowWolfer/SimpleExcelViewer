@@ -16,7 +16,7 @@
 	<Grid Width="600" Height="400">
 		<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
 
-			<GroupBox Header="System">
+			<GroupBox Padding="4" Header="System">
 				<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
 					<Button Command="{Binding RegisterContextMenuCommand}" Content="Register Context Menu"/>
 					<Button Command="{Binding UnregisterContextMenuCommand}" Content="Unregister Context Menu"/>

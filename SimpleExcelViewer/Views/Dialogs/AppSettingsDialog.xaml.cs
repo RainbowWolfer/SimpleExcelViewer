@@ -19,6 +19,7 @@ internal class AppSettingsDialogViewModel(SystemService systemService) : DialogV
 	protected override void OnInitialized() {
 		base.OnInitialized();
 
+		DialogTitle = "Settings";
 
 	}
 

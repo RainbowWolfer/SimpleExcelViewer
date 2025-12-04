@@ -46,6 +46,7 @@
 
 
 	<Style TargetType="c:DialogWindowWrapper">
+		<Setter Property="Padding" Value="4,0,4,4"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="c:DialogWindowWrapper">
@@ -60,7 +61,7 @@
 								<RowDefinition Height="auto"/>
 							</Grid.RowDefinitions>
 
-							<Border Grid.Row="0">
+							<Border Grid.Row="0" Padding="{TemplateBinding Padding}">
 								<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
 							</Border>
 

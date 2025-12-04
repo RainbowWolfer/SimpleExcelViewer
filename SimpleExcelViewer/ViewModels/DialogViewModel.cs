@@ -219,6 +219,30 @@ public abstract class DialogViewModel<T> : ViewModelBase, IDialogViewModel {
 
 }
 
+public abstract class DialogViewModelOk<T> : DialogViewModel<T> {
+	protected DialogCommand ConfirmDialogCommand { get; }
+
+	public DialogViewModelOk() {
+		ConfirmDialogCommand = new DialogCommand(MessageBoxResult.OK, "OK", ConfirmCommand);
+	}
+
+	protected override IEnumerable<DialogCommand> GetDialogCommands() {
+		yield return ConfirmDialogCommand;
+	}
+
+	private DelegateCommand<DialogCommandResult>? confirmCommand;
+	public IDelegateCommand ConfirmCommand => confirmCommand ??= new(Confirm);
+	protected virtual void Confirm(DialogCommandResult result) {
+		result.CloseWindow = true;
+		result.DialogResultFlag = true;
+		OnConfirmed();
+	}
+
+	protected virtual void OnConfirmed() {
+
+	}
+}
+
 public abstract class DialogViewModelOkCancel<T> : DialogViewModel<T> {
 	protected DialogCommand ConfirmDialogCommand { get; }
 	protected DialogCommand CancelDialogCommand { get; }

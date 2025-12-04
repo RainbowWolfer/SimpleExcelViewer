@@ -15,6 +15,7 @@
 		<Company>RainbowWolfer</Company>
 		<Copyright>RainbowWolfer</Copyright>
 
+		<ApplicationIcon>Icon.ico</ApplicationIcon>
 
 		<RW_Common_Version>1.0.27</RW_Common_Version>
 
@@ -29,6 +30,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Icon.ico" />
+		<None Remove="Icon.png" />
 		<None Remove="Resources\Segoe Fluent Icons.ttf" />
 	</ItemGroup>
 
@@ -61,6 +64,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Icon.ico" />
+		<Resource Include="Icon.png" />
 		<Resource Include="Resources\Segoe Fluent Icons.ttf" />
 	</ItemGroup>
 

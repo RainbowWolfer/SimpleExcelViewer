@@ -166,12 +166,14 @@ internal class MainViewModel(
 	public IDelegateCommand CloseCommand => closeCommand ??= new(Close, CanClose);
 	private void Close(TabItemViewModel item) {
 		if (CanClose(item)) {
-			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")) {
-				item.Dispose();
-				TabItems.Remove(item);
-
-				DispatcherService.Invoke(AppHelper.ReleaseRAM);
+			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")) {
+				return;
 			}
+
+			item.Dispose();
+			TabItems.Remove(item);
+
+			DispatcherService.Invoke(AppHelper.ReleaseRAM);
 		}
 	}
 	private bool CanClose(TabItemViewModel item) => item != null;
@@ -182,14 +184,16 @@ internal class MainViewModel(
 	public IDelegateCommand CloseOthersCommand => closeOthersCommand ??= new(CloseOthers, CanCloseOthers);
 	private void CloseOthers(TabItemViewModel item) {
 		if (CanCloseOthers(item)) {
-			if (MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")) {
-				TabItemViewModel[] others = [.. TabItems.Where(x => x != item)];
-				foreach (TabItemViewModel _item in others) {
-					_item.Dispose();
-					TabItems.Remove(_item);
-				}
-				DispatcherService.Invoke(AppHelper.ReleaseRAM);
+			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")) {
+				return;
 			}
+
+			TabItemViewModel[] others = [.. TabItems.Where(x => x != item)];
+			foreach (TabItemViewModel _item in others) {
+				_item.Dispose();
+				TabItems.Remove(_item);
+			}
+			DispatcherService.Invoke(AppHelper.ReleaseRAM);
 		}
 	}
 	private bool CanCloseOthers(TabItemViewModel item) => item != null && TabItems.Count > 1;
@@ -199,6 +203,10 @@ internal class MainViewModel(
 	public IDelegateCommand CloseAllCommand => closeAllCommand ??= new(CloseAll, CanCloseAll);
 	private void CloseAll(TabItemViewModel item) {
 		if (CanCloseAll(item)) {
+			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all files？")) {
+				return;
+			}
+
 			foreach (TabItemViewModel _item in TabItems) {
 				_item.Dispose();
 			}

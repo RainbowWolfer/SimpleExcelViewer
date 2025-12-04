@@ -116,7 +116,7 @@ internal class DialogService : ServiceBase, IDialogServiceEx {
 	}
 
 	protected virtual Window CreateWindow() {
-		return new Window();
+		return new WindowBase();
 	}
 
 }

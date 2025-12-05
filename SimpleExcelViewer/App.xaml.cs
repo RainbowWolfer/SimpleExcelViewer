@@ -1,9 +1,11 @@
-﻿using RW.Base.WPF;
+﻿using Autofac;
+using RW.Base.WPF;
 using RW.Base.WPF.Configs;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.Interfaces;
 using RW.Base.WPF.ViewModels;
 using SimpleExcelViewer.Configs;
+using SimpleExcelViewer.Services;
 using SimpleExcelViewer.Views;
 using System.Diagnostics;
 using System.Globalization;
@@ -23,12 +25,25 @@ public partial class App : ApplicationBase {
 		DebugConfig.DebuggerBreak = Debugger.Break;
 	}
 
+	private AppSettingsService AppSettingsService { get; }
+
 	public App() {
 		instance = this;
 
 		// reduce the memory from 100MB to 23MB. but it might reduce render performance.
 		//RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 		RenderOptions.ProcessRenderMode = RenderMode.Default;
+
+		AppSettingsService = new AppSettingsService((AppFolderConfig)FolderConfig);
+		AppSettingsService.LoadSettings();
+	}
+
+	protected override string GetMutexName() {
+		if (AppSettingsService.Model.AllowMultipleInstances) {
+			return string.Empty;
+		} else {
+			return base.GetMutexName();
+		}
 	}
 
 	protected override Window GetMainWindow() => new MainWindow();
@@ -73,6 +88,13 @@ public partial class App : ApplicationBase {
 	}
 
 	private class _IoCInitializer(IApplication application) : IoCInitializer(application) {
+		private readonly App application = (App)application;
 
+		protected override void InitializeDependencies() {
+			base.InitializeDependencies();
+
+			builder.RegisterInstance(application.AppSettingsService).As<IAppSettingsService>();
+
+		}
 	}
 }

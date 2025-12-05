@@ -1,4 +1,5 @@
-﻿using LiteDB;
+﻿//using LiteDB;
+using FreeSql.DataAnnotations;
 using RW.Base.WPF.Interfaces;
 using RW.Common.Helpers;
 using SimpleExcelViewer.Configs;
@@ -19,7 +20,7 @@ public interface IRecentFilesService {
 internal class RecentFilesService : EntityRepository, IRecentFilesService, IAppInitializeAsync {
 	public override string FilePath => appFolderConfig.RecentFilesConfigFilePath;
 
-	private ILiteCollection<RecentFileItemModel>? collection;
+	//private ILiteCollection<RecentFileItemModel>? collection;
 	private readonly AppFolderConfig appFolderConfig;
 
 	public ObservableCollection<RecentFileItemModel> List { get; } = [];
@@ -49,53 +50,107 @@ internal class RecentFilesService : EntityRepository, IRecentFilesService, IAppI
 		await Task.CompletedTask;
 		Initialize();
 
-		collection = Database.GetCollection<RecentFileItemModel>("RecentFiles");
-
-		IEnumerable<RecentFileItemModel> list = collection.Query().ToEnumerable();
-		foreach (RecentFileItemModel item in list) {
+		List<RecentFileItemModel> items = Orm.Select<RecentFileItemModel>().ToList();
+		foreach (var item in items) {
 			List.Add(item);
 		}
+
+		//collection = Database.GetCollection<RecentFileItemModel>("RecentFiles");
+
+		//IEnumerable<RecentFileItemModel> list = collection.Query().ToEnumerable();
+		//foreach (RecentFileItemModel item in list) {
+		//	List.Add(item);
+		//}
 	}
 
 	public void Update(string filePath) {
-		//string _filePath = FileHelper.NormalizePathSafe(filePath);
-		if (collection == null) {
+		if (Orm == null) {
 			return;
 		}
 
-		RecentFileItemModel existing = collection.FindOne(x => x.FilePath == filePath);
-		if (existing != null) {
-			RecentFileItemModel updated = existing with { DateTime = DateTime.Now };
-			collection.Update(updated);
+		RecentFileItemModel existing = Orm.Select<RecentFileItemModel>()
+			.Where(x => x.FilePath == filePath)
+			.First();
 
-			int index = List.IndexOf(existing);
+		if (existing != null) {
+			existing.DateTime = DateTime.Now;
+			Orm.Update<RecentFileItemModel>().SetSource(existing).ExecuteAffrows();
+
+			int index = List.IndexOf(List.First(x => x.Id == existing.Id));
 			if (index >= 0) {
-				List[index] = updated;
+				List[index] = existing;
 			}
 		} else {
-			RecentFileItemModel model = new(ObjectId.NewObjectId(), filePath, DateTime.Now);
-			collection.Insert(model);
+			RecentFileItemModel model = new() { FilePath = filePath, DateTime = DateTime.Now };
+			int id = (int)Orm.Insert(model).ExecuteIdentity();
+			model.Id = id;
 			List.Add(model);
 		}
 
+		// 保持最多 20 条
 		while (List.Count > 20) {
-			RecentFileItemModel? oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
-			if (oldest is null) {
+			RecentFileItemModel oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
+			if (oldest == null) {
 				break;
 			}
+
+			Orm.Delete<RecentFileItemModel>().Where(x => x.Id == oldest.Id).ExecuteAffrows();
 			List.Remove(oldest);
-			collection.Delete(oldest.Id);
 		}
 
-		Database?.Checkpoint();
+
+		//string _filePath = FileHelper.NormalizePathSafe(filePath);
+		//if (collection == null) {
+		//	return;
+		//}
+
+		//RecentFileItemModel existing = collection.FindOne(x => x.FilePath == filePath);
+		//if (existing != null) {
+		//	RecentFileItemModel updated = existing with { DateTime = DateTime.Now };
+		//	collection.Update(updated);
+
+		//	int index = List.IndexOf(existing);
+		//	if (index >= 0) {
+		//		List[index] = updated;
+		//	}
+		//} else {
+		//	RecentFileItemModel model = new(ObjectId.NewObjectId(), filePath, DateTime.Now);
+		//	collection.Insert(model);
+		//	List.Add(model);
+		//}
+
+		//while (List.Count > 20) {
+		//	RecentFileItemModel? oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
+		//	if (oldest is null) {
+		//		break;
+		//	}
+		//	List.Remove(oldest);
+		//	collection.Delete(oldest.Id);
+		//}
+
+		//Database?.Checkpoint();
 	}
 
 	public void ClearAllRecords() {
-		_ = collection?.DeleteAll();
+		//_ = collection?.DeleteAll();
+		//List.Clear();
+		//Database?.Checkpoint();
+
+		Orm?.Delete<RecentFileItemModel>().Where("1=1").ExecuteAffrows();
 		List.Clear();
-		Database?.Checkpoint();
 	}
 }
 
-public record class RecentFileItemModel([BsonId] ObjectId Id, string FilePath, DateTime DateTime);
+//public record class RecentFileItemModel(/*[BsonId] ObjectId Id, */string FilePath, DateTime DateTime);
+
+public class RecentFileItemModel {
+
+	[Column(IsPrimary = true, IsIdentity = true)]
+	public int Id { get; set; }
+
+	public string FilePath { get; set; } = string.Empty;
+
+	public DateTime DateTime { get; set; }
+}
+
 

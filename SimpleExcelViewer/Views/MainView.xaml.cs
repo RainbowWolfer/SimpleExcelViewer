@@ -7,6 +7,7 @@ using RW.Common.Helpers;
 using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.Events;
 using SimpleExcelViewer.Services;
+using SimpleExcelViewer.Utilities;
 using SimpleExcelViewer.ViewModels;
 using SimpleExcelViewer.ViewModelServices;
 using SimpleExcelViewer.Views.Dialogs;
@@ -51,6 +52,8 @@ internal class MainViewModel(
 		get => GetProperty(() => SelectedItem);
 		set => SetProperty(() => SelectedItem, value);
 	}
+
+	public AppMemoryCounter AppMemoryCounter { get; } = new();
 
 	protected override void OnInitializeInRuntime() {
 		base.OnInitializeInRuntime();

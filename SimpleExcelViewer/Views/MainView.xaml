@@ -58,57 +58,68 @@
 				<!--<wpf:SpacingStackPanel HorizontalSpacing="4" Orientation="Horizontal">
 					<Button Content="Open"/>
 				</wpf:SpacingStackPanel>-->
+				<Grid>
 
-				<Menu>
+					<Menu>
 
-					<MenuItem Header="File">
-						<MenuItem Command="{Binding OpenCommand}" Header="Open File"/>
-						<MenuItem Header="Recent Files" IsEnabled="{Binding RecentFilesService.IsEmpty, Converter={StaticResource Boolean2BooleanReConverter}}">
-							<MenuItem.ItemsSource>
-								<CompositeCollection>
-									<CollectionContainer Collection="{Binding Source={StaticResource ViewModel}, Path=Data.RecentFilesService.CollectionView}"/>
-									<Separator/>
-									<MenuItem Command="{Binding ClearAllRecentFilesCommand}" Header="Clear All"/>
-								</CompositeCollection>
-							</MenuItem.ItemsSource>
-							<MenuItem.ItemContainerStyle>
-								<Style TargetType="MenuItem">
-									<Setter Property="Header" Value="{Binding FilePath}"/>
-									<Setter Property="Command" Value="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=MenuItem}}"/>
-									<Setter Property="CommandParameter" Value="{Binding}"/>
-								</Style>
-							</MenuItem.ItemContainerStyle>
+						<MenuItem Header="File">
+							<MenuItem Command="{Binding OpenCommand}" Header="Open File"/>
+							<MenuItem Header="Recent Files" IsEnabled="{Binding RecentFilesService.IsEmpty, Converter={StaticResource Boolean2BooleanReConverter}}">
+								<MenuItem.ItemsSource>
+									<CompositeCollection>
+										<CollectionContainer Collection="{Binding Source={StaticResource ViewModel}, Path=Data.RecentFilesService.CollectionView}"/>
+										<Separator/>
+										<MenuItem Command="{Binding ClearAllRecentFilesCommand}" Header="Clear All"/>
+									</CompositeCollection>
+								</MenuItem.ItemsSource>
+								<MenuItem.ItemContainerStyle>
+									<Style TargetType="MenuItem">
+										<Setter Property="Header" Value="{Binding FilePath}"/>
+										<Setter Property="Command" Value="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=MenuItem}}"/>
+										<Setter Property="CommandParameter" Value="{Binding}"/>
+									</Style>
+								</MenuItem.ItemContainerStyle>
+							</MenuItem>
+							<Separator/>
+							<MenuItem Command="{Binding ReloadCommand}" CommandParameter="{Binding SelectedItem}" Header="Reload File"/>
+							<MenuItem Command="{Binding OpenInFileExplorerCommand}" CommandParameter="{Binding SelectedItem}" Header="Open In File Explorer"/>
+							<MenuItem Command="{Binding ViewFileInfoCommand}" CommandParameter="{Binding SelectedItem}" Header="View File Info"/>
+							<Separator/>
+							<MenuItem Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem}" Header="Close"/>
+							<MenuItem Command="{Binding CloseOthersCommand}" CommandParameter="{Binding SelectedItem}" Header="Close Others"/>
+							<MenuItem Command="{Binding CloseAllCommand}" CommandParameter="{Binding SelectedItem}" Header="Close All"/>
+							<Separator/>
+							<MenuItem Command="{Binding OpenAppSettingsCommand}" Header="Settings"/>
+							<Separator/>
+							<MenuItem Command="{Binding ExitCommand}" Header="Exit"/>
 						</MenuItem>
-						<Separator/>
-						<MenuItem Command="{Binding ReloadCommand}" CommandParameter="{Binding SelectedItem}" Header="Reload File"/>
-						<MenuItem Command="{Binding OpenInFileExplorerCommand}" CommandParameter="{Binding SelectedItem}" Header="Open In File Explorer"/>
-						<MenuItem Command="{Binding ViewFileInfoCommand}" CommandParameter="{Binding SelectedItem}" Header="View File Info"/>
-						<Separator/>
-						<MenuItem Command="{Binding CloseCommand}" CommandParameter="{Binding SelectedItem}" Header="Close"/>
-						<MenuItem Command="{Binding CloseOthersCommand}" CommandParameter="{Binding SelectedItem}" Header="Close Others"/>
-						<MenuItem Command="{Binding CloseAllCommand}" CommandParameter="{Binding SelectedItem}" Header="Close All"/>
-						<Separator/>
-						<MenuItem Command="{Binding OpenAppSettingsCommand}" Header="Settings"/>
-						<Separator/>
-						<MenuItem Command="{Binding ExitCommand}" Header="Exit"/>
-					</MenuItem>
 
-					<MenuItem Header="Config">
-						<MenuItem Command="{Binding ConfigHighlightCommand}" Header="Config Highlight"/>
-					</MenuItem>
+						<MenuItem Header="Config">
+							<MenuItem Command="{Binding ConfigHighlightCommand}" Header="Config Highlight"/>
+						</MenuItem>
 
-					<MenuItem Header="More">
-						<MenuItem Command="{Binding OpenSourceLibrariesCommand}" Header="Open Source Libraries"/>
-						<MenuItem Command="{Binding SourceCodeCommand}" Header="Source Code"/>
-						<Separator/>
-						<MenuItem Command="{Binding AboutCommand}" Header="About"/>
-					</MenuItem>
+						<MenuItem Header="More">
+							<MenuItem Command="{Binding OpenSourceLibrariesCommand}" Header="Open Source Libraries"/>
+							<MenuItem Command="{Binding SourceCodeCommand}" Header="Source Code"/>
+							<Separator/>
+							<MenuItem Command="{Binding AboutCommand}" Header="About"/>
+						</MenuItem>
 
-					<!--<MenuItem DataContext="{Binding SelectedItem}" Header="Current" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
+						<!--<MenuItem DataContext="{Binding SelectedItem}" Header="Current" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
 
 					</MenuItem>-->
 
-				</Menu>
+					</Menu>
+
+					<Border Padding="4,0" HorizontalAlignment="Right">
+						<TextBlock
+							d:Text="102.3 MB"
+							VerticalAlignment="Center"
+							Text="{Binding AppMemoryCounter.InfoText}"
+							ToolTip="{Binding AppMemoryCounter.FullInfoText}"/>
+					</Border>
+
+				</Grid>
 			</Border>
 
 			<Border Grid.Row="1">

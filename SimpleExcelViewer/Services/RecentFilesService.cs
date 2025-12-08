@@ -1,12 +1,17 @@
-﻿//using LiteDB;
-using FreeSql.DataAnnotations;
+﻿using DevExpress.Mvvm;
+using Newtonsoft.Json;
 using RW.Base.WPF.Interfaces;
-using RW.Common.Helpers;
 using SimpleExcelViewer.Configs;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace SimpleExcelViewer.Services;
 
@@ -17,22 +22,37 @@ public interface IRecentFilesService {
 	void ClearAllRecords();
 }
 
-internal class RecentFilesService : EntityRepository, IRecentFilesService, IAppInitializeAsync {
-	public override string FilePath => appFolderConfig.RecentFilesConfigFilePath;
+internal class RecentFilesService : BindableBase, IRecentFilesService, IAppInitializeAsync, IAppClosedHandler {
+	public string FilePath => appFolderConfig.RecentFilesConfigFilePath;
 
-	//private ILiteCollection<RecentFileItemModel>? collection;
 	private readonly AppFolderConfig appFolderConfig;
+	private readonly FileSystemWatcher watcher;
+
+	// Collection synchronization lock
+	private readonly object list_lock = new();
+
+	// Debounce timer for watcher events
+	private readonly DispatcherTimer watcherDebounceTimer;
+
+	// Cross-process mutex for file read/write
+	private static readonly Mutex fileMutex = new(false, @$"Global\{AppConfig.AppName}_{(Assembly.GetEntryAssembly()?.FullName ?? "default").GetHashCode():X}_RecentFilesMutex");
 
 	public ObservableCollection<RecentFileItemModel> List { get; } = [];
 	public ICollectionView CollectionView { get; }
 
-	public bool IsEmpty => List.IsEmpty();
+	public bool IsEmpty => List.Count == 0;
 
-	string IAppInitializeAsync.Description => "Loading Recent Files Config";
 	int IPriority.Priority => 0;
+	string IAppInitializeAsync.Description => "Loading Recent Files Config";
 
-	public RecentFilesService(AppFolderConfig appFolderConfig) {
+	int IAppClosedHandler.Priority => 0;
+	string IAppClosedHandler.Description => "Closing Recent Files Config";
+
+	public RecentFilesService(AppFolderConfig appFolderConfig, IApplication application) {
 		this.appFolderConfig = appFolderConfig;
+
+		// Enable WPF collection synchronization with explicit lock and callback
+		BindingOperations.EnableCollectionSynchronization(List, list_lock, CollectionAccessCallback);
 
 		List.CollectionChanged += List_CollectionChanged;
 
@@ -40,117 +60,160 @@ internal class RecentFilesService : EntityRepository, IRecentFilesService, IAppI
 		CollectionView.SortDescriptions.Add(
 			new SortDescription(nameof(RecentFileItemModel.DateTime), ListSortDirection.Descending)
 		);
+
+		// Setup watcher with minimal notifications
+		watcher = new FileSystemWatcher() {
+			Path = Path.GetDirectoryName(FilePath)!,
+			Filter = Path.GetFileName(FilePath)!,
+			NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.FileName
+		};
+		watcher.Changed += Watcher_Changed;
+		watcher.Renamed += Watcher_Changed;
+		watcher.Created += Watcher_Changed;
+		watcher.Deleted += Watcher_Changed;
+		watcher.EnableRaisingEvents = true;
+
+		// Debounce rapid watcher events (e.g., multiple change notifications)
+		watcherDebounceTimer = new DispatcherTimer {
+			Interval = TimeSpan.FromMilliseconds(200)
+		};
+		watcherDebounceTimer.Tick += (s, e) => {
+			watcherDebounceTimer.Stop();
+			// Re-load on UI thread for safe binding updates
+			application.Dispatcher.Invoke(LoadFromFileSafe);
+		};
 	}
 
-	private void List_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+	void IAppClosedHandler.AppClosed(AppCloseParameter parameter) {
+		try {
+			SaveToFileSafe();
+		} catch (Exception ex) {
+			Debug.WriteLine(ex);
+		} finally {
+			watcher?.Dispose();
+		}
+	}
+
+	private void List_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
 		RaisePropertyChanged(() => IsEmpty);
 	}
 
 	async Task IAppInitializeAsync.AppInitializeAsync(IStatusReport statusReport) {
-		await Task.CompletedTask;
-		Initialize();
+		//await Task.CompletedTask;
+		await LoadFromFileSafe();
+	}
 
-		List<RecentFileItemModel> items = Orm.Select<RecentFileItemModel>().ToList();
-		foreach (var item in items) {
-			List.Add(item);
+	// Callback for WPF to access the collection under lock
+	private void CollectionAccessCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess) {
+		lock (list_lock) {
+			accessMethod();
 		}
+	}
 
-		//collection = Database.GetCollection<RecentFileItemModel>("RecentFiles");
+	// Debounced watcher event
+	private void Watcher_Changed(object sender, FileSystemEventArgs e) {
+		// Reset debounce timer
+		watcherDebounceTimer.Stop();
+		watcherDebounceTimer.Start();
+	}
 
-		//IEnumerable<RecentFileItemModel> list = collection.Query().ToEnumerable();
-		//foreach (RecentFileItemModel item in list) {
-		//	List.Add(item);
-		//}
+	// Thread-safe, mutex-protected read with small retry to avoid transient sharing violations
+	private async Task LoadFromFileSafe() {
+		fileMutex.WaitOne();
+		try {
+			// Retry in case another process hasn't finished closing handle
+			const int maxRetries = 5;
+			const int delayMs = 100;
+
+			for (int attempt = 0; attempt < maxRetries; attempt++) {
+				try {
+					if (!File.Exists(FilePath)) {
+						File.WriteAllText(FilePath, "[]");
+					}
+
+					string json = File.ReadAllText(FilePath);
+					IReadOnlyList<RecentFileItemModel>? list = JsonConvert.DeserializeObject<IReadOnlyList<RecentFileItemModel>>(json);
+
+					lock (list_lock) {
+						List.Clear();
+						foreach (RecentFileItemModel item in list ?? []) {
+							List.Add(item);
+						}
+					}
+					return;
+				} catch (IOException) {
+					//Thread.Sleep(delayMs);
+					await Task.Delay(delayMs);
+				} catch (JsonException je) {
+					// If partial write caused invalid JSON, wait and retry
+					Debug.WriteLine(je);
+					await Task.Delay(delayMs);
+					//Thread.Sleep(delayMs);
+				}
+			}
+		} catch (Exception ex) {
+			Debug.WriteLine(ex);
+		} finally {
+			fileMutex.ReleaseMutex();
+		}
+	}
+
+	// Thread-safe, mutex-protected write
+	private void SaveToFileSafe() {
+		fileMutex.WaitOne();
+		try {
+			List<RecentFileItemModel> snapshot;
+			lock (list_lock) {
+				snapshot = [.. List];
+			}
+			string json = JsonConvert.SerializeObject(snapshot, Formatting.Indented);
+
+			// Atomic replace to reduce partial write risk: write to temp then move
+			string tempPath = FilePath + ".tmp";
+			File.WriteAllText(tempPath, json);
+			File.Copy(tempPath, FilePath, overwrite: true);
+			File.Delete(tempPath);
+		} catch (Exception ex) {
+			Debug.WriteLine(ex);
+		} finally {
+			fileMutex.ReleaseMutex();
+		}
 	}
 
 	public void Update(string filePath) {
-		if (Orm == null) {
-			return;
-		}
-
-		RecentFileItemModel existing = Orm.Select<RecentFileItemModel>()
-			.Where(x => x.FilePath == filePath)
-			.First();
-
-		if (existing != null) {
-			existing.DateTime = DateTime.Now;
-			Orm.Update<RecentFileItemModel>().SetSource(existing).ExecuteAffrows();
-
-			int index = List.IndexOf(List.First(x => x.Id == existing.Id));
-			if (index >= 0) {
-				List[index] = existing;
-			}
-		} else {
-			RecentFileItemModel model = new() { FilePath = filePath, DateTime = DateTime.Now };
-			int id = (int)Orm.Insert(model).ExecuteIdentity();
-			model.Id = id;
-			List.Add(model);
-		}
-
-		// 保持最多 20 条
-		while (List.Count > 20) {
-			RecentFileItemModel oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
-			if (oldest == null) {
-				break;
+		// Update list under lock
+		lock (list_lock) {
+			RecentFileItemModel? existing = List.FirstOrDefault(x => x.FilePath == filePath);
+			if (existing != null) {
+				RecentFileItemModel updated = existing with { DateTime = DateTime.Now };
+				int index = List.IndexOf(existing);
+				if (index >= 0) {
+					List[index] = updated;
+				}
+			} else {
+				List.Add(new RecentFileItemModel(filePath, DateTime.Now));
 			}
 
-			Orm.Delete<RecentFileItemModel>().Where(x => x.Id == oldest.Id).ExecuteAffrows();
-			List.Remove(oldest);
+			// Keep only latest 20
+			while (List.Count > 20) {
+				RecentFileItemModel? oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
+				if (oldest is null) {
+					break;
+				}
+
+				List.Remove(oldest);
+			}
 		}
 
-
-		//string _filePath = FileHelper.NormalizePathSafe(filePath);
-		//if (collection == null) {
-		//	return;
-		//}
-
-		//RecentFileItemModel existing = collection.FindOne(x => x.FilePath == filePath);
-		//if (existing != null) {
-		//	RecentFileItemModel updated = existing with { DateTime = DateTime.Now };
-		//	collection.Update(updated);
-
-		//	int index = List.IndexOf(existing);
-		//	if (index >= 0) {
-		//		List[index] = updated;
-		//	}
-		//} else {
-		//	RecentFileItemModel model = new(ObjectId.NewObjectId(), filePath, DateTime.Now);
-		//	collection.Insert(model);
-		//	List.Add(model);
-		//}
-
-		//while (List.Count > 20) {
-		//	RecentFileItemModel? oldest = List.OrderBy(x => x.DateTime).FirstOrDefault();
-		//	if (oldest is null) {
-		//		break;
-		//	}
-		//	List.Remove(oldest);
-		//	collection.Delete(oldest.Id);
-		//}
-
-		//Database?.Checkpoint();
+		SaveToFileSafe();
 	}
 
 	public void ClearAllRecords() {
-		//_ = collection?.DeleteAll();
-		//List.Clear();
-		//Database?.Checkpoint();
-
-		Orm?.Delete<RecentFileItemModel>().Where("1=1").ExecuteAffrows();
-		List.Clear();
+		lock (list_lock) {
+			List.Clear();
+		}
+		SaveToFileSafe();
 	}
 }
 
-//public record class RecentFileItemModel(/*[BsonId] ObjectId Id, */string FilePath, DateTime DateTime);
-
-public class RecentFileItemModel {
-
-	[Column(IsPrimary = true, IsIdentity = true)]
-	public int Id { get; set; }
-
-	public string FilePath { get; set; } = string.Empty;
-
-	public DateTime DateTime { get; set; }
-}
-
-
+public record class RecentFileItemModel(string FilePath, DateTime DateTime);

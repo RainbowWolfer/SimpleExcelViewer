@@ -1,30 +1,27 @@
 ﻿using DevExpress.Mvvm;
-using FreeSql;
+using LiteDB;
 using System.Diagnostics.CodeAnalysis;
-
-//using LiteDB;
 
 namespace SimpleExcelViewer.Services;
 
-public abstract class EntityRepository : BindableBase, IDisposable {
-	public abstract string FilePath { get; }
+public abstract class EntityRepository : EntityRepositoryBase, IDisposable {
+	protected LiteDatabase? Database { get; private set; }
 
-	protected IFreeSql? Orm { get; private set; }
-	//protected LiteDatabase? Database { get; private set; }
-
-	//[MemberNotNull(nameof(Database))]
-	[MemberNotNull(nameof(Orm))]
+	[MemberNotNull(nameof(Database))]
 	public void Initialize() {
-		//Database = new LiteDatabase(FilePath);
-		Orm = new FreeSqlBuilder()
-			.UseConnectionString(DataType.Sqlite, $"Data Source={FilePath}")
-			.UseAutoSyncStructure(true) // 自动建表
-			.Build();
+		Database = GetDatabase();
 	}
 
 	public virtual void Dispose() {
-		//Database?.Dispose();
-		Orm?.Dispose();
+		Database?.Dispose();
 	}
 
+}
+
+public abstract class EntityRepositoryBase : BindableBase {
+	public abstract string FilePath { get; }
+
+	protected virtual LiteDatabase GetDatabase() {
+		return new LiteDatabase(FilePath);
+	}
 }

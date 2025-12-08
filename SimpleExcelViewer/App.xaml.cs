@@ -27,6 +27,8 @@ public partial class App : ApplicationBase {
 
 	private AppSettingsService AppSettingsService { get; }
 
+	protected override bool EnablePipeServerStream => false;
+
 	public App() {
 		instance = this;
 

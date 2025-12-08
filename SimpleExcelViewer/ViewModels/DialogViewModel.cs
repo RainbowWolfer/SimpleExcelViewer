@@ -262,9 +262,13 @@ public abstract class DialogViewModelOkCancel<T> : DialogViewModel<T> {
 	public IDelegateCommand ConfirmCommand => confirmCommand ??= new(Confirm);
 	protected virtual void Confirm(DialogCommandResult result) {
 		if (Validate(out string message)) {
-			result.CloseWindow = true;
-			result.DialogResultFlag = true;
-			OnConfirmed();
+			if (OnConfirmed()) {
+				result.CloseWindow = true;
+				result.DialogResultFlag = true;
+			} else {
+				result.CloseWindow = false;
+				result.DialogResultFlag = null;
+			}
 		} else {
 			result.CloseWindow = false;
 			result.DialogResultFlag = null;
@@ -290,7 +294,7 @@ public abstract class DialogViewModelOkCancel<T> : DialogViewModel<T> {
 	}
 
 
-	protected virtual void OnConfirmed() {
-
+	protected virtual bool OnConfirmed() {
+		return true;
 	}
 }

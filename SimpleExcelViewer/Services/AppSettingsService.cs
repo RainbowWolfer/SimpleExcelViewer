@@ -2,6 +2,7 @@
 using RW.Base.WPF.DependencyInjections;
 using RW.Base.WPF.Services;
 using SimpleExcelViewer.Configs;
+using SimpleExcelViewer.Enums;
 
 namespace SimpleExcelViewer.Services;
 
@@ -16,7 +17,21 @@ internal class AppSettingsService(
 	public override AppSettingsModel GetDefaultModel() => new();
 }
 
+/// <summary> map to self </summary>
 [JsonObject]
 public class AppSettingsModel {
 	public bool AllowMultipleInstances { get; set; } = true;
+
+
+
+	public AppLanguage AppLanguage { get; set; } = AppLanguage.English;
+
+	public bool ConfirmOnClosingApplication { get; set; } = true;
+
+	public bool ConfirmOnClosingSingleTab { get; set; } = true;
+
+	public bool ConfirmOnClosingOtherTabs { get; set; } = true;
+
+	public bool ConfirmOnClosingAllTabs { get; set; } = true;
+
 }

@@ -5,6 +5,7 @@ using RW.Base.WPF.ViewModelServices;
 using SimpleExcelViewer.Controls;
 using SimpleExcelViewer.Events;
 using SimpleExcelViewer.Services;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 
@@ -19,12 +20,16 @@ public partial class MainWindow : WindowBase {
 internal class MainWindowViewModel(
 	IEventAggregator eventAggregator,
 	IApplication application,
-	IAppStatusService appStatusService
+	IAppStatusService appStatusService,
+	IAppSettingsService appSettingsService
 ) : ViewModelBase {
 
 	private ICurrentWindowServiceEx CurrentWindowService => GetService<ICurrentWindowServiceEx>();
 
+	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
+
 	private WindowState previousWindowState = WindowState.Normal;
+
 
 	protected override void OnInitializeInRuntime() {
 		base.OnInitializeInRuntime();
@@ -75,5 +80,19 @@ internal class MainWindowViewModel(
 	private void Closed(EventArgs args) {
 		application.Shutdown();
 	}
+
+
+
+	private DelegateCommand<CancelEventArgs>? closingCommand;
+	public IDelegateCommand ClosingCommand => closingCommand ??= new(Closing);
+	private void Closing(CancelEventArgs args) {
+		if (appSettingsService.Model.ConfirmOnClosingApplication) {
+			if (!MessageBoxService.ShowOkCancelQuestion("Are you sure to quit this application?")) {
+				args.Cancel = true;
+				return;
+			}
+		}
+	}
+
 
 }

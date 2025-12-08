@@ -1,4 +1,5 @@
-﻿using DevExpress.Mvvm;
+﻿using AutoMapper;
+using DevExpress.Mvvm;
 using RW.Base.WPF.Extensions;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
@@ -14,12 +15,24 @@ public partial class AppSettingsDialog : UserControl {
 
 public record class AppSettingsDialogParameter();
 
-internal class AppSettingsDialogViewModel(SystemService systemService) : DialogViewModelOkCancel<AppSettingsDialogParameter> {
+internal class AppSettingsDialogViewModel(
+	SystemService systemService,
+	IAppSettingsService appSettingsService,
+	IMapper mapper
+) : DialogViewModelOkCancel<AppSettingsDialogParameter> {
+
+
+	public AppSettingsModel Model {
+		get => GetProperty(() => Model);
+		set => SetProperty(() => Model, value);
+	}
 
 	protected override void OnInitialized() {
 		base.OnInitialized();
 
 		DialogTitle = "Settings";
+
+		Model = mapper.Map<AppSettingsModel>(appSettingsService.Model);
 
 	}
 
@@ -57,5 +70,18 @@ internal class AppSettingsDialogViewModel(SystemService systemService) : DialogV
 			MessageBoxService.ShowError("Failed to unregister context menu", ex);
 		}
 	}
+
+	protected override bool OnConfirmed() {
+		try {
+			mapper.Map(Model, appSettingsService.Model);
+			appSettingsService.SaveSettings();
+			return true;
+		} catch (Exception ex) {
+			DebugLoggerManager.LogHandledException(ex);
+			MessageBoxService.ShowError("Saving settings error", ex);
+			return false;
+		}
+	}
+
 
 }

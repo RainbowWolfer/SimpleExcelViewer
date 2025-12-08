@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:base="RW.Base.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:enums="clr-namespace:SimpleExcelViewer.Enums"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views.Dialogs"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpf="RW.Common.WPF"
@@ -13,6 +14,13 @@
 	DataContext="{base:DISource Type=local:AppSettingsDialogViewModel}"
 	mc:Ignorable="d">
 
+	<UserControl.Resources>
+		<Style TargetType="wpf:TitleContent" BasedOn="{StaticResource TitleContentBaseStyle}">
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="Placement" Value="Top"/>
+		</Style>
+	</UserControl.Resources>
+
 	<Grid Width="600" Height="400">
 		<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
 
@@ -20,6 +28,23 @@
 				<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
 					<Button Command="{Binding RegisterContextMenuCommand}" Content="Register Context Menu"/>
 					<Button Command="{Binding UnregisterContextMenuCommand}" Content="Unregister Context Menu"/>
+				</wpf:SpacingStackPanel>
+			</GroupBox>
+
+			<GroupBox Padding="4" Header="General">
+				<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
+					<wpf:TitleContent Title="Language">
+						<wpf:EnumBindingComboBox EnumType="{x:Type enums:AppLanguage}" SelectedEnum="{Binding Model.AppLanguage}"/>
+					</wpf:TitleContent>
+				</wpf:SpacingStackPanel>
+			</GroupBox>
+
+			<GroupBox Padding="4" Header="Dialogs">
+				<wpf:SpacingStackPanel Orientation="Vertical" VerticalSpacing="4">
+					<CheckBox Content="Confirm before closing application" IsChecked="{Binding Model.ConfirmOnClosingApplication}"/>
+					<CheckBox Content="Confirm before closing single tab" IsChecked="{Binding Model.ConfirmOnClosingSingleTab}"/>
+					<CheckBox Content="Confirm before closing other tabs" IsChecked="{Binding Model.ConfirmOnClosingOtherTabs}"/>
+					<CheckBox Content="Confirm before closing all tabs" IsChecked="{Binding Model.ConfirmOnClosingAllTabs}"/>
 				</wpf:SpacingStackPanel>
 			</GroupBox>
 

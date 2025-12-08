@@ -31,7 +31,8 @@ internal class MainViewModel(
 	IAppManager appManager,
 	IRecentFilesService recentFilesService,
 	IEventAggregator eventAggregator,
-	IApplication application
+	IApplication application,
+	IAppSettingsService appSettingsService
 ) : ViewModelBase {
 
 	private IOpenFileDialogService OpenFileDialogService => GetService<IOpenFileDialogService>();
@@ -173,7 +174,9 @@ internal class MainViewModel(
 	public IDelegateCommand CloseCommand => closeCommand ??= new(Close, CanClose);
 	private void Close(TabItemViewModel item) {
 		if (CanClose(item)) {
-			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")) {
+			if (appSettingsService.Model.ConfirmOnClosingSingleTab
+				&& !MessageBoxService.ShowOkCancelQuestion($"Are you sure to close ({item.FileName}) ？")
+			) {
 				return;
 			}
 
@@ -191,7 +194,9 @@ internal class MainViewModel(
 	public IDelegateCommand CloseOthersCommand => closeOthersCommand ??= new(CloseOthers, CanCloseOthers);
 	private void CloseOthers(TabItemViewModel item) {
 		if (CanCloseOthers(item)) {
-			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")) {
+			if (appSettingsService.Model.ConfirmOnClosingOtherTabs &&
+				!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all others except ({item.FileName}) ？")
+			) {
 				return;
 			}
 
@@ -210,7 +215,9 @@ internal class MainViewModel(
 	public IDelegateCommand CloseAllCommand => closeAllCommand ??= new(CloseAll, CanCloseAll);
 	private void CloseAll(TabItemViewModel item) {
 		if (CanCloseAll(item)) {
-			if (!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all files？")) {
+			if (appSettingsService.Model.ConfirmOnClosingAllTabs &&
+				!MessageBoxService.ShowOkCancelQuestion($"Are you sure to close all files？")
+			) {
 				return;
 			}
 

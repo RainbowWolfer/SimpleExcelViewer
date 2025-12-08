@@ -9,6 +9,7 @@
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sev="clr-namespace:SimpleExcelViewer"
+	xmlns:vms="clr-namespace:SimpleExcelViewer.ViewModelServices"
 	Title="{x:Static sev:AppConfig.DisplayAppName}"
 	d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}"
 	DataContext="{base:DISource Type=local:MainWindowViewModel}"
@@ -22,10 +23,15 @@
 	<dxmvvm:Interaction.Behaviors>
 
 		<dxmvvm:EventToCommand Command="{Binding PreviewKeyDownCommand}" EventName="PreviewKeyDown" PassEventArgsToCommand="True"/>
-		<dxmvvm:EventToCommand Command="{Binding ClosedCommand}" EventName="Closed" PassEventArgsToCommand="True"/>
+
 		<dxmvvm:EventToCommand Command="{Binding StateChangedCommand}" EventName="StateChanged" PassEventArgsToCommand="True"/>
 
+		<dxmvvm:EventToCommand Command="{Binding ClosedCommand}" EventName="Closed" PassEventArgsToCommand="True"/>
+		<dxmvvm:EventToCommand Command="{Binding ClosingCommand}" EventName="Closing" PassEventArgsToCommand="True"/>
+
 		<base:CurrentWindowServiceEx/>
+
+		<vms:MessageBoxServiceEx/>
 
 	</dxmvvm:Interaction.Behaviors>
 

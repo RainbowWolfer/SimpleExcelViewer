@@ -1,0 +1,58 @@
+﻿<UserControl
+	x:Class="SimpleExcelViewer.Views.Dialogs.AboutDialog"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:base="RW.Base.WPF"
+	xmlns:c="clr-namespace:SimpleExcelViewer.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:SimpleExcelViewer.Views.Dialogs"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:root="clr-namespace:SimpleExcelViewer"
+	xmlns:wpf="RW.Common.WPF"
+	d:Background="White"
+	d:DataContext="{d:DesignInstance Type=local:AboutDialogViewModel}"
+	Style="{StaticResource DialogStyle}"
+	DataContext="{base:DISource Type=local:AboutDialogViewModel}"
+	mc:Ignorable="d">
+
+	<StackPanel>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<Border>
+				<Image
+					Height="50"
+					Margin="8,0"
+					VerticalAlignment="Top"
+					Source="/Icon.png"/>
+			</Border>
+
+			<Border Grid.Column="1">
+				<StackPanel Margin="8,0">
+					<TextBlock FontSize="24" Text="{x:Static root:AppConfig.DisplayAppName}"/>
+					<TextBlock FontSize="14" Text="{Binding AppManager.AppFullVersion}"/>
+				</StackPanel>
+			</Border>
+
+		</Grid>
+
+		<Separator Margin="0,8"/>
+
+		<Border Margin="2,0">
+			<StackPanel>
+				<TextBlock Text="By RainbowWolfer (R.Wolfer)"/>
+				<!--<TextBlock>
+					<Hyperlink NavigateUri="{x:Static root:AppConfig.GithubURL}" RequestNavigate="Hyperlink_RequestNavigate">
+						Github
+					</Hyperlink>
+				</TextBlock>-->
+				<c:HyperLink DisplayText="Github" Link="{x:Static root:AppConfig.GithubURL}"/>
+			</StackPanel>
+		</Border>
+
+	</StackPanel>
+
+</UserControl>

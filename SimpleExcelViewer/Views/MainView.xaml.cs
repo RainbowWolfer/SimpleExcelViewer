@@ -41,6 +41,9 @@ internal class MainViewModel(
 
 	private IDialogServiceEx AppSettingsDialogService => GetService<IDialogServiceEx>(nameof(AppSettingsDialogService));
 	private IDialogServiceEx FileInfoDialogService => GetService<IDialogServiceEx>(nameof(FileInfoDialogService));
+	private IDialogServiceEx AboutDialogService => GetService<IDialogServiceEx>(nameof(AboutDialogService));
+	private IDialogServiceEx SourceCodeDialogService => GetService<IDialogServiceEx>(nameof(SourceCodeDialogService));
+	private IDialogServiceEx LibrariesDialogService => GetService<IDialogServiceEx>(nameof(LibrariesDialogService));
 
 
 	public IAppManager AppManager { get; } = appManager;
@@ -347,22 +350,19 @@ internal class MainViewModel(
 	private DelegateCommand? openSourceLibrariesCommand;
 	public IDelegateCommand OpenSourceLibrariesCommand => openSourceLibrariesCommand ??= new(OpenSourceLibraries);
 	private void OpenSourceLibraries() {
-
+		LibrariesDialogService.ShowDialog(this, null);
 	}
-
-
 
 	private DelegateCommand? sourceCodeCommand;
 	public IDelegateCommand SourceCodeCommand => sourceCodeCommand ??= new(SourceCode);
 	private void SourceCode() {
-
+		SourceCodeDialogService.ShowDialog(this, null);
 	}
-
 
 	private DelegateCommand? aboutCommand;
 	public IDelegateCommand AboutCommand => aboutCommand ??= new(About);
 	private void About() {
-
+		AboutDialogService.ShowDialog(this, new AboutDialogParameter());
 	}
 
 

@@ -29,6 +29,10 @@
 
 		<vms:DialogService x:Name="FileInfoDialogService" ContentType="{x:Type dialogs:FileInfoDialog}"/>
 
+		<vms:DialogService x:Name="LibrariesDialogService" ContentType="{x:Type dialogs:LibrariesDialog}"/>
+		<vms:DialogService x:Name="SourceCodeDialogService" ContentType="{x:Type dialogs:SourceCodeDialog}"/>
+		<vms:DialogService x:Name="AboutDialogService" ContentType="{x:Type dialogs:AboutDialog}"/>
+
 	</dxmvvm:Interaction.Behaviors>
 
 	<UserControl.Resources>

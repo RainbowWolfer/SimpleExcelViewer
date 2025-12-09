@@ -9,8 +9,8 @@ using System.Windows.Data;
 namespace SimpleExcelViewer.ViewModelServices;
 
 public interface IDialogServiceEx {
-	bool ShowOKCancel(object parentViewModel, object parameter);
-	DialogResult ShowDialog(object parentViewModel, object parameter);
+	bool ShowOKCancel(object parentViewModel, object? parameter);
+	DialogResult ShowDialog(object parentViewModel, object? parameter);
 }
 
 public record class DialogResult(bool? DialogResultFlag, DialogCommand? ResultDialogCommand);
@@ -59,12 +59,12 @@ internal class DialogService : ServiceBase, IDialogServiceEx {
 
 	}
 
-	public bool ShowOKCancel(object parentViewModel, object parameter) {
+	public bool ShowOKCancel(object parentViewModel, object? parameter) {
 		DialogResult result = ShowDialog(parentViewModel, parameter);
 		return result.DialogResultFlag is true;
 	}
 
-	public DialogResult ShowDialog(object parentViewModel, object parameter) {
+	public DialogResult ShowDialog(object parentViewModel, object? parameter) {
 		if (Activator.CreateInstance(ContentType) is not FrameworkElement frameworkElement) {
 			throw new Exception("ContentType is not FrameworkElement");
 		}

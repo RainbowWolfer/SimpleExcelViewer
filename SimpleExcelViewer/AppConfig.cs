@@ -8,6 +8,10 @@ public static class AppConfig {
 	public const string AppName = "SimpleExcelViewer";
 	public const string DisplayAppName = "Simple Excel Viewer";
 
+
+	public const string ProjectRepositoryURL = @"https://github.com/RainbowWolfer/SimpleExcelViewer";
+	public const string GithubURL = @"https://github.com/RainbowWolfer";
+
 	public static bool IsRelease {
 		get {
 #if RELEASE

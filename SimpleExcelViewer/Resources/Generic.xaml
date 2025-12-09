@@ -96,4 +96,17 @@
 		</Setter>
 	</Style>
 
+
+	<Style x:Key="HyperLink" TargetType="c:HyperLink">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="c:HyperLink">
+					<Border Name="PART_RootBorder"/>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="c:HyperLink" BasedOn="{StaticResource HyperLink}"/>
+
 </ResourceDictionary>

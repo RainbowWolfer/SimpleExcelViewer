@@ -4,7 +4,9 @@ using RW.Base.WPF.Configs;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.Interfaces;
 using RW.Base.WPF.ViewModels;
+using RW.Common.WPF.Globalization;
 using SimpleExcelViewer.Configs;
+using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.Views;
 using System.Diagnostics;
@@ -48,12 +50,23 @@ public partial class App : ApplicationBase {
 		}
 	}
 
-	protected override Window GetMainWindow() => new MainWindow();
-
 	protected override CultureInfo? GetCultureInfo() {
-		// todo
-		return null;
+		return AppSettingsService.Model.AppLanguage switch {
+			AppLanguage.English => KnownCultures.EnglishNeutral,
+			AppLanguage.Chinese => KnownCultures.ChineseNeutral,
+			AppLanguage.Malaysian => new CultureInfo("ms"),
+			AppLanguage.Russian => KnownCultures.RussianRussia,
+			AppLanguage.Japanese => KnownCultures.JapaneseJapan,
+			AppLanguage.Korean => KnownCultures.KoreanKorea,
+			AppLanguage.French => KnownCultures.FrenchNeutral,
+			AppLanguage.German => KnownCultures.GermanNeutral,
+			AppLanguage.Spanish => KnownCultures.SpanishNeutral,
+			AppLanguage.Italian => new CultureInfo("it"),
+			_ => null,
+		};
 	}
+
+	protected override Window GetMainWindow() => new MainWindow();
 
 	protected override AppManager GetAppManager() => new _AppManager();
 	protected override DllLoader GetDllLoader() => new _DllLoader();

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>FastWpfGrid</Title>
+    <Company>MAX</Company>
+    <Authors>MAX</Authors>
+    <PackageTags>DataGrid</PackageTags>
+    <Description>FastWpfGrid源代码</Description>
+    <Version>1.0.14</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MAX.Common" Version="1.0.18" />
+    <PackageReference Include="WriteableBitmapEx.Wpf" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+</Project>

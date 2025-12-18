@@ -4,10 +4,7 @@ using SimpleExcelViewer.Interfaces;
 
 namespace SimpleExcelViewer.Models;
 
-public class TableModel(ITableData data) : FastGridModelBase, IDisposable {
-	public override int ColumnCount { get; } = data.ColumnCount;
-	public override int RowCount { get; } = data.RowCount;
-
+public class TableModel(ITableData data) : FastGridModelBase(data.ColumnCount, data.RowCount), IDisposable {
 	public ITableData Data { get; } = data;
 
 	//public override int RightAlignBlockCount => 1;

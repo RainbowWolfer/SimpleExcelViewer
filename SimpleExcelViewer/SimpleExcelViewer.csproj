@@ -70,7 +70,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\FastWpfGrid\FastWpfGrid\FastWpfGrid.csproj" />
+		<ProjectReference Include="..\FastWpfGrid\FastWpfGrid.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

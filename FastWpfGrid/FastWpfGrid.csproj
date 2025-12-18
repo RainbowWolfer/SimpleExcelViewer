@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net48</TargetFrameworks>
+		<UseWPF>true</UseWPF>
+		<LangVersion>12</LangVersion>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+
+		<RW_Common_Version>1.0.31</RW_Common_Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+		<PackageReference Include="RW.Common" Version="$(RW_Common_Version)" />
+	</ItemGroup>
+
+</Project>

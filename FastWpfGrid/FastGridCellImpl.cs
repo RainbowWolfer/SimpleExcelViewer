@@ -1,0 +1,79 @@
+﻿using System.Collections.Generic;
+using System.Windows.Media;
+
+namespace FastWpfGrid;
+
+public class FastGridBlockImpl : IFastGridCellBlock {
+	public FastGridBlockType BlockType { get; set; }
+	public RenderTextAlignment Alignment { get; set; }
+
+	public Color? FontColor { get; set; }
+	public bool IsItalic { get; set; }
+	public bool IsBold { get; set; }
+	public string TextData { get; set; }
+	public string ImageSource { get; set; }
+	public int ImageWidth { get; set; }
+	public int ImageHeight { get; set; }
+	public MouseHoverBehaviours MouseHoverBehaviour { get; set; }
+
+	public int OffsetX { get; set; } = 0;
+
+	public object CommandParameter { get; set; }
+	public string ToolTip { get; set; }
+
+	public FastGridBlockImpl() {
+		MouseHoverBehaviour = MouseHoverBehaviours.ShowAllWhenMouseOut;
+	}
+}
+
+public class FastGridCellImpl : IFastGridCell {
+	public Color? BackgroundColor { get; set; }
+	public CellDecoration Decoration { get; set; }
+	public Color? DecorationColor { get; set; }
+	public string ToolTipText { get; set; }
+	public TooltipVisibilityMode ToolTipVisibility { get; set; }
+
+	public RenderTextAlignment Alignment { get; set; }
+
+	public List<FastGridBlockImpl> Blocks = [];
+
+	public int BlockCount => Blocks.Count;
+
+	public int RightAlignBlockCount { get; set; }
+
+	public IFastGridCellBlock GetBlock(int blockIndex) {
+		return Blocks[blockIndex];
+	}
+
+	public IEnumerable<FastGridBlockImpl> SetBlocks {
+		set {
+			Blocks.Clear();
+			Blocks.AddRange(value);
+		}
+	}
+
+	public FastGridBlockImpl AddImageBlock(string image, int width = 16, int height = 16) {
+		FastGridBlockImpl res = new() {
+			BlockType = FastGridBlockType.Image,
+			ImageWidth = width,
+			ImageHeight = height,
+			ImageSource = image,
+		};
+		Blocks.Add(res);
+		return res;
+	}
+
+	public FastGridBlockImpl AddTextBlock(object text) {
+		FastGridBlockImpl res = new() {
+			BlockType = FastGridBlockType.Text,
+			TextData = text?.ToString(),
+		};
+		Blocks.Add(res);
+		return res;
+	}
+
+	public string GetEditText(int row, int column) {
+		return null;
+	}
+
+}

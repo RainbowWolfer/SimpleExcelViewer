@@ -7,7 +7,17 @@ namespace SimpleExcelViewer.Models;
 public class TableModel(ITableData data) : FastGridModelBase(data.ColumnCount, data.RowCount), IDisposable {
 	public ITableData Data { get; } = data;
 
+
+	public SelectionRect? SelectionRect {
+		get => GetProperty(() => SelectionRect);
+		set => SetProperty(() => SelectionRect, value);
+	}
 	//public override int RightAlignBlockCount => 1;
+
+	public override void SelectionChanged(SelectionRect selectionRect) {
+		base.SelectionChanged(selectionRect);
+		SelectionRect = selectionRect;
+	}
 
 	public override IFastGridCell GetCell(IFastGridView view, int row, int column) {
 		IFastGridCell cell = base.GetCell(view, row, column);

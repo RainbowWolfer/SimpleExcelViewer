@@ -5,9 +5,10 @@
 	xmlns:base="RW.Base.WPF"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm"
-	xmlns:fgc="clr-namespace:FastWpfGrid;assembly=FastWpfGrid"
+	xmlns:fastwpfgrid="clr-namespace:FastWpfGrid;assembly=FastWpfGrid"
 	xmlns:local="clr-namespace:SimpleExcelViewer.Views"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wpf="RW.Common.WPF"
 	d:DataContext="{d:DesignInstance Type=local:TabViewModel}"
 	d:DesignHeight="450"
 	d:DesignWidth="800"
@@ -20,17 +21,27 @@
 	</dxmvvm:Interaction.Behaviors>
 
 	<Grid>
-		<Border Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityReConverter}}">
-			<fgc:FastGridControl x:Name="MainFastGridControl"
-				Margin="0,0,0,0"
-				CellPaddingHorizontal="6"
-				HeaderWidth="80"
-				IsReadOnly="True"
-				Model="{Binding Parameter.TableModel}"
-				UseClearType="True"/>
+		<Border d:Visibility="Visible" Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityReConverter}}">
+			<DockPanel>
+
+				<Border DockPanel.Dock="Top">
+
+				</Border>
+
+				<Border>
+					<fastwpfgrid:FastGridControl x:Name="MainFastGridControl"
+						Margin="0,0,0,0"
+						CellPaddingHorizontal="6"
+						HeaderWidth="80"
+						IsReadOnly="True"
+						Model="{Binding Parameter.TableModel}"
+						UseClearType="True"/>
+				</Border>
+
+			</DockPanel>
 		</Border>
 
-		<Grid Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}">
+		<Grid d:Visibility="Collapsed" Visibility="{Binding Parameter.IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}">
 			<Border
 				Margin="10,0"
 				Padding="8"

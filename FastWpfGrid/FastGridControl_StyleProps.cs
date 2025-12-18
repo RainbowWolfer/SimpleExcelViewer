@@ -23,15 +23,15 @@ public partial class FastGridControl {
 	private int _columnResizeThreshold = 2;
 	private int? _minColumnWidthOverride = 40;
 
-	private Color[] _alternatingColors = new Color[]
-	{
+	private Color[] _alternatingColors =
+	[
 		Colors.White,
-		Colors.White,
-		Color.FromRgb(235, 235, 235),
-		Colors.White,
-		Colors.White,
-		Color.FromRgb(235, 245, 255)
-	};
+		//Colors.White,
+		//Color.FromRgb(235, 235, 235),
+		//Colors.White,
+		//Colors.White,
+		//Color.FromRgb(235, 245, 255)
+	];
 
 	private Color _activeRegionFrameColor = Color.FromRgb(0xAA, 0xAA, 0xFF);
 	private Color _activeRegionHoverFillColor = Color.FromRgb(0xAA, 0xFF, 0xFF);

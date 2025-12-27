@@ -10,7 +10,7 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 
-		<Version>0.1.0.5</Version>
+		<Version>0.2.0.0</Version>
 		<Authors>RainbowWolfer</Authors>
 		<Company>RainbowWolfer</Company>
 		<Copyright>RainbowWolfer</Copyright>
@@ -78,6 +78,13 @@
 		<Resource Include="Icon.ico" />
 		<Resource Include="Icon.png" />
 		<Resource Include="Resources\Segoe Fluent Icons.ttf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Link>README.md</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 </Project>

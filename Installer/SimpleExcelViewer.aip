@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DOCUMENT Type="Advanced Installer" CreateVersion="22.2" version="22.2" Modules="professional" RootPath="." Language="en" Id="{2200AED5-17B1-4A51-A456-03AFDF513FD2}">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="AI_APP_FILE" Value="[#SimpleExcelViewer.exe]"/>
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_FINDEXE_TITLE" Value="Select the installation package for [|ProductName]" ValueLocId="AI.Property.FindExeTitle"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_ADMIN_USER"/>
+    <ROW Property="AI_README_FILE" Value="[#README.md]"/>
     <ROW Property="ALLUSERS" Value="1" MultiBuildValue="DefaultBuild:2"/>
     <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
     <ROW Property="ARPNOREPAIR" MultiBuildValue="DefaultBuild:1"/>
     <ROW Property="ARPPRODUCTICON" Value="ext.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="https://github.com/RainbowWolfer/SimpleExcelViewer"/>
+    <ROW Property="CTRLS" Value="3"/>
     <ROW Property="Manufacturer" Value="RainbowWolfer"/>
-    <ROW Property="ProductCode" Value="1031:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1033:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1036:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1040:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1041:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1042:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 1049:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} 2052:{BE4E36C1-CA1E-4F51-B0F3-5AE2842447DE} " Type="16"/>
+    <ROW Property="ProductCode" Value="1031:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1033:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1036:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1040:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1041:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1042:{19A53965-FB86-4FC4-AC70-921F14402BAB} 1049:{19A53965-FB86-4FC4-AC70-921F14402BAB} 2052:{19A53965-FB86-4FC4-AC70-921F14402BAB} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="SimpleExcelViewer"/>
-    <ROW Property="ProductVersion" Value="0.1.0.5" Options="4"/>
+    <ROW Property="ProductVersion" Value="0.2.0.0" Options="4"/>
+    <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{7573A105-8BFD-4D5C-9767-6830A051830A}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
@@ -42,7 +46,6 @@
     <ROW Component="AI_INSTALLPERUSER" ComponentId="{A3E65725-EE96-476C-BE13-F3F3002A02D4}" Directory_="APPDIR" Attributes="4" KeyPath="AI_INSTALLPERUSER" Options="1"/>
     <ROW Component="APPDIR" ComponentId="{F4E5DF92-71FA-4EEE-BB08-53D55189904D}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="ApplicationDescription" ComponentId="{279B621B-1B39-4879-8E2A-FD22EA34F08E}" Directory_="APPDIR" Attributes="4" Condition="(VersionNT &gt;= 600)" KeyPath="ApplicationDescription"/>
-    <ROW Component="FastWpfGrid.dll" ComponentId="{EDC71072-AF82-40AA-8C1B-A5020ED2B79F}" Directory_="APPDIR" Attributes="0" KeyPath="FastWpfGrid.dll"/>
     <ROW Component="MUIVerb" ComponentId="{70501BBB-453A-49AB-B024-E679281B8ED7}" Directory_="APPDIR" Attributes="4" KeyPath="MUIVerb"/>
     <ROW Component="ProductInformation" ComponentId="{6C8B39A9-BB1E-4CCC-8DDA-571210F50DF6}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{AF703A0F-2B3C-476F-8AAE-998330C2065E}" Directory_="SHORTCUTDIR" Attributes="0"/>
@@ -54,10 +57,9 @@
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="SimpleExcelViewer.exe" Component_="SimpleExcelViewer.exe" FileName="SIMPLE~1.EXE|SimpleExcelViewer.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Debug\net48\SimpleExcelViewer.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="SimpleExcelViewer.exe.config" Component_="SimpleExcelViewer.exe.config" FileName="SIMPLE~1.CON|SimpleExcelViewer.exe.config" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Debug\net48\SimpleExcelViewer.exe.config" SelfReg="false"/>
-    <ROW File="FastWpfGrid.dll" Component_="FastWpfGrid.dll" FileName="FASTWP~1.DLL|FastWpfGrid.dll" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Debug\net48\FastWpfGrid.dll" SelfReg="false"/>
-    <ROW File="FastWpfGrid.pdb" Component_="FastWpfGrid.dll" FileName="FASTWP~1.PDB|FastWpfGrid.pdb" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Debug\net48\FastWpfGrid.pdb" SelfReg="false"/>
+    <ROW File="SimpleExcelViewer.exe" Component_="SimpleExcelViewer.exe" FileName="SIMPLE~1.EXE|SimpleExcelViewer.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Release\net48\SimpleExcelViewer.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="SimpleExcelViewer.exe.config" Component_="SimpleExcelViewer.exe.config" FileName="SIMPLE~1.CON|SimpleExcelViewer.exe.config" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Release\net48\SimpleExcelViewer.exe.config" SelfReg="false"/>
+    <ROW File="README.md" Component_="SimpleExcelViewer.exe.config" FileName="README.md" Version="65535.65535.65535.65535" Attributes="0" SourcePath="..\SimpleExcelViewer\bin\Release\net48\README.md" SelfReg="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.AiPersistentPropComponent">
     <ROW Property="AI_INSTALLPERUSER" Registry="AI_INSTALLPERUSER" HklmSearch="AI_INSTALLPERUSER" HkcuSearch="AI_INSTALLPERUSER_1"/>
@@ -185,6 +187,7 @@
     <ROW Action="AI_ExtractLzma" Type="1025" Source="lzmaextractor.dll" Target="ExtractLZMAFiles"/>
     <ROW Action="AI_FindExeLzma" Type="1" Source="lzmaextractor.dll" Target="FindEXE"/>
     <ROW Action="AI_InstallModeCheck" Type="1" Source="aicustact.dll" Target="UpdateInstallMode" WithoutSeq="true"/>
+    <ROW Action="AI_LaunchApp" Type="1" Source="aicustact.dll" Target="LaunchApp"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
     <ROW Action="AI_PRESERVE_INSTALL_TYPE" Type="65" Source="aicustact.dll" Target="PreserveInstallType"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
@@ -193,6 +196,7 @@
     <ROW Action="AI_SETMIXINSTLOCATION" Type="1" Source="aicustact.dll" Target="MixedAllUsersInstallLocation"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="AI_ViewReadme" Type="1" Source="aicustact.dll" Target="ViewReadMe"/>
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[AI_UserProgramFiles][Manufacturer]\[ProductName]"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
@@ -209,7 +213,6 @@
     <ROW Feature_="MainFeature" Component_="AI_ExePath"/>
     <ROW Feature_="MainFeature" Component_="ApplicationDescription"/>
     <ROW Feature_="MainFeature" Component_="MUIVerb"/>
-    <ROW Feature_="MainFeature" Component_="FastWpfGrid.dll"/>
     <ROW Feature_="MainFeature" Component_="AI_INSTALLPERUSER"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
@@ -326,6 +329,6 @@
     <ROW ContextId="contextmenu" Type="0" RegName="MUIVerb" RegCommand="__2" RegIcon="Icon" RegType="FF0BE6C174F7B8A50FEA521A65F9A" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
-    <ROW Directory_="APPDIR" SourcePath="..\SimpleExcelViewer\bin\Debug\net48" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
+    <ROW Directory_="APPDIR" SourcePath="..\SimpleExcelViewer\bin\Release\net48" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>
   </COMPONENT>
 </DOCUMENT>

@@ -121,6 +121,7 @@
 						<TextBlock
 							d:Text="102.3 MB"
 							VerticalAlignment="Center"
+							wpf:ToolTipExtension.FastToolTip="True"
 							Text="{Binding AppMemoryCounter.InfoText}"
 							ToolTip="{Binding AppMemoryCounter.FullInfoText}"/>
 					</Border>
@@ -254,10 +255,11 @@
 							<Border Padding="4,2" Background="Gainsboro">
 								<Grid DataContext="{Binding SelectedItem}">
 									<StackPanel Orientation="Horizontal" Visibility="{Binding Converter={StaticResource Object2VisibilityConverter}}">
-										<TextBlock Text="{Binding FileInfo.Length, Converter={StaticResource FileSizeConverter}}" ToolTip="File Size"/>
+										<TextBlock wpf:ToolTipExtension.FastToolTip="True" Text="{Binding FileInfo.Length, Converter={StaticResource FileSizeConverter}}" ToolTip="File Size"/>
 										<TextBlock
 											Margin="4,0,0,0"
 											VerticalAlignment="Center"
+											wpf:ToolTipExtension.FastToolTip="True"
 											ToolTip="Table Size (Row, Column)"
 											Visibility="{Binding TableModel, Converter={StaticResource Object2VisibilityConverter}}">
 											<Run Text="("/><Run Text="{Binding TableModel.RowCount, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding TableModel.ColumnCount, Mode=OneWay}"/><Run Text=")"/>
@@ -276,9 +278,16 @@
 								</Grid>
 							</Border>
 
-							<Border Padding="4,2">
+							<Border Padding="4,2" Background="Transparent" ContextMenuService.IsEnabled="{Binding SelectedItem, Converter={StaticResource Object2BooleanConverter}}">
+								<Border.ContextMenu>
+									<ContextMenu>
+										<MenuItem Command="{Binding CopyFilePathCommand}" CommandParameter="{Binding SelectedItem}" Header="Copy File Path"/>
+										<MenuItem Command="{Binding CopyFileNameCommand}" CommandParameter="{Binding SelectedItem}" Header="Copy File Name"/>
+									</ContextMenu>
+								</Border.ContextMenu>
 								<TextBlock
 									VerticalAlignment="Center"
+									wpf:ToolTipExtension.FastToolTip="True"
 									Text="{Binding SelectedItem.FilePath}"
 									TextTrimming="CharacterEllipsis"
 									ToolTip="{Binding SelectedItem.FilePath}"/>

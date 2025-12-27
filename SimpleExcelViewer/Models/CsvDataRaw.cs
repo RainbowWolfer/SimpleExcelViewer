@@ -80,25 +80,54 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 	}
 
 	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',', IStatusReport? statusReport = null, CancellationToken token = default) {
-
-		// 或许可以算出进度，文件的总长度 和 已处理的字节数 
+		statusReport?.SetProgress(null);
 
 		using StreamReader reader = new(stream, encoding);
 		CsvDataRaw csv = new(encoding);
 
+		long totalBytes = stream.CanSeek ? stream.Length : -1;
+
 		string? line;
 		bool isHeader = true;
-
 		byte splitter_byte = (byte)splitter;
-
 		int rowCount = 1;
+
+		Stopwatch sw = Stopwatch.StartNew();
 
 		while ((line = reader.ReadLine()) != null) {
 			//token.ThrowIfCancellationRequested();
 			if (token.IsCancellationRequested) {
 				break;
 			}
-			statusReport?.SetStatus($"Reading line: {rowCount++}");
+
+			//statusReport?.SetStatus($"Reading line: {rowCount++}");
+			//if (totalBytes > 0) {
+			//	double progress = (double)stream.Position / totalBytes;
+			//	statusReport?.SetProgress(progress);
+			//} else {
+			//	statusReport?.SetProgress(null);
+			//}
+
+			double progress = totalBytes > 0 ? (double)stream.Position / totalBytes : 0;
+
+			string timeInfo = "";
+			if (progress > 0.001 && totalBytes > 0) {
+				long elapsedMs = sw.ElapsedMilliseconds;
+				double remainingMs = (elapsedMs / progress) - elapsedMs;
+				TimeSpan t = TimeSpan.FromMilliseconds(remainingMs);
+
+				timeInfo = t.TotalHours >= 1
+					? $" | Remaining: {t:hh\\:mm\\:ss}"
+					: $" | Remaining: {t:mm\\:ss}";
+			}
+
+			//if (rowCount % 100 == 0) {
+			statusReport?.SetStatus($"Reading line: {rowCount}{timeInfo}");
+			statusReport?.SetProgress(progress > 0 ? progress : null);
+			//}
+
+			rowCount++;
+
 			// 原始字节
 			byte[] buffer = encoding.GetBytes(line);
 
@@ -122,6 +151,7 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 			}
 		}
 
+		sw.Stop();
 		return csv;
 	}
 }

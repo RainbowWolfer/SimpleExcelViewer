@@ -42,11 +42,6 @@ internal class TabViewModel(IAppSettingsService appSettingsService) : ViewModelB
 		private set => SetProperty(() => MainViewModel, value);
 	}
 
-	public bool IsTransposed {
-		get => GetProperty(() => IsTransposed);
-		set => SetProperty(() => IsTransposed, value);
-	}
-
 	protected override void OnParameterChanged(object parameter) {
 		base.OnParameterChanged(parameter);
 		Parameter = (TabItemViewModel)parameter;

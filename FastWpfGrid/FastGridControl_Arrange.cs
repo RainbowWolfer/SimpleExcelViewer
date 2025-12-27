@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
@@ -364,7 +365,7 @@ public partial class FastGridControl {
 		}
 	}
 
-	private void RecountColumnWidths() {
+	private void RecountColumnWidths(CancellationToken token = default) {//todo : add cancelation
 		_columnSizes.Clear();
 
 		SetExtraordinaryRealColumns();
@@ -393,6 +394,7 @@ public partial class FastGridControl {
 		int colCount = _modelColumnCount;
 
 		for (int col = 0; col < colCount; col++) {
+			token.ThrowIfCancellationRequested();
 			IFastGridCell cell = _model.GetColumnHeader(this, col);
 			int width = GetCellContentWidth(cell) + (2 * CellPaddingHorizontal);
 			if (width < MinColumnWidth) {
@@ -408,6 +410,7 @@ public partial class FastGridControl {
 		int row0 = FirstVisibleRowScrollIndex /*+ _rowSizes.FrozenCount*/;
 		for (int row = row0; row < Math.Min(row0 + visRows, rowCount); row++) {
 			for (int col = 0; col < colCount; col++) {
+				token.ThrowIfCancellationRequested();
 				IFastGridCell cell = _model.GetCell(this, row, col);
 				_columnSizes.PutSizeOverride(col, GetCellContentWidth(cell, _columnSizes.MaxSize) + (2 * CellPaddingHorizontal) + gap);
 			}

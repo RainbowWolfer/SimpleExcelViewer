@@ -10,14 +10,14 @@
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 
-		<Version>0.1.0.1</Version>
+		<Version>0.1.0.5</Version>
 		<Authors>RainbowWolfer</Authors>
 		<Company>RainbowWolfer</Company>
 		<Copyright>RainbowWolfer</Copyright>
 
 		<ApplicationIcon>Icon.ico</ApplicationIcon>
 
-		<RW_Common_Version>1.0.31</RW_Common_Version>
+		<RW_Common_Version>1.0.33</RW_Common_Version>
 
 	</PropertyGroup>
 

@@ -23,6 +23,9 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 		set {
 			TableModel?.Dispose();
 			SetProperty(() => TableModel, value);
+			if (TableModel != null) {
+				TableModel.IsTransposed = IsTransposed;
+			}
 		}
 	}
 
@@ -44,6 +47,16 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 	public string WarningMessage {
 		get => GetProperty(() => WarningMessage);
 		set => SetProperty(() => WarningMessage, value);
+	}
+
+	public bool IsTransposed {
+		get => GetProperty(() => IsTransposed);
+		set {
+			SetProperty(() => IsTransposed, value);
+			if (TableModel != null) {
+				TableModel.IsTransposed = IsTransposed;
+			}
+		}
 	}
 
 	public StatusReport StatusReport { get; } = new();
@@ -82,6 +95,7 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 			dispatcherService.Invoke(AppHelper.ReleaseRAM);
 
 			StatusReport.SetStatus("Reading");
+			StatusReport.SetProgress(null);
 
 			//await Task.Delay(500000000);
 

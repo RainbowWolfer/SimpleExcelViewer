@@ -8,12 +8,35 @@ using SimpleExcelViewer.Services;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace SimpleExcelViewer.Views;
 
 public partial class MainWindow : WindowBase {
 	public MainWindow() {
 		InitializeComponent();
+	}
+
+	protected override void OnSourceInitialized(EventArgs e) {
+		base.OnSourceInitialized(e);
+
+		// 获取窗口句柄并挂钩消息处理
+		HwndSource source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+		source.AddHook(WndProc);
+	}
+
+	private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
+		const int WM_QUERYENDSESSION = 0x0011; // 系统或安装程序请求关闭
+		//const int WM_ENDSESSION = 0x0016;      // 系统确认即将关闭
+
+		if (msg == WM_QUERYENDSESSION) {
+			// 标记为外部关闭，这样 Closing 事件里就不弹窗了
+			if (DataContext is MainWindowViewModel viewModel) {
+				viewModel.isExternalShutdown = true;
+			}
+		}
+
+		return IntPtr.Zero;
 	}
 }
 
@@ -30,6 +53,7 @@ internal class MainWindowViewModel(
 
 	private WindowState previousWindowState = WindowState.Normal;
 
+	public bool isExternalShutdown = false;
 
 	protected override void OnInitializeInRuntime() {
 		base.OnInitializeInRuntime();
@@ -86,6 +110,10 @@ internal class MainWindowViewModel(
 	private DelegateCommand<CancelEventArgs>? closingCommand;
 	public IDelegateCommand ClosingCommand => closingCommand ??= new(Closing);
 	private void Closing(CancelEventArgs args) {
+		if (isExternalShutdown) {
+			return;
+		}
+
 		if (appSettingsService.Model.ConfirmOnClosingApplication) {
 			if (!MessageBoxService.ShowOkCancelQuestion("Are you sure to quit this application?")) {
 				args.Cancel = true;

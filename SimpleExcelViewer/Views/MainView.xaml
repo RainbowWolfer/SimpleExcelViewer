@@ -20,6 +20,7 @@
 
 	<dxmvvm:Interaction.Behaviors>
 		<dxmvvm:EventToCommand Command="{Binding DropCommand}" EventName="PreviewDrop" PassEventArgsToCommand="True"/>
+		<dxmvvm:EventToCommand Command="{Binding LoadedCommand}" EventName="Loaded" PassEventArgsToCommand="True"/>
 
 		<dxmvvm:OpenFileDialogService/>
 		<vms:MessageBoxServiceEx/>
@@ -128,93 +129,109 @@
 			</Border>
 
 			<Border Grid.Row="1">
-				<!--
-					BorderBrush="#D3D3D3"
-				-->
-				<TabControl
-					d:SelectedIndex="0"
-					Padding="0"
-					HorizontalContentAlignment="Stretch"
-					BorderThickness="0,1,0,0"
-					SelectedItem="{Binding SelectedItem}"
-					ItemsSource="{Binding TabItems}"
-					d:ItemsSource="{d:SampleData ItemCount=5}">
+				<Grid>
+					<!--
+						BorderBrush="#D3D3D3"
+					-->
+					<TabControl
+						d:SelectedIndex="0"
+						Padding="0"
+						HorizontalContentAlignment="Stretch"
+						BorderThickness="0,1,0,0"
+						SelectedItem="{Binding SelectedItem}"
+						ItemsSource="{Binding TabItems}"
+						d:ItemsSource="{d:SampleData ItemCount=5}">
 
-					<TabControl.ItemTemplate>
-						<DataTemplate>
-							<Grid Background="Transparent">
+						<TabControl.ItemTemplate>
+							<DataTemplate>
+								<Grid Background="Transparent">
 
-								<DockPanel>
-									<Border Margin="4,0,0,0" DockPanel.Dock="Right">
-										<Button
-											Width="16"
-											Height="16"
-											Padding="0"
-											BorderThickness="0"
-											Background="Transparent"
-											Command="{StaticResource CloseCommand}"
-											CommandParameter="{Binding}"
-											Cursor="Hand"
-											ToolTip="Close">
-											<wpf:FontIcon
-												FontFamily="{StaticResource IconPack}"
-												FontSize="14"
-												FontWeight="Bold"
-												Foreground="Red"
-												Text="&#xE894;"/>
-										</Button>
-									</Border>
-									<Grid HorizontalAlignment="Left">
-										<ProgressBar
-											Width="auto"
-											Margin="-2,0"
-											BorderThickness="0"
-											Background="Transparent"
-											IsIndeterminate="True"
-											Opacity="0.5"
-											Visibility="{Binding IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}"/>
-										<TextBlock d:Text="qazxswg.csp" Text="{Binding FileName}"/>
-									</Grid>
-								</DockPanel>
-							</Grid>
-						</DataTemplate>
-					</TabControl.ItemTemplate>
+									<DockPanel>
+										<Border Margin="4,0,0,0" DockPanel.Dock="Right">
+											<Button
+												Width="16"
+												Height="16"
+												Padding="0"
+												BorderThickness="0"
+												Background="Transparent"
+												Command="{StaticResource CloseCommand}"
+												CommandParameter="{Binding}"
+												Cursor="Hand"
+												ToolTip="Close">
+												<wpf:FontIcon
+													FontFamily="{StaticResource IconPack}"
+													FontSize="14"
+													FontWeight="Bold"
+													Foreground="Red"
+													Text="&#xE894;"/>
+											</Button>
+										</Border>
+										<Grid HorizontalAlignment="Left">
+											<ProgressBar
+												Width="auto"
+												Margin="-2,0"
+												Minimum="0"
+												Maximum="1"
+												BorderThickness="0"
+												wpf:ProgressBarExtension.Progress="{Binding StatusReport.Progress}"
+												Background="Transparent"
+												Opacity="0.5"
+												Visibility="{Binding IsLoading, Converter={StaticResource Boolean2VisibilityConverter}}"/>
+											<TextBlock d:Text="qazxswg.csp" Text="{Binding FileName}"/>
+										</Grid>
+									</DockPanel>
+								</Grid>
+							</DataTemplate>
+						</TabControl.ItemTemplate>
 
-					<TabControl.ItemContainerStyle>
-						<Style TargetType="TabItem">
-							<!--<Setter Property="Padding" Value="0"/>-->
-							<Setter Property="ToolTip" Value="{Binding FilePath}"/>
-							<Setter Property="wpf:ControlExtension.MouseDownCommand" Value="{StaticResource TabItemMouseDownCommand}"/>
-							<Setter Property="ContextMenu">
-								<Setter.Value>
-									<ContextMenu>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFileNameCommand}" CommandParameter="{Binding}" Header="Copy File Name"/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFilePathCommand}" CommandParameter="{Binding}" Header="Copy File Path"/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.OpenInFileExplorerCommand}" CommandParameter="{Binding}" Header="Open in File Explorer"/>
-										<Separator/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ViewFileInfoCommand}" CommandParameter="{Binding}" Header="View File Info"/>
-										<Separator/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ReloadCommand}" CommandParameter="{Binding}" Header="Reload"/>
-										<Separator/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseCommand}" CommandParameter="{Binding}" Header="Close"/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseOthersCommand}" CommandParameter="{Binding}" Header="Close Others"/>
-										<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseAllCommand}" CommandParameter="{Binding}" Header="Close All"/>
-									</ContextMenu>
-								</Setter.Value>
-							</Setter>
-						</Style>
-					</TabControl.ItemContainerStyle>
+						<TabControl.ItemContainerStyle>
+							<Style TargetType="TabItem">
+								<!--<Setter Property="Padding" Value="0"/>-->
+								<Setter Property="ToolTip" Value="{Binding FilePath}"/>
+								<Setter Property="wpf:ControlExtension.MouseDownCommand" Value="{StaticResource TabItemMouseDownCommand}"/>
+								<Setter Property="ContextMenu">
+									<Setter.Value>
+										<ContextMenu>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFileNameCommand}" CommandParameter="{Binding}" Header="Copy File Name"/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CopyFilePathCommand}" CommandParameter="{Binding}" Header="Copy File Path"/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.OpenInFileExplorerCommand}" CommandParameter="{Binding}" Header="Open in File Explorer"/>
+											<Separator/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ViewFileInfoCommand}" CommandParameter="{Binding}" Header="View File Info"/>
+											<Separator/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.ReloadCommand}" CommandParameter="{Binding}" Header="Reload"/>
+											<Separator/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseCommand}" CommandParameter="{Binding}" Header="Close"/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseOthersCommand}" CommandParameter="{Binding}" Header="Close Others"/>
+											<MenuItem Command="{Binding Source={StaticResource ViewModel}, Path=Data.CloseAllCommand}" CommandParameter="{Binding}" Header="Close All"/>
+										</ContextMenu>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</TabControl.ItemContainerStyle>
 
-					<TabControl.ContentTemplate>
-						<DataTemplate>
-							<Border x:Name="PART_Border">
-								<!--<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding ElementName=PART_Border, Path=DataContext}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>-->
-								<ContentControl Content="{Binding View}" Focusable="False" IsTabStop="False"/>
-							</Border>
-						</DataTemplate>
-					</TabControl.ContentTemplate>
+						<TabControl.ContentTemplate>
+							<DataTemplate>
+								<Border x:Name="PART_Border">
+									<!--<local:TabView dxmvvm:ViewModelExtensions.Parameter="{Binding ElementName=PART_Border, Path=DataContext}" dxmvvm:ViewModelExtensions.ParentViewModel="{Binding Source={StaticResource ViewModel}, Path=Data}"/>-->
+									<ContentControl Content="{Binding View}" Focusable="False" IsTabStop="False"/>
+								</Border>
+							</DataTemplate>
+						</TabControl.ContentTemplate>
 
-				</TabControl>
+					</TabControl>
+
+					<Border Visibility="{Binding TabItems.Count, Converter={StaticResource IListToVisibilityReConverter}}">
+						<TextBlock
+							Margin="0"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							FontSize="44"
+							Opacity="0.2"
+							Text="Simple Excel Viewer"
+							TextAlignment="Center"
+							TextWrapping="Wrap"/>
+					</Border>
+				</Grid>
 			</Border>
 
 			<Border

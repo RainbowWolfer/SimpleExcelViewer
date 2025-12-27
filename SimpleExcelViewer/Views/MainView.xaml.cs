@@ -65,6 +65,22 @@ internal class MainViewModel(
 		eventAggregator.GetEvent<MainWindowPreviewKeyDownEvent>().Subscribe(OnMainWindowPreviewKeyDown);
 	}
 
+
+	private DelegateCommand? loadedCommand;
+	public IDelegateCommand LoadedCommand => loadedCommand ??= new(Loaded);
+	private void Loaded() {
+		try {
+			IEnumerable<string> filePaths = AppArgsService.GetFilePaths("csv");
+			foreach (string filePath in filePaths) {
+				HandleFilePath(filePath);
+			}
+		} catch (Exception ex) {
+			DebugLoggerManager.LogHandledException(ex);
+			MessageBoxService.ShowError("Opening file failed.", ex);
+		}
+	}
+
+
 	private void OnMainWindowPreviewKeyDown(KeyEventArgs args) {
 		if (KeyboardHelper.ControlPressed) {
 			if (args.Key is Key.O) {

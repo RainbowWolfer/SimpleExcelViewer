@@ -11,6 +11,7 @@ using SimpleExcelViewer.Services;
 using SimpleExcelViewer.Views;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
@@ -23,9 +24,21 @@ public partial class App : ApplicationBase {
 	private static App? instance;
 	public static App Instance => instance!;
 
+	public static IReadOnlyList<string>? Args { get; private set; }
+
 	static App() {
 		DebugConfig.Print = o => Debug.WriteLine(o);
 		DebugConfig.DebuggerBreak = Debugger.Break;
+		AppArgsService.OnPipeArgsHandled += AppArgsService_OnPipeArgsHandled;
+	}
+
+	private static void AppArgsService_OnPipeArgsHandled(IReadOnlyList<string> args) {
+		Args = args;
+	}
+
+	protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {
+		base.OnSessionEnding(e);
+
 	}
 
 	private AppSettingsService AppSettingsService { get; }
@@ -41,6 +54,13 @@ public partial class App : ApplicationBase {
 
 		AppSettingsService = new AppSettingsService((AppFolderConfig)FolderConfig);
 		AppSettingsService.LoadSettings();
+
+		// 获取当前 EXE 所在的目录
+		string appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+		// 强制将工作目录设为 EXE 所在目录
+		string _ = Directory.GetCurrentDirectory();
+		Directory.SetCurrentDirectory(appDirectory);
 
 		//Test();
 	}

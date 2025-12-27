@@ -34,7 +34,7 @@
 					<wpf:SpacingStackPanel HorizontalSpacing="4" ItemVerticalAlignment="Center" Orientation="Horizontal">
 						<Button Command="{Binding ManageColumnsCommand}" Content="Manage Columns"/>
 						<Button Command="{Binding AutoColumnsWidthCommand}" Content="Auto Columns Width"/>
-						<CheckBox Content="Transpose" IsChecked="{Binding IsTransposed}"/>
+						<CheckBox Content="Transpose" IsChecked="{Binding Parameter.IsTransposed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 					</wpf:SpacingStackPanel>
 				</Border>
 
@@ -66,7 +66,12 @@
 				<StackPanel>
 					<Border Margin="10,0" Padding="8" Background="#d0d0d0">
 						<StackPanel Orientation="Vertical">
-							<ProgressBar Height="20" MinWidth="250" IsIndeterminate="True"/>
+							<ProgressBar
+								Height="20"
+								MinWidth="250"
+								Minimum="0"
+								Maximum="1"
+								wpf:ProgressBarExtension.Progress="{Binding Parameter.StatusReport.Progress}"/>
 							<Border Height="8"/>
 							<TextBlock d:Text="Loading" Text="{Binding Parameter.StatusReport.Status}" TextAlignment="Center"/>
 

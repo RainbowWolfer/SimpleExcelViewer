@@ -404,3 +404,7 @@ FodyWeavers.xsd
 .idea/
 
 !Nugets/*.nupkg
+
+Installer/Prerequisites
+Installer/SimpleExcelViewer-cache
+Installer/SimpleExcelViewer-SetupFiles

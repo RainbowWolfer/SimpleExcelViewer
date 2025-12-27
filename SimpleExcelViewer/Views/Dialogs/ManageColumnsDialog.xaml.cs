@@ -93,7 +93,7 @@ internal class ManageColumnsDialogViewModel() : DialogViewModelOkCancel<ManageCo
 	public IDelegateCommand ResetOrderCommand => resetOrderCommand ??= new(ResetOrder, CanResetOrder);
 	private void ResetOrder() {
 		if (CanResetOrder()) {
-			List<ColumnCheckItem> sortedList = Columns.OrderBy(x => x.Index).ToList();
+			List<ColumnCheckItem> sortedList = [.. Columns.OrderBy(x => x.Index)];
 
 			Columns.Clear();
 

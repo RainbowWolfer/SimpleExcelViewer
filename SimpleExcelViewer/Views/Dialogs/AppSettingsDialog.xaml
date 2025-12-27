@@ -45,6 +45,7 @@
 					<CheckBox Content="Confirm before closing single tab" IsChecked="{Binding Model.ConfirmOnClosingSingleTab}"/>
 					<CheckBox Content="Confirm before closing other tabs" IsChecked="{Binding Model.ConfirmOnClosingOtherTabs}"/>
 					<CheckBox Content="Confirm before closing all tabs" IsChecked="{Binding Model.ConfirmOnClosingAllTabs}"/>
+					<CheckBox Content="Confirm before cancel loading" IsChecked="{Binding Model.ConfirmOnCancelLoading}"/>
 				</wpf:SpacingStackPanel>
 			</GroupBox>
 

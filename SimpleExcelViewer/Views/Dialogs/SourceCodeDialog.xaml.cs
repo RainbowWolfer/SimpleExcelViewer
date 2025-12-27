@@ -11,5 +11,10 @@ public partial class SourceCodeDialog : UserControl {
 }
 
 internal class SourceCodeDialogViewModel() : DialogViewModelOk<object> {
+	protected override void OnInitialized() {
+		base.OnInitialized();
 
+		DialogTitle = "Source Code";
+
+	}
 }

@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 
@@ -40,6 +41,17 @@ public partial class App : ApplicationBase {
 
 		AppSettingsService = new AppSettingsService((AppFolderConfig)FolderConfig);
 		AppSettingsService.LoadSettings();
+
+		//Test();
+	}
+
+	private async void Test() {
+		while (true) {
+			Dispatcher.Invoke(() => {
+				Debug.WriteLine(Keyboard.FocusedElement);
+			});
+			await Task.Delay(1000);
+		}
 	}
 
 	protected override string GetMutexName() {

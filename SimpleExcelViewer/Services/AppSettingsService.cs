@@ -34,4 +34,6 @@ public class AppSettingsModel {
 
 	public bool ConfirmOnClosingAllTabs { get; set; } = true;
 
+	public bool ConfirmOnCancelLoading { get; set; } = true;
+
 }

@@ -80,6 +80,9 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 	}
 
 	public static CsvDataRaw Read(Stream stream, Encoding encoding, char splitter = ',', IStatusReport? statusReport = null, CancellationToken token = default) {
+
+		// 或许可以算出进度，文件的总长度 和 已处理的字节数 
+
 		using StreamReader reader = new(stream, encoding);
 		CsvDataRaw csv = new(encoding);
 
@@ -91,7 +94,10 @@ public class CsvDataRaw(Encoding encoding) : ITableData {
 		int rowCount = 1;
 
 		while ((line = reader.ReadLine()) != null) {
-			token.ThrowIfCancellationRequested();
+			//token.ThrowIfCancellationRequested();
+			if (token.IsCancellationRequested) {
+				break;
+			}
 			statusReport?.SetStatus($"Reading line: {rowCount++}");
 			// 原始字节
 			byte[] buffer = encoding.GetBytes(line);

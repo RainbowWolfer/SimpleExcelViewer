@@ -36,6 +36,16 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 		set => SetProperty(() => ErrorMessage, value);
 	}
 
+	public bool IsInterrupted {
+		get => GetProperty(() => IsInterrupted);
+		set => SetProperty(() => IsInterrupted, value);
+	}
+
+	public string WarningMessage {
+		get => GetProperty(() => WarningMessage);
+		set => SetProperty(() => WarningMessage, value);
+	}
+
 	public StatusReport StatusReport { get; } = new();
 
 	public TabView View { get; } = new();
@@ -71,6 +81,10 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 			TableModel = null;
 			dispatcherService.Invoke(AppHelper.ReleaseRAM);
 
+			StatusReport.SetStatus("Reading");
+
+			//await Task.Delay(500000000);
+
 			ITableData data = await Task.Run(() => {
 				using FileStream fileStream = new(
 					FilePath,
@@ -84,11 +98,15 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 				//return CsvDataBuffer.Read(fileStream, Encoding.UTF8);
 				//return CsvData.Read(fileStream, Encoding.UTF8, [',']);
 				//return CsvDataTableReader.Read(fileStream, Encoding.UTF8, [',']);
-			}, token);
+			});
 
+			StatusReport.SetStatus("Done");
 			//long v = data.EstimateMemoryUsage();
 
-			token.ThrowIfCancellationRequested();
+			if (!IsInterrupted) {
+				token.ThrowIfCancellationRequested();
+			}
+
 			TableModel = new TableModel(data);
 		} catch (OperationCanceledException) {
 			Debug.WriteLine("Canceled");
@@ -101,6 +119,14 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 			cts?.Dispose();
 			cts = null;
 		}
+	}
+
+	public void Interrupt() {
+		IsInterrupted = true;
+		cts?.Cancel();
+		cts?.Dispose();
+		cts = null;
+		WarningMessage = "Partial data: Loading was interrupted.";
 	}
 
 	public void Dispose() {

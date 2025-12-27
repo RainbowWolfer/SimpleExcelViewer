@@ -173,6 +173,13 @@ internal class MainViewModel(
 	}
 
 
+	public void CloseItem(TabItemViewModel item) {
+		item.Dispose();
+		TabItems.Remove(item);
+
+		DispatcherService.Invoke(AppHelper.ReleaseRAM);
+	}
+
 	private DelegateCommand<TabItemViewModel>? closeCommand;
 	public IDelegateCommand CloseCommand => closeCommand ??= new(Close, CanClose);
 	private void Close(TabItemViewModel item) {
@@ -182,11 +189,7 @@ internal class MainViewModel(
 			) {
 				return;
 			}
-
-			item.Dispose();
-			TabItems.Remove(item);
-
-			DispatcherService.Invoke(AppHelper.ReleaseRAM);
+			CloseItem(item);
 		}
 	}
 	private bool CanClose(TabItemViewModel item) => item != null;

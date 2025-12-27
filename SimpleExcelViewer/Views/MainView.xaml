@@ -56,6 +56,7 @@
 				<RowDefinition Height="auto"/>
 				<RowDefinition Height="*"/>
 				<RowDefinition Height="auto"/>
+				<RowDefinition Height="auto"/>
 			</Grid.RowDefinitions>
 
 			<Border>
@@ -127,11 +128,14 @@
 			</Border>
 
 			<Border Grid.Row="1">
+				<!--
+					BorderBrush="#D3D3D3"
+				-->
 				<TabControl
 					d:SelectedIndex="0"
 					Padding="0"
 					HorizontalContentAlignment="Stretch"
-					BorderThickness="0,1,0,1"
+					BorderThickness="0,1,0,0"
 					SelectedItem="{Binding SelectedItem}"
 					ItemsSource="{Binding TabItems}"
 					d:ItemsSource="{d:SampleData ItemCount=5}">
@@ -213,7 +217,14 @@
 				</TabControl>
 			</Border>
 
-			<Border Grid.Row="2">
+			<Border
+				Grid.Row="2"
+				Height="1"
+				Background="#D3D3D3"
+				SnapsToDevicePixels="True"
+				UseLayoutRounding="True"/>
+
+			<Border Grid.Row="3">
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
@@ -234,6 +245,12 @@
 											Visibility="{Binding TableModel, Converter={StaticResource Object2VisibilityConverter}}">
 											<Run Text="("/><Run Text="{Binding TableModel.RowCount, Mode=OneWay}"/><Run Text=", "/><Run Text="{Binding TableModel.ColumnCount, Mode=OneWay}"/><Run Text=")"/>
 										</TextBlock>
+										<wpf:FontIcon
+											Margin="4,0,0,0"
+											wpf:ToolTipExtension.FastToolTip="True"
+											Text="&#xE7BA;"
+											ToolTip="{Binding WarningMessage}"
+											Visibility="{Binding WarningMessage, Converter={StaticResource String2VisibilityConverter}}"/>
 									</StackPanel>
 
 									<Border Visibility="{Binding Converter={StaticResource Object2VisibilityReConverter}}">

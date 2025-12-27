@@ -38,7 +38,7 @@ internal class AppMemoryCounter : BindableBase, IDisposable {
 			FullInfoText = string.Join(Environment.NewLine, GetMemoryInfoLines(process));
 		});
 		stopwatch.Stop();
-		Debug.WriteLine($"{stopwatch.ElapsedMilliseconds}ms");
+		//Debug.WriteLine($"{stopwatch.ElapsedMilliseconds}ms");
 	}
 
 	private IEnumerable<string> GetMemoryInfoLines(Process process) {

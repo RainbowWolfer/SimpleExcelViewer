@@ -97,13 +97,14 @@ public record class DialogWindowParameter(
 	bool ShowInTaskbar = true,
 	bool AllowsTransparency = false,
 	bool AllowDrop = true,
-	bool TopMost = false
+	bool TopMost = false,
+	bool EscapeToClose = true
 ) {
 	public static DialogWindowParameter Default { get; } = new();
 
 	//todo 
 	public static DialogWindowParameter Resizable { get; } = Default with {
-
+	
 	};
 }
 
@@ -179,7 +180,7 @@ public abstract class DialogViewModel<T> : ViewModelBase, IDialogViewModel {
 	}
 
 	protected virtual void OnInitialized() {
-
+		
 	}
 
 	protected virtual IEnumerable<DialogCommand> GetDialogCommands() {

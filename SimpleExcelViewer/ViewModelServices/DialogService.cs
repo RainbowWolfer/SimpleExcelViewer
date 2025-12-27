@@ -1,5 +1,6 @@
 ﻿using DevExpress.Mvvm.Native;
 using DevExpress.Mvvm.UI;
+using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.Controls;
 using SimpleExcelViewer.ViewModels;
 using System.Diagnostics;
@@ -104,6 +105,10 @@ internal class DialogService : ServiceBase, IDialogServiceEx {
 			window.AllowDrop = it.AllowDrop;
 			window.Topmost = it.TopMost;
 		});
+
+		if (dialogViewModel.DialogWindowParameter.EscapeToClose) {
+			WindowHotKeyActionsHelper.PopupWindowEscape(window);
+		}
 
 		ViewModelExtensions.SetParentViewModel(frameworkElement, parentViewModel ?? new object());// to avoid null
 		ViewModelExtensions.SetParameter(frameworkElement, parameter);

@@ -1,7 +1,9 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.ViewModelServices;
-using RW.Common.WPF.Helpers;
+using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
+using SimpleExcelViewer.ViewModelServices;
+using SimpleExcelViewer.Views.Dialogs;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -22,10 +24,13 @@ public partial class TabView : UserControl {
 	}
 }
 
-internal class TabViewModel : ViewModelBase {
+internal class TabViewModel(IAppSettingsService appSettingsService) : ViewModelBase {
 
+	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 	public IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
 	public IUIObjectService<TabView> UserControlService => GetService<ITypedUIObjectService>(nameof(UserControlService)).As<TabView>();
+
+	public IDialogServiceEx ManageColumnsDialogService => GetService<IDialogServiceEx>(nameof(ManageColumnsDialogService));
 
 	public new TabItemViewModel Parameter {
 		get => GetProperty(() => Parameter);
@@ -37,8 +42,9 @@ internal class TabViewModel : ViewModelBase {
 		private set => SetProperty(() => MainViewModel, value);
 	}
 
-	public TabViewModel() {
-
+	public bool IsTransposed {
+		get => GetProperty(() => IsTransposed);
+		set => SetProperty(() => IsTransposed, value);
 	}
 
 	protected override void OnParameterChanged(object parameter) {
@@ -63,5 +69,55 @@ internal class TabViewModel : ViewModelBase {
 		UserControlService.Object.MainFastGridControl.Focus();
 
 	}
+
+
+	private DelegateCommand? manageColumnsCommand;
+	public IDelegateCommand ManageColumnsCommand => manageColumnsCommand ??= new(ManageColumns, CanManageColumns);
+	private void ManageColumns() {
+		if (CanManageColumns()) {
+			ManageColumnsDialogParameter parameter = new(Parameter.TableModel!);
+			if (ManageColumnsDialogService.ShowOKCancel(this, parameter)) {
+				parameter.TableModel.UpdateColumns(parameter.Result);
+			}
+		}
+	}
+	private bool CanManageColumns() => Parameter?.TableModel is not null;
+
+
+	private DelegateCommand? autoColumnsWidthCommand;
+	public IDelegateCommand AutoColumnsWidthCommand => autoColumnsWidthCommand ??= new(AutoColumnsWidth, CanAutoColumnsWidth);
+	private void AutoColumnsWidth() {
+		if (CanAutoColumnsWidth()) {
+			Parameter?.TableModel?.AutoColumnWidth();
+		}
+	}
+	private bool CanAutoColumnsWidth() => Parameter?.TableModel is not null;
+
+
+
+	private DelegateCommand? interruptAndShowCommand;
+	public IDelegateCommand InterruptAndShowCommand => interruptAndShowCommand ??= new(InterruptAndShow, CanInterruptAndShow);
+	private void InterruptAndShow() {
+		if (CanInterruptAndShow()) {
+			Parameter.Interrupt();
+		}
+	}
+	private bool CanInterruptAndShow() => true;
+
+
+
+	private DelegateCommand? cancelLoadingCommand;
+	public IDelegateCommand CancelLoadingCommand => cancelLoadingCommand ??= new(CancelLoading, CanCancelLoading);
+	private void CancelLoading() {
+		if (CanCancelLoading()) {
+			if (appSettingsService.Model.ConfirmOnCancelLoading
+				&& !MessageBoxService.ShowOkCancelQuestion($"Are you sure to cancel loading of ({Parameter.FileName}) ？")
+			) {
+				return;
+			}
+			MainViewModel.CloseItem(Parameter);
+		}
+	}
+	private bool CanCancelLoading() => Parameter != null && Parameter.IsLoading;
 
 }

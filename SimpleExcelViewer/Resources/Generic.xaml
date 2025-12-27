@@ -28,6 +28,15 @@
 
 	<Style TargetType="{x:Type wpf:FontIcon}" BasedOn="{StaticResource FontIcon}"/>
 
+	<Style x:Key="Button.Custom" TargetType="Button">
+		<Setter Property="Padding" Value="4,1"/>
+	</Style>
+
+	<Style TargetType="Button" BasedOn="{StaticResource Button.Custom}"/>
+
+
+
+
 	<Style x:Key="DialogStyle" TargetType="UserControl">
 		<Setter Property="Padding" Value="4"/>
 		<Setter Property="dxmvvm:Interaction.BehaviorsTemplate">
@@ -47,6 +56,7 @@
 
 	<Style TargetType="c:DialogWindowWrapper">
 		<Setter Property="Padding" Value="4,0,4,4"/>
+		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="c:DialogWindowWrapper">

@@ -35,7 +35,7 @@ public static class AppConfig {
 		//"",
 	};
 
-	public static string ValidFileFilterString { get; } = string.Join("|", [
+	public static string ValidFileFilterString { get; } = string.Join(separator: "|", value: [
 		"CSV File (*.csv)|*.csv",
 		"Excel File (*.xlsx;*.xls)|*.xlsx;*.xls",
 		"All File (*.*)|*.*",

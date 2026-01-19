@@ -13,6 +13,7 @@ using SimpleExcelViewer.ViewModelServices;
 using SimpleExcelViewer.Views.Dialogs;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -280,15 +281,47 @@ internal class MainViewModel(
 	public IDelegateCommand OpenInFileExplorerCommand => openInFileExplorerCommand ??= new(OpenInFileExplorer, CanOpenInFileExplorer);
 	private void OpenInFileExplorer(TabItemViewModel item) {
 		if (CanOpenInFileExplorer(item)) {
-			Exception? exception = item.FilePath.ShowInExplorer();
-			if (exception != null) {
-				MessageBoxService.ShowError("Fail to open in file explorer", exception);
-			}
+			OpenPathInSystemDefault(item.FilePath);
+			//Exception? exception = item.FilePath.ShowInExplorer();
+			//if (exception != null) {
+			//	MessageBoxService.ShowError("Fail to open in file explorer", exception);
+			//}
 		}
 	}
 	private bool CanOpenInFileExplorer(TabItemViewModel item) => item != null;
 
+	public static void OpenPathInSystemDefault(string path) {
+		if (string.IsNullOrWhiteSpace(path)) {
+			return;
+		}
 
+		// 逻辑修正：
+		// 如果是文件，我们要打开它所在的文件夹？
+		// 还是像IDEA那样：如果是文件，直接打开这个文件（用关联编辑器）？
+		// 通常"在资源管理器中打开"意味着如果是文件，就打开其父文件夹。
+		string targetPath = path;
+		if (File.Exists(path)) {
+			targetPath = Path.GetDirectoryName(path);
+		}
+
+		try {
+			var psi = new ProcessStartInfo {
+				FileName = "cmd",
+				// /c 执行完命令后关闭
+				// start "" 这里的空引号是设置窗口标题，防止路径被误认为标题
+				// \"{targetPath}\" 给路径加引号处理空格
+				Arguments = $"/c start \"\" \"{targetPath}\"",
+				UseShellExecute = false, // 这里必须false，因为我们要启动的是 cmd.exe 这个具体的程序
+				CreateNoWindow = true,   // 不显示黑色的 cmd 窗口
+				WindowStyle = ProcessWindowStyle.Hidden
+			};
+
+			Process.Start(psi);
+		} catch (System.Exception ex) {
+			// 记录日志
+			System.Console.WriteLine(ex.Message);
+		}
+	}
 
 	private DelegateCommand<TabItemViewModel>? viewFileInfoCommand;
 	public IDelegateCommand ViewFileInfoCommand => viewFileInfoCommand ??= new(ViewFileInfo, CanViewFileInfo);

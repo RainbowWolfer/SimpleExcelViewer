@@ -36,9 +36,9 @@
 					<DockPanel>
 						<wpf:SpacingStackPanel HorizontalSpacing="4" ItemVerticalAlignment="Center" Orientation="Horizontal">
 							<Button Command="{Binding ManageColumnsCommand}" Content="Manage Columns"/>
+							<wpf:EnumBindingComboBox Width="200" EnumType="{x:Type enums:ColumnHeaderType}" SelectedEnum="{Binding Parameter.ColumnHeaderType}"/>
 							<Button Command="{Binding AutoColumnsWidthCommand}" Content="Auto Columns Width"/>
 							<CheckBox Content="Transpose" IsChecked="{Binding Parameter.IsTransposed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-							<wpf:EnumBindingComboBox Width="200" EnumType="{x:Type enums:ColumnHeaderType}" SelectedEnum="{Binding Parameter.ColumnHeaderType}"/>
 							<!--<CheckBox Content="Show Column Index" IsChecked="{Binding Parameter.IsTransposed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>-->
 						</wpf:SpacingStackPanel>
 

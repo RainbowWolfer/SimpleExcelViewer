@@ -1,5 +1,7 @@
 ﻿using FastWpfGrid;
 using RW.Common.Helpers;
+using RW.Common.WPF.Helpers;
+using RW.Common.WPF.Models;
 using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Interfaces;
 
@@ -140,6 +142,81 @@ public class TableModel : FastGridModelBase, IDisposable {
 			return Data.GetCell(realDataRowIndex, realDataColumnIndex).SafeToString();
 		}
 	}
+
+	public override IContextMenuCreator? GetContextMenu(IFastGridView grid, SelectionRect selectionRect, FastGridCellAddress cell) {
+		IEnumerable<ContextMenuModelItem> items;
+		if (cell.IsColumnHeader) {
+			if (isTransposed) {
+				items = RowHeaderContextMenuItems();
+			} else {
+				items = ColumnHeaderContextMenuItems();
+			}
+		} else if (cell.IsRowHeader) {
+			if (isTransposed) {
+				items = ColumnHeaderContextMenuItems();
+			} else {
+				items = RowHeaderContextMenuItems();
+			}
+		} else if (cell.IsGridHeader) {
+			items = GridHeaderContextMenuItems();
+		} else if (cell.IsCell) {
+			items = CellContextMenuItems();
+		} else {
+			return null;
+		}
+
+		if (items.IsEmpty()) {
+			return null;
+		}
+
+		ContextMenuModelEx contextMenu = [.. items];
+		return contextMenu;
+	}
+
+	private IEnumerable<ContextMenuModelItem> ColumnHeaderContextMenuItems() {
+		yield return new ContextMenuModelItem("Copy all column names", "", () => {
+			List<string> names = [];
+			for (int i = 0; i < Data.ColumnCount; i++) {
+				string name = Data.GetColumnName(i);
+				names.Add(name);
+			}
+			string allNames = string.Join(", ", names);
+			allNames.CopyToClipboard();
+		});
+		yield return new ContextMenuModelItem("Copy selected column name(s)", "", () => {
+			if (SelectionRect is null) {
+				return;
+			}
+			List<string> names = [];
+
+			for (int i = SelectionRect.RectFrom.Column; i <= SelectionRect.RectTo.Column; i++) {
+				string name = Data.GetColumnName(i);
+				names.Add(name);
+			}
+			string allNames = string.Join(", ", names);
+			allNames.CopyToClipboard();
+		}) {
+			IsEnabled = SelectionRect != null,
+		};
+	}
+
+	private IEnumerable<ContextMenuModelItem> RowHeaderContextMenuItems() {
+		//yield return new ContextMenuModelItem("2", "", () => { });
+		yield break;
+	}
+
+	private IEnumerable<ContextMenuModelItem> GridHeaderContextMenuItems() {
+		//yield return new ContextMenuModelItem("3", "", () => { });
+		yield break;
+	}
+
+	private IEnumerable<ContextMenuModelItem> CellContextMenuItems() {
+		//yield return new ContextMenuModelItem("4", "", () => { });
+		yield break;
+	}
+
+
+
 
 	public void Dispose() {
 		Data.Dispose();

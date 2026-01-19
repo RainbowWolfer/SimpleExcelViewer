@@ -1,5 +1,6 @@
 ﻿using DevExpress.Mvvm;
 using RW.Base.WPF.ViewModelServices;
+using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;
 using SimpleExcelViewer.ViewModelServices;
@@ -13,6 +14,10 @@ namespace SimpleExcelViewer.Views;
 public partial class TabView : UserControl {
 	public TabView() {
 		InitializeComponent();
+
+		if (ViewHelper.IsInDesignerMode) {
+			return;
+		}
 
 		FontFamily defaultFontFamily = SystemFonts.MessageFontFamily;
 		string fontName = defaultFontFamily.Source;

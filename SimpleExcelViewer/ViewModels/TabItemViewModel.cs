@@ -3,6 +3,7 @@ using DevExpress.Mvvm.UI;
 using RW.Base.WPF.Extensions;
 using RW.Base.WPF.ViewModels;
 using RW.Common.WPF.Helpers;
+using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Interfaces;
 using SimpleExcelViewer.Models;
 using SimpleExcelViewer.Views;
@@ -55,6 +56,17 @@ internal class TabItemViewModel : BindableBase, IDisposable {
 			SetProperty(() => IsTransposed, value);
 			if (TableModel != null) {
 				TableModel.IsTransposed = IsTransposed;
+			}
+		}
+	}
+
+
+	public ColumnHeaderType ColumnHeaderType {
+		get => GetProperty(() => ColumnHeaderType);
+		set {
+			SetProperty(() => ColumnHeaderType, value);
+			if (TableModel != null) {
+				TableModel.ColumnHeaderType = ColumnHeaderType;
 			}
 		}
 	}

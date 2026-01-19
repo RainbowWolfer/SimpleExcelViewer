@@ -6,7 +6,7 @@
 		<LangVersion>12</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 
-		<RW_Common_Version>1.0.31</RW_Common_Version>
+		<RW_Common_Version>1.0.33</RW_Common_Version>
 	</PropertyGroup>
 
 	<ItemGroup>

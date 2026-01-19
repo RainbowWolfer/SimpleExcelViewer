@@ -46,7 +46,6 @@
     <ROW Component="AI_INSTALLPERUSER" ComponentId="{A3E65725-EE96-476C-BE13-F3F3002A02D4}" Directory_="APPDIR" Attributes="4" KeyPath="AI_INSTALLPERUSER" Options="1"/>
     <ROW Component="APPDIR" ComponentId="{F4E5DF92-71FA-4EEE-BB08-53D55189904D}" Directory_="APPDIR" Attributes="0"/>
     <ROW Component="ApplicationDescription" ComponentId="{279B621B-1B39-4879-8E2A-FD22EA34F08E}" Directory_="APPDIR" Attributes="4" Condition="(VersionNT &gt;= 600)" KeyPath="ApplicationDescription"/>
-    <ROW Component="MUIVerb" ComponentId="{70501BBB-453A-49AB-B024-E679281B8ED7}" Directory_="APPDIR" Attributes="4" KeyPath="MUIVerb"/>
     <ROW Component="ProductInformation" ComponentId="{6C8B39A9-BB1E-4CCC-8DDA-571210F50DF6}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="SHORTCUTDIR" ComponentId="{AF703A0F-2B3C-476F-8AAE-998330C2065E}" Directory_="SHORTCUTDIR" Attributes="0"/>
     <ROW Component="SimpleExcelViewer.exe" ComponentId="{37CC07C3-9197-4400-8D27-3542E13A5BA3}" Directory_="APPDIR" Attributes="0" KeyPath="SimpleExcelViewer.exe"/>
@@ -202,7 +201,7 @@
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiExtComponent">
-    <ROW Extension="csv" Component_="SimpleExcelViewer.exe" ProgId_="[|Manufacturer].[|ProductName]" Feature_="MainFeature"/>
+    <ROW Extension="csv" Component_="SimpleExcelViewer.exe" ProgId_="[|Manufacturer].[|ProductName]" MIME_="text/csv" Feature_="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatCompsComponent">
     <ROW Feature_="MainFeature" Component_="APPDIR"/>
@@ -212,7 +211,6 @@
     <ROW Feature_="MainFeature" Component_="SHORTCUTDIR"/>
     <ROW Feature_="MainFeature" Component_="AI_ExePath"/>
     <ROW Feature_="MainFeature" Component_="ApplicationDescription"/>
-    <ROW Feature_="MainFeature" Component_="MUIVerb"/>
     <ROW Feature_="MainFeature" Component_="AI_INSTALLPERUSER"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
@@ -260,6 +258,9 @@
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
   </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiMimeComponent">
+    <ROW ContentType="text/csv" Extension_="csv" Component_="SimpleExcelViewer.exe"/>
+  </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiProgIdComponent">
     <ROW ProgId="[|Manufacturer].[|ProductName]" Icon_="ext.exe" Flags="0"/>
   </COMPONENT>
@@ -277,14 +278,8 @@
     <ROW Registry="ApplicationName" Root="2" Key="SOFTWARE\[Manufacturer]\[ProductName]\Capabilities" Name="ApplicationName" Value="#%[ProductName]" Component_="ApplicationDescription" VirtualValue="#%"/>
     <ROW Registry="Capabilities" Root="2" Key="SOFTWARE\[Manufacturer]\[ProductName]\Capabilities" Name="\"/>
     <ROW Registry="Caphyon" Root="-1" Key="Software\Caphyon" Name="\"/>
-    <ROW Registry="Classes" Root="-1" Key="Software\Classes" Name="\"/>
-    <ROW Registry="ContextMenu" Root="-1" Key="Software\Caphyon\ContextMenu" Name="\"/>
-    <ROW Registry="FCC9C37294D87A18AEB7A512D0975" Root="-1" Key="Software\Classes\*\shell\174FCC9C-3729-4D87-A18A-EB7A512D0975" Name="\"/>
-    <ROW Registry="FF0BE6C174F7B8A50FEA521A65F9A" Root="-1" Key="Software\Caphyon\ContextMenu" Name="{710FF0BE-6C17-4F7B-8A50-FEA521A65F9A}" Value="174FCC9C-3729-4D87-A18A-EB7A512D0975:*" Component_="MUIVerb"/>
     <ROW Registry="FileAssociations" Root="2" Key="SOFTWARE\[Manufacturer]\[ProductName]\Capabilities\FileAssociations" Name="\"/>
-    <ROW Registry="Icon" Root="-1" Key="Software\Classes\*\shell\174FCC9C-3729-4D87-A18A-EB7A512D0975" Name="Icon" Value="[#SimpleExcelViewer.exe]" Component_="MUIVerb"/>
     <ROW Registry="LZMA" Root="-1" Key="Software\Caphyon\Advanced Installer\LZMA" Name="\"/>
-    <ROW Registry="MUIVerb" Root="-1" Key="Software\Classes\*\shell\174FCC9C-3729-4D87-A18A-EB7A512D0975" Name="MUIVerb" Value="Open with SimpleExcelViewer" Component_="MUIVerb"/>
     <ROW Registry="Manufacturer" Root="-1" Key="Software\[Manufacturer]" Name="\"/>
     <ROW Registry="Manufacturer_1" Root="2" Key="SOFTWARE\[Manufacturer]" Name="\"/>
     <ROW Registry="Path" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Path" Value="[APPDIR]" Component_="ProductInformation"/>
@@ -298,11 +293,7 @@
     <ROW Registry="Software" Root="-1" Key="Software" Name="\"/>
     <ROW Registry="UpgradeCode" Root="-1" Key="Software\[Manufacturer]\[UpgradeCode]" Name="\"/>
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
-    <ROW Registry="_" Root="-1" Key="Software\Classes\*" Name="\"/>
-    <ROW Registry="__2" Root="-1" Key="Software\Classes\*\shell\174FCC9C-3729-4D87-A18A-EB7A512D0975\command" Value="&quot;[#SimpleExcelViewer.exe]&quot; &quot;%1&quot;" Component_="MUIVerb"/>
-    <ROW Registry="command" Root="-1" Key="Software\Classes\*\shell\174FCC9C-3729-4D87-A18A-EB7A512D0975\command" Name="\"/>
     <ROW Registry="csv" Root="2" Key="SOFTWARE\[Manufacturer]\[ProductName]\Capabilities\FileAssociations" Name=".csv" Value="RainbowWolfer.SimpleExcelViewer" Component_="ApplicationDescription"/>
-    <ROW Registry="shell" Root="-1" Key="Software\Classes\*\shell" Name="\"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="SimpleExcelViewer" Directory_="SHORTCUTDIR" Name="SIMPLE~1|SimpleExcelViewer" Component_="SimpleExcelViewer.exe" Target="[#SimpleExcelViewer.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
@@ -316,6 +307,7 @@
     <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiVerbComponent">
+    <ROW Extension_="csv" Component_="SimpleExcelViewer.exe" Verb="Open with SimpleExcelViewer" Sequence="1" Command="&amp;Open with SimpleExcelViewer" Argument="&quot;%1&quot;" Icon_="ext.exe"/>
     <ROW Extension_="csv" Component_="SimpleExcelViewer.exe" Verb="open" Sequence="0" Command="&amp;Open" Argument="&quot;%1&quot;" Icon_="ext.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqComponent">
@@ -324,9 +316,6 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.PreReqSearchComponent">
     <ROW SearchKey="B96F93FA27E74B02866727AAE83982D0Rel" Prereq="B96F93FA27E74B02866727AAE83982D0" SearchType="9" SearchString="HKLM\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\Release" RefContent="G528048" Order="1" Property="PreReqSearch_B96F93FA27E74B02866727"/>
-  </COMPONENT>
-  <COMPONENT cid="caphyon.advinst.msicomp.ShellContextMenuComponent">
-    <ROW ContextId="contextmenu" Type="0" RegName="MUIVerb" RegCommand="__2" RegIcon="Icon" RegType="FF0BE6C174F7B8A50FEA521A65F9A" Flags="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.SynchronizedFolderComponent">
     <ROW Directory_="APPDIR" SourcePath="..\SimpleExcelViewer\bin\Release\net48" Feature="MainFeature" ExcludePattern="*~|#*#|%*%|._|CVS|.cvsignore|SCCS|vssver.scc|mssccprj.scc|vssver2.scc|.svn|.DS_Store" ExcludeFlags="6" FileAddOptions="4"/>

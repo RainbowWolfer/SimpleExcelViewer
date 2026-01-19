@@ -1,5 +1,6 @@
 ﻿using FastWpfGrid;
 using RW.Common.Helpers;
+using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Interfaces;
 
 namespace SimpleExcelViewer.Models;
@@ -11,14 +12,26 @@ public class TableModel : FastGridModelBase, IDisposable {
 	private List<int> _visibleColumnMap = [];
 	public IReadOnlyList<int> CurrentColumnMap => _visibleColumnMap;
 
-	private bool _isTransposed = false;
+	private bool isTransposed = false;
+	private ColumnHeaderType columnHeaderType;
+
 	public bool IsTransposed {
-		get => _isTransposed;
+		get => isTransposed;
 		set {
-			if (_isTransposed != value) {
-				_isTransposed = value;
+			if (isTransposed != value) {
+				isTransposed = value;
 				// 状态改变时必须刷新行列总数和视图
 				RefreshDimensions();
+				InvalidateAll();
+			}
+		}
+	}
+
+	public ColumnHeaderType ColumnHeaderType {
+		get => columnHeaderType;
+		set {
+			if (columnHeaderType != value) {
+				columnHeaderType = value;
 				InvalidateAll();
 			}
 		}
@@ -87,7 +100,7 @@ public class TableModel : FastGridModelBase, IDisposable {
 		} else {
 			// 正常显示列名
 			int realDataColumnIndex = _visibleColumnMap[column];
-			return Data.GetColumnName(realDataColumnIndex);
+			return GetColumnName(realDataColumnIndex);
 		}
 	}
 
@@ -95,11 +108,23 @@ public class TableModel : FastGridModelBase, IDisposable {
 		if (IsTransposed) {
 			// 转置后，行标题显示的是原始数据的“列名”
 			int realDataColumnIndex = _visibleColumnMap[row];
-			return Data.GetColumnName(realDataColumnIndex);
+			return GetColumnName(realDataColumnIndex);
 		} else {
 			// 正常显示行号
 			return (row + 1).ToString();
 		}
+	}
+
+	private string GetColumnName(int index) {
+		string name = Data.GetColumnName(index);
+		string result = ColumnHeaderType switch {
+			ColumnHeaderType.Name => $"{name}",
+			ColumnHeaderType.Name_Index => $"{name} ({index})",
+			ColumnHeaderType.Name_Number => $"{name} ({index + 1})",
+			ColumnHeaderType.Name_Alphabet => $"{name} ({(index + 1).IndexToColumn()})",
+			_ => $"{name}",
+		};
+		return result;
 	}
 
 	public override string GetCellText(int row, int column) {

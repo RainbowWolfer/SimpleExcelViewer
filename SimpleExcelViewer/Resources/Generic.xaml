@@ -16,6 +16,8 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<conv:FileSizeConverter x:Key="FileSizeConverter"/>
+	<conv:SelectionRectDisplayConverter x:Key="SelectionRectDisplayConverter"/>
+	<conv:SimpleCellAddressDisplayConverter x:Key="SimpleCellAddressDisplayConverter"/>
 
 
 	<!--<FontFamily x:Key="IconPack">Resources/Segoe Fluent Icons.ttf#Segoe Fluent Icons</FontFamily>-->

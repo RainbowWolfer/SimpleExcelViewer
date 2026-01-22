@@ -70,22 +70,27 @@ Source: ".\..\SimpleExcelViewer\bin\{#MyBuildConfiguration}\{#MyBuildFramework}\
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
-; 保持原有的文件关联（ProgID 绑定）
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
+; --- 1. 让 Windows 知道程序是一个合法的 ProgID ---
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: "FriendlyTypeName"; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
 
-; --- 新增：独立的右键菜单项 ---
-; 在 shell 目录下创建一个自定义的操作键名，比如 "OpenWithSimpleExcelViewer"
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: ""; ValueData: "{cm:ContextMenuName}"; Flags: uninsdeletekey
-; 设置该菜单项执行的命令
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+; --- 2. 核心：将 .csv 扩展名关联到 ProgID ---
+; OpenWithProgids 允许 Windows 在“打开方式”列表中显示软件，并允许用户将其设为默认
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
 
-; 如果你还希望原本的 "open" 动作依然存在（通常是加粗的默认项）
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open"; ValueType: string; ValueName: ""; ValueData: "&Open"; Flags: uninsdeletekey
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
+; --- 3. 强制右键菜单显示 ---
+; 注册到 SystemFileAssociations 保证无论谁是默认，右键菜单都在
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: ""; ValueData: "{cm:ContextMenuName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
 
-Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
+; --- 4. 注册应用程序（提高系统优先级，让它出现在“推荐程序”里） ---
+Root: HKA; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\{#MyAppExeName}"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+
+; 如果你想让 .xls 或 .xlsx 也显示，只需重复上面的三行，把 {#MyAppAssocExt} 换成对应的后缀即可
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

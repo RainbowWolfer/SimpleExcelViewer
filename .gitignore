@@ -406,5 +406,4 @@ FodyWeavers.xsd
 !Nugets/*.nupkg
 
 Installer/Prerequisites
-Installer/SimpleExcelViewer-cache
-Installer/SimpleExcelViewer-SetupFiles
+Installer/SetupFiles

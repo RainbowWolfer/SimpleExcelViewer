@@ -51,6 +51,16 @@ Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
 
+[CustomMessages]
+english.ContextMenuName=Open With SimpleExcelViewer
+chinesesimplified.ContextMenuName=使用 SimpleExcelViewer 打开
+french.ContextMenuName=Ouvrir avec SimpleExcelViewer
+german.ContextMenuName=Mit SimpleExcelViewer öffnen
+italian.ContextMenuName=Apri con SimpleExcelViewer
+japanese.ContextMenuName=SimpleExcelViewer で開く
+korean.ContextMenuName=SimpleExcelViewer로 열기
+russian.ContextMenuName=Открыть с помощью SimpleExcelViewer
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
@@ -60,10 +70,22 @@ Source: ".\..\SimpleExcelViewer\bin\{#MyBuildConfiguration}\{#MyBuildFramework}\
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
+; 保持原有的文件关联（ProgID 绑定）
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"
+
+; --- 新增：独立的右键菜单项 ---
+; 在 shell 目录下创建一个自定义的操作键名，比如 "OpenWithSimpleExcelViewer"
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: ""; ValueData: "{cm:ContextMenuName}"; Flags: uninsdeletekey
+; 设置该菜单项执行的命令
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+
+; 如果你还希望原本的 "open" 动作依然存在（通常是加粗的默认项）
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open"; ValueType: string; ValueName: ""; ValueData: "&Open"; Flags: uninsdeletekey
 Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""
+
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

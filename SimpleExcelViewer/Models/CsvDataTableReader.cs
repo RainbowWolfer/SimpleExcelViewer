@@ -23,7 +23,7 @@ public class CsvDataTableReader : ITableData {
 
 	public object[] GetRow(int index) {
 		DataRow row = _table.Rows[index];
-		return row.ItemArray;
+		return row.ItemArray!;
 	}
 
 	public object GetCell(int row, int column) => _table.Rows[row][column];

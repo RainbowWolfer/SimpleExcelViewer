@@ -48,7 +48,7 @@ internal class ManageColumnsDialogViewModel() : DialogViewModelOkCancel<ManageCo
 		}
 	}
 
-	private void Columns_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+	private void Columns_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) {
 		RaisePropertyChanged(() => Columns);
 	}
 

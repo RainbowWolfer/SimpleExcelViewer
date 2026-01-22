@@ -16,7 +16,7 @@ internal class SystemService : ISingletonDependency {
 	/// 注册右键菜单：重复点击可修复路径
 	/// </summary>
 	public void RegisterCsvContextMenu() {
-		string? exePath = Assembly.GetEntryAssembly().Location;
+		string? exePath = Assembly.GetEntryAssembly()?.Location;
 
 		if (exePath is null) {
 			throw new ArgumentNullException(nameof(exePath));

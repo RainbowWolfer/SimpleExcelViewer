@@ -158,7 +158,7 @@ internal class MainViewModel(
 		try {
 			if (Clipboard.ContainsFileDropList()) {
 				StringCollection fileList = Clipboard.GetFileDropList();
-				foreach (string filePath in fileList) {
+				foreach (string? filePath in fileList) {
 					HandleFilePath(filePath);
 				}
 				return;
@@ -177,8 +177,8 @@ internal class MainViewModel(
 	}
 
 
-	private void HandleFilePath(string filePath) {
-		if (!File.Exists(filePath) || !AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
+	private void HandleFilePath(string? filePath) {
+		if (filePath.IsBlank() || !File.Exists(filePath) || !AppConfig.ValidExtensionsSet.Contains(Path.GetExtension(filePath))) {
 			return;
 		}
 
@@ -291,7 +291,7 @@ internal class MainViewModel(
 	private bool CanOpenInFileExplorer(TabItemViewModel item) => item != null;
 
 	public static void OpenPathInSystemDefault(string path) {
-		if (string.IsNullOrWhiteSpace(path)) {
+		if (path.IsBlank()) {
 			return;
 		}
 
@@ -299,9 +299,13 @@ internal class MainViewModel(
 		// 如果是文件，我们要打开它所在的文件夹？
 		// 还是像IDEA那样：如果是文件，直接打开这个文件（用关联编辑器）？
 		// 通常"在资源管理器中打开"意味着如果是文件，就打开其父文件夹。
-		string targetPath = path;
+		string? targetPath = path;
 		if (File.Exists(path)) {
 			targetPath = Path.GetDirectoryName(path);
+		}
+
+		if (targetPath.IsBlank()) {
+			return;
 		}
 
 		try {

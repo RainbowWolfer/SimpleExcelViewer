@@ -38,7 +38,6 @@ InternalCompressLevel=ultra
 ; --- 新增：允许在 64 位系统上安装到 64 位 Program Files 目录 ---
 ArchitecturesInstallIn64BitMode=x64
 
-
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "chinesesimplified"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
@@ -48,6 +47,7 @@ Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
 Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
 Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+
 [CustomMessages]
 english.ContextMenuName=Open With SimpleExcelViewer
 chinesesimplified.ContextMenuName=使用 SimpleExcelViewer 打开
@@ -58,95 +58,108 @@ japanese.ContextMenuName=SimpleExcelViewer で開く
 korean.ContextMenuName=SimpleExcelViewer로 열기
 russian.ContextMenuName=Открыть с помощью SimpleExcelViewer
 
-DownloadingNet8=Downloading .NET 8 Desktop Runtime...
+english.DownloadingNet8=Downloading .NET 8 Desktop Runtime...
 chinesesimplified.DownloadingNet8=正在下载 .NET 8 桌面运行时...
 
-; --- 新增：询问用户是否下载的提示语 ---
-DotNetMissingPrompt=This software requires the .NET 8.0 Desktop Runtime to work.%n%nWould you like the installer to automatically download and install it now?
-chinesesimplified.DotNetMissingPrompt=您的电脑似乎尚未安装 .NET 8.0 桌面运行时，这是运行此软件所必需的组件。%n%n是否要立即由安装程序自动下载并安装？
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
+[Files]
+; --- 核心修改：智能识别架构，复制对应的单文件，并统一重命名为 SimpleExcelViewer.exe ---
+; 如果是 64 位系统，提取 _x64.exe
+Source: "{#MyPublishDir}\SimpleExcelViewer_x64.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Check: Is64BitInstallMode; Flags: ignoreversion solidbreak
+; 如果是 32 位系统，提取 _x86.exe
+Source: "{#MyPublishDir}\SimpleExcelViewer_x86.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Check: not Is64BitInstallMode; Flags: ignoreversion solidbreak
+
+[Registry]
+; 这里的代码和你原来的一模一样，非常完美，不需要改动
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: ""; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}"; ValueType: string; ValueName: "FriendlyTypeName"; ValueData: "{#MyAppAssocName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocKey}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+
+Root: HKA; Subkey: "Software\Classes\{#MyAppAssocExt}\OpenWithProgids"; ValueType: string; ValueName: "{#MyAppAssocKey}"; ValueData: ""; Flags: uninsdeletevalue
+
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: ""; ValueData: "{cm:ContextMenuName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer"; ValueType: string; ValueName: "Icon"; ValueData: "{app}\{#MyAppExeName},0"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\SystemFileAssociations\{#MyAppAssocExt}\shell\OpenWithSimpleExcelViewer\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+
+Root: HKA; Subkey: "Software\Microsoft\Windows\CurrentVersion\App Paths\{#MyAppExeName}"; ValueType: string; ValueName: ""; ValueData: "{app}\{#MyAppExeName}"; Flags: uninsdeletekey
+Root: HKA; Subkey: "Software\Classes\Applications\{#MyAppExeName}\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: uninsdeletekey
+
+[Icons]
+Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 ; ==============================================================================
-; [Code] 魔法区域：实现 .NET 8 桌面运行时检测与静默下载安装 (文件目录校验版)
+; [Code] 魔法区域：物理目录检测 .NET 8 与 用户交互式下载
 ; ==============================================================================
 [Code]
 var
   Net8DownloadPage: TDownloadWizardPage;
-  NeedsNet8Install: Boolean; // 记录是否真正需要(且用户同意)执行安装命令
+  RequiresNet8Download: Boolean; // 全局标记：记录用户是否同意下载且下载成功
 
-// 核心修改 1：使用最可靠的文件目录检查法
+// 核心改进：通过遍历物理文件夹来检测 .NET 8
 function IsNet8DesktopInstalled(): Boolean;
 var
+  DotNetPath: string;
   FindRec: TFindRec;
-  InstallDir: String;
-  SearchPath: String;
-  RegKey: String;
 begin
   Result := False;
 
-  // 1. 尝试从注册表获取 dotnet 的全局根安装路径 (InstallLocation 通常还是准的)
+  // 根据安装模式，精准定位 64位 或 32位 的 dotnet 物理目录
   if Is64BitInstallMode then
-    RegKey := 'SOFTWARE\dotnet\Setup\InstalledVersions\x64'
+    DotNetPath := ExpandConstant('{pf64}\dotnet\shared\Microsoft.WindowsDesktop.App')
   else
-    RegKey := 'SOFTWARE\dotnet\Setup\InstalledVersions\x86';
+    DotNetPath := ExpandConstant('{pf32}\dotnet\shared\Microsoft.WindowsDesktop.App');
 
-  if not RegQueryStringValue(HKLM, RegKey, 'InstallLocation', InstallDir) then
-  begin
-    // 如果注册表连位置都没写，直接指定默认的 Program Files 路径
-    if Is64BitInstallMode then
-      InstallDir := ExpandConstant('{pf64}\dotnet\')
-    else
-      InstallDir := ExpandConstant('{pf32}\dotnet\');
-  end;
-
-  // 2. 拼接 WPF/WinForms 桌面运行时的目标路径，使用通配符 8.0.*
-  // 使用 AddBackslash 确保路径拼接正确 (例如 C:\Program Files\dotnet\)
-  SearchPath := AddBackslash(InstallDir) + 'shared\Microsoft.WindowsDesktop.App\8.0.*';
-
-  // 3. 在文件系统中遍历查找
-  if FindFirst(SearchPath, FindRec) then
+  // 注意：Inno Setup 的 FindFirst 只有两个参数
+  if FindFirst(DotNetPath + '\8.0.*', FindRec) then
   begin
     try
       repeat
-        // 确保找到的是一个文件夹 (Directory) 
-        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY) <> 0 then
+        // 使用 FILE_ATTRIBUTE_DIRECTORY (值为 16) 来判断是否为文件夹
+        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <> 0) and
+           (FindRec.Name <> '.') and (FindRec.Name <> '..') then
         begin
-          Result := True; // 只要找到了任何一个 8.0.x 的文件夹，就说明有环境
+          Result := True;
           Break;
         end;
       until not FindNext(FindRec);
     finally
-      FindClose(FindRec);
+      FindClose(FindRec); // 必须释放搜索句柄
     end;
   end;
 end;
 
-// 初始化安装向导时创建下载页面
 procedure InitializeWizard;
 begin
   Net8DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), CustomMessage('DownloadingNet8'), nil);
-  NeedsNet8Install := False; // 初始状态为不需要安装
 end;
 
-// 用户点击“下一步”时的拦截逻辑
 function NextButtonClick(CurPageID: Integer): Boolean;
-var
-  UserResponse: Integer;
 begin
   Result := True;
   
-  // 当用户在“准备安装”页面点击下一步时
+  // 当用户在“准备安装(Ready)”页面点击下一步时触发检测
   if CurPageID = wpReady then
   begin
+    RequiresNet8Download := False; // 默认不需要安装环境
+
     if not IsNet8DesktopInstalled() then
     begin
-      // 核心修改 2：在下载前弹出确认框询问用户
-      UserResponse := MsgBox(CustomMessage('DotNetMissingPrompt'), mbConfirmation, MB_YESNO);
-      
-      if UserResponse = IDYES then
+      // 弹出询问框，把选择权交给用户
+      if MsgBox('系统未检测到 .NET 8 桌面运行时 (Microsoft.WindowsDesktop.App 8.0.x)。' + #13#10 + #13#10 +
+                'SimpleExcelViewer 需要该环境才能正常运行。' + #13#10 +
+                '是否立即自动下载并安装？（推荐选择“是”）', mbConfirmation, MB_YESNO) = IDYES then
       begin
+        // 用户选择了“是”，开始走下载流程
+        RequiresNet8Download := True; 
         Net8DownloadPage.Clear;
         
-        // 使用微软官方永久短链接下载对应的引导安装程序
         if Is64BitInstallMode then
           Net8DownloadPage.Add('https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe', 'dotnet8_installer.exe', '')
         else
@@ -155,14 +168,15 @@ begin
         Net8DownloadPage.Show;
         try
           try
-            Net8DownloadPage.Download; // 开始下载
-            NeedsNet8Install := True;  // 下载成功，标记为需要在后续执行安装
+            Net8DownloadPage.Download; // 阻塞式下载
           except
+            // 下载异常处理
             if Net8DownloadPage.AbortedByUser then
-              Log('User aborted the download.')
+              Log('用户取消了下载。')
             else
-              MsgBox('无法下载 .NET 8 运行时，您可以稍后自行手动下载安装。', mbError, MB_OK);
-            // 即使下载失败，也让安装程序继续把主体装完，所以 Result 保持为 True
+              MsgBox('下载失败，可能是网络原因。主程序仍将安装，但您可能需要稍后手动去微软官网下载 .NET 8。', mbError, MB_OK);
+            
+            RequiresNet8Download := False; // 下载失败则取消静默安装计划
           end;
         finally
           Net8DownloadPage.Hide;
@@ -170,23 +184,23 @@ begin
       end
       else
       begin
-        // 用户选择了“否”，不下载，直接跳过并继续安装主体
-        Log('用户选择了跳过 .NET 8 运行时的下载。');
+        // 用户选择了“否”
+        Log('用户拒绝了自动下载 .NET 8 运行时。');
+        // Result 依然为 True，允许主程序继续安装
       end;
     end;
   end;
 end;
 
-// 实际执行文件复制前，先安装刚刚下载的 .NET 8 环境
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   ResultCode: Integer;
 begin
   Result := '';
-  // 核心修改 3：只有标记为 True（用户同意且下载成功）时，才执行静默安装
-  if NeedsNet8Install then
+  // 只有当用户同意了下载，且文件下载成功后，才执行后台安装
+  if RequiresNet8Download then
   begin
-    // 使用静默参数 (/install /quiet /norestart) 在后台悄悄安装
-    Exec(ExpandConstant('{tmp}\dotnet8_installer.exe'), '/install /quiet /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
+    // 将 /quiet 改为 /passive，这样会弹出微软官方的安装进度条，但无需用户干预
+    Exec(ExpandConstant('{tmp}\dotnet8_installer.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
   end;
 end;

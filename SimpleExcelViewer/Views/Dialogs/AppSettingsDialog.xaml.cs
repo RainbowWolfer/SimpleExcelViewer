@@ -16,7 +16,7 @@ public partial class AppSettingsDialog : UserControl {
 public record class AppSettingsDialogParameter();
 
 internal class AppSettingsDialogViewModel(
-	SystemService systemService,
+	//SystemService systemService,
 	IAppSettingsService appSettingsService,
 	IMapper mapper
 ) : DialogViewModelOkCancel<AppSettingsDialogParameter> {
@@ -45,31 +45,31 @@ internal class AppSettingsDialogViewModel(
 	}
 
 
-	private DelegateCommand? registerContextMenuCommand;
-	public IDelegateCommand RegisterContextMenuCommand => registerContextMenuCommand ??= new(RegisterContextMenu);
-	private void RegisterContextMenu() {
-		try {
-			systemService.RegisterCsvContextMenu();
-			MessageBoxService.ShowInformation("Context menu registered successfully.");
-		} catch (Exception ex) {
-			DebugLoggerManager.LogHandledException(ex);
-			MessageBoxService.ShowError("Failed to register context menu", ex);
-		}
-	}
+	////private DelegateCommand? registerContextMenuCommand;
+	////public IDelegateCommand RegisterContextMenuCommand => registerContextMenuCommand ??= new(RegisterContextMenu);
+	////private void RegisterContextMenu() {
+	////	try {
+	////		systemService.RegisterCsvContextMenu();
+	////		MessageBoxService.ShowInformation("Context menu registered successfully.");
+	////	} catch (Exception ex) {
+	////		DebugLoggerManager.LogHandledException(ex);
+	////		MessageBoxService.ShowError("Failed to register context menu", ex);
+	////	}
+	////}
 
 
 
-	private DelegateCommand? unregisterContextMenuCommand;
-	public IDelegateCommand UnregisterContextMenuCommand => unregisterContextMenuCommand ??= new(UnregisterContextMenu);
-	private void UnregisterContextMenu() {
-		try {
-			systemService.UnregisterCsvContextMenu();
-			MessageBoxService.ShowInformation("Context menu unregistered successfully.");
-		} catch (Exception ex) {
-			DebugLoggerManager.LogHandledException(ex);
-			MessageBoxService.ShowError("Failed to unregister context menu", ex);
-		}
-	}
+	////private DelegateCommand? unregisterContextMenuCommand;
+	////public IDelegateCommand UnregisterContextMenuCommand => unregisterContextMenuCommand ??= new(UnregisterContextMenu);
+	////private void UnregisterContextMenu() {
+	////	try {
+	////		systemService.UnregisterCsvContextMenu();
+	////		MessageBoxService.ShowInformation("Context menu unregistered successfully.");
+	////	} catch (Exception ex) {
+	////		DebugLoggerManager.LogHandledException(ex);
+	////		MessageBoxService.ShowError("Failed to unregister context menu", ex);
+	////	}
+	////}
 
 	protected override bool OnConfirmed() {
 		try {

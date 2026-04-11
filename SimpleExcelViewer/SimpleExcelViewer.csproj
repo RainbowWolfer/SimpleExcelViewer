@@ -9,6 +9,7 @@
 		<LangVersion>12</LangVersion>
 		<PlatformTarget>AnyCPU</PlatformTarget>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<DebugType>embedded</DebugType>
 
 		<Version>0.0.1</Version>
 		<Authors>RainbowWolfer</Authors>
@@ -17,16 +18,10 @@
 
 		<ApplicationIcon>Icon.ico</ApplicationIcon>
 
-		<RW_Common_Version>1.0.33</RW_Common_Version>
+		<RW_Common_Version>1.0.50</RW_Common_Version>
 
-	</PropertyGroup>
+		<NoWarn>$(NoWarn);CA1416</NoWarn>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-		<DebugType>embedded</DebugType>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-		<DebugType>embedded</DebugType>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,10 +1,10 @@
-﻿using AutoMapper;
+﻿using Mapster;
 using SimpleExcelViewer.Services;
 
 namespace SimpleExcelViewer.Mappers;
 
-internal class Mapper : Profile {
-	public Mapper() {
-		CreateMap<AppSettingsModel, AppSettingsModel>();
+internal class Mapper : IRegister {
+	public void Register(TypeAdapterConfig config) {
+		config.NewConfig<AppSettingsModel, AppSettingsModel>();
 	}
 }

@@ -104,7 +104,7 @@
 							<MenuItem Command="{Binding ConfigHighlightCommand}" Header="Config Highlight"/>
 						</MenuItem>
 
-						<MenuItem Header="More">
+						<MenuItem Header="More" Visibility="Visible">
 							<MenuItem Command="{Binding OpenSourceLibrariesCommand}" Header="Open Source Libraries"/>
 							<MenuItem Command="{Binding SourceCodeCommand}" Header="Source Code"/>
 							<Separator/>

@@ -5,8 +5,9 @@
 		<UseWPF>true</UseWPF>
 		<LangVersion>12</LangVersion>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<DebugType>embedded</DebugType>
 
-		<RW_Common_Version>1.0.33</RW_Common_Version>
+		<RW_Common_Version>1.0.50</RW_Common_Version>
 	</PropertyGroup>
 
 	<ItemGroup>

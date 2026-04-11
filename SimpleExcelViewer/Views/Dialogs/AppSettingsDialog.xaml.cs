@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using DevExpress.Mvvm;
+﻿using DevExpress.Mvvm;
+using MapsterMapper;
 using RW.Base.WPF.Extensions;
 using SimpleExcelViewer.Services;
 using SimpleExcelViewer.ViewModels;

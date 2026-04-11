@@ -5,6 +5,7 @@ using RW.Base.WPF.Extensions;
 using RW.Base.WPF.Interfaces;
 using RW.Base.WPF.ViewModels;
 using RW.Common.WPF.Globalization;
+using RW.Common.WPF.Helpers;
 using SimpleExcelViewer.Configs;
 using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Services;
@@ -106,9 +107,9 @@ public partial class App : ApplicationBase {
 	protected override FolderConfig GetFolderConfig(IAppManager appManager) => new AppFolderConfig(appManager);
 
 	protected override void ShowFatalDialog(Exception exception) {
+		exception.ToString().CopyToClipboard();
 		MessageBox.Show(exception.ToString(), "Fatal Error");
 	}
-
 
 	private class _AppManager : AppManager {
 		public override string AppName => AppConfig.AppName;
@@ -117,6 +118,25 @@ public partial class App : ApplicationBase {
 	}
 
 	private class _DllLoader() : DllLoader() {
+
+
+		protected override IEnumerable<Assembly> LoadAssemblies() {
+			Assembly assembly = typeof(App).Assembly;
+			yield return assembly;
+			//return base.LoadAssemblies();
+		}
+
+		protected override bool MatchAssembly(string dllFileName) {
+			if (dllFileName.StartsWith("SimpleExcelViewer")) {
+				return true;
+			}
+			return false;
+		}
+
+		protected override bool MatchType(Type type) {
+			return base.MatchType(type);
+		}
+
 		protected override void AfterInitialized(IReadOnlyDictionary<string, Assembly> pool, IReadOnlyDictionary<string, Type> types) {
 			base.AfterInitialized(pool, types);
 

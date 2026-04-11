@@ -27,10 +27,13 @@ public partial class App : ApplicationBase {
 
 	public static IReadOnlyList<string>? Args { get; private set; }
 
+	private static readonly Stopwatch startupStopWatch = new();
+
 	static App() {
 		DebugConfig.Print = o => Debug.WriteLine(o);
 		DebugConfig.DebuggerBreak = Debugger.Break;
 		AppArgsService.OnPipeArgsHandled += AppArgsService_OnPipeArgsHandled;
+		startupStopWatch.Start();
 	}
 
 	private static void AppArgsService_OnPipeArgsHandled(IReadOnlyList<string> args) {
@@ -75,6 +78,15 @@ public partial class App : ApplicationBase {
 		}
 	}
 
+	protected override void Loaded() {
+		base.Loaded();
+
+		startupStopWatch.Stop();
+		Debug.WriteLine($"app started in {startupStopWatch.ElapsedMilliseconds} ms");
+
+		((AppManagerEx)AppManager).AppStartupTimeSpan = TimeSpan.FromMilliseconds(startupStopWatch.ElapsedMilliseconds);
+	}
+
 	protected override string GetMutexName() {
 		if (AppSettingsService.Model.AllowMultipleInstances) {
 			return string.Empty;
@@ -101,7 +113,7 @@ public partial class App : ApplicationBase {
 
 	protected override Window GetMainWindow() => new MainWindow();
 
-	protected override AppManager GetAppManager() => new _AppManager();
+	protected override AppManager GetAppManager() => new AppManagerEx();
 	protected override DllLoader GetDllLoader() => new _DllLoader();
 	protected override IoCInitializer GetIoCInitializer(IApplication application) => new _IoCInitializer(application);
 	protected override FolderConfig GetFolderConfig(IAppManager appManager) => new AppFolderConfig(appManager);
@@ -109,12 +121,6 @@ public partial class App : ApplicationBase {
 	protected override void ShowFatalDialog(Exception exception) {
 		exception.ToString().CopyToClipboard();
 		MessageBox.Show(exception.ToString(), "Fatal Error");
-	}
-
-	private class _AppManager : AppManager {
-		public override string AppName => AppConfig.AppName;
-		public override string BuildMode => AppConfig.IsRelease ? "Release" : "Debug";
-		public override bool IsRelease => AppConfig.IsRelease;
 	}
 
 	private class _DllLoader() : DllLoader() {

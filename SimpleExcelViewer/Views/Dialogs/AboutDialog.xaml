@@ -44,15 +44,113 @@
 		<Border Margin="2,0">
 			<StackPanel>
 				<TextBlock Text="By RainbowWolfer (R.Wolfer)"/>
-				<!--<TextBlock>
-					<Hyperlink NavigateUri="{x:Static root:AppConfig.GithubURL}" RequestNavigate="Hyperlink_RequestNavigate">
-						Github
-					</Hyperlink>
-				</TextBlock>-->
 				<c:HyperLink DisplayText="Github" Link="{x:Static root:AppConfig.GithubURL}"/>
 			</StackPanel>
 		</Border>
 
+		<Separator Margin="0,6,0,2"/>
+		<Grid Margin="4,0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="12"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<TextBlock
+				Grid.Row="0"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Administrator:"/>
+			<TextBlock
+				Grid.Row="0"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding AdministratorStatus}"/>
+
+			<TextBlock
+				Grid.Row="1"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Architecture:"/>
+			<TextBlock
+				Grid.Row="1"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding ProcessArchitecture}"/>
+
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Build Mode:"/>
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding AppManager.BuildMode}"/>
+
+			<TextBlock
+				Grid.Row="3"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Deployment Mode:"/>
+			<TextBlock
+				Grid.Row="3"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding DeploymentMode}"/>
+
+			<TextBlock
+				Grid.Row="4"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Runtime:"/>
+			<TextBlock
+				Grid.Row="4"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding FrameworkVersion}"/>
+
+			<TextBlock
+				Grid.Row="5"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="OS:"/>
+			<TextBlock
+				Grid.Row="5"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding OSDescription}"/>
+
+			<TextBlock
+				Grid.Row="6"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="Startup Time:"/>
+			<TextBlock
+				Grid.Row="6"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding AppManager.AppStartupTimeSpan, StringFormat='mm\\:ss\\:fff'}"/>
+
+		</Grid>
 	</StackPanel>
 
 </UserControl>

@@ -25,14 +25,14 @@ internal class LibrariesDialogViewModel : DialogViewModelOk<object> {
 
 
 	private IEnumerable<LibraryRecord> GetLibraryRecords() {
+		yield return new LibraryRecord("PolySharp", "v1.15.0", "https://www.nuget.org/packages/PolySharp");
+		yield return new LibraryRecord("gong-wpf-dragdrop", "v4.0.0", "https://www.nuget.org/packages/gong-wpf-dragdrop");
 		yield return new LibraryRecord("LiteDB", "v5.0.21", "https://www.nuget.org/packages/LiteDB/");
-		yield return new LibraryRecord("Fody", "v6.9.3", "https://www.nuget.org/packages/Fody");
-		yield return new LibraryRecord("Costura.Fody", "v6.0.0", "https://www.nuget.org/packages/Costura.Fody");
 		yield return new LibraryRecord("FastWpfGrid", "Modified", "https://github.com/janproch/fastwpfgrid");
-		yield return new LibraryRecord("Autofac", "v9.0.0", "https://www.nuget.org/packages/Autofac");
-		yield return new LibraryRecord("AutoMapper", "v10.1.1", "https://www.nuget.org/packages/AutoMapper");
+		yield return new LibraryRecord("Autofac", "v9.1.0", "https://www.nuget.org/packages/Autofac");
+		yield return new LibraryRecord("MapsterMapper", "v10.0.7", "https://www.nuget.org/packages/Mapster/");
 		yield return new LibraryRecord("DevExpressMvvm", "v24.1.6", "https://www.nuget.org/packages/DevExpressMvvm");
-		yield return new LibraryRecord("Newtonsoft.Json", "v13.0.4", "https://www.nuget.org/packages/Newtonsoft.Json");
+		yield return new LibraryRecord("Newtonsoft.Json", "v13.0.7", "https://www.nuget.org/packages/Newtonsoft.Json");
 	}
 }
 

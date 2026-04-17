@@ -33,6 +33,7 @@
 		<vms:DialogService x:Name="LibrariesDialogService" ContentType="{x:Type dialogs:LibrariesDialog}"/>
 		<vms:DialogService x:Name="SourceCodeDialogService" ContentType="{x:Type dialogs:SourceCodeDialog}"/>
 		<vms:DialogService x:Name="AboutDialogService" ContentType="{x:Type dialogs:AboutDialog}"/>
+		<vms:DialogService x:Name="ConfigHighlightDialogService" ContentType="{x:Type dialogs:ConfigHighlightDialog}"/>
 
 	</dxmvvm:Interaction.Behaviors>
 

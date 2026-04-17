@@ -8,5 +8,6 @@ public class AppFolderConfig(IAppManager appManager) : FolderConfig(appManager) 
 
 	public string RecentFilesConfigFilePath => Path.Combine(DataFolder, "RecentFiles.json");
 	public string AppSettingsFilePath => Path.Combine(DataFolder, "AppSettings.json");
+	public string RegexConfigFilePath => Path.Combine(DataFolder, "RegexConfig.json");
 
 }

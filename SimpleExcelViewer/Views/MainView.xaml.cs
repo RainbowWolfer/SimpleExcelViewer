@@ -45,6 +45,7 @@ internal class MainViewModel(
 	private IDialogServiceEx AboutDialogService => GetService<IDialogServiceEx>(nameof(AboutDialogService));
 	private IDialogServiceEx SourceCodeDialogService => GetService<IDialogServiceEx>(nameof(SourceCodeDialogService));
 	private IDialogServiceEx LibrariesDialogService => GetService<IDialogServiceEx>(nameof(LibrariesDialogService));
+	private IDialogServiceEx ConfigHighlightDialogService => GetService<IDialogServiceEx>(nameof(ConfigHighlightDialogService));
 
 
 	public IAppManager AppManager { get; } = appManager;
@@ -398,7 +399,7 @@ internal class MainViewModel(
 	private DelegateCommand? configHighlightCommand;
 	public IDelegateCommand ConfigHighlightCommand => configHighlightCommand ??= new(ConfigHighlight);
 	private void ConfigHighlight() {
-
+		ConfigHighlightDialogService.ShowOKCancel(this, null);
 	}
 
 

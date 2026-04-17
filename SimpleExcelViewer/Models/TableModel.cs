@@ -4,13 +4,15 @@ using RW.Common.WPF.Helpers;
 using RW.Common.WPF.Models;
 using SimpleExcelViewer.Enums;
 using SimpleExcelViewer.Interfaces;
+using SimpleExcelViewer.Services;
+using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace SimpleExcelViewer.Models;
 
 public class TableModel : FastGridModelBase, IDisposable {
 	public ITableData Data { get; }
 
-	//public override int RightAlignBlockCount => 1;
 	private List<int> _visibleColumnMap = [];
 	public IReadOnlyList<int> CurrentColumnMap => _visibleColumnMap;
 
@@ -22,7 +24,6 @@ public class TableModel : FastGridModelBase, IDisposable {
 		set {
 			if (isTransposed != value) {
 				isTransposed = value;
-				// 状态改变时必须刷新行列总数和视图
 				RefreshDimensions();
 				InvalidateAll();
 			}
@@ -39,6 +40,14 @@ public class TableModel : FastGridModelBase, IDisposable {
 		}
 	}
 
+	private readonly List<CompiledRegexItem> _compiledRegexes = [];
+
+	private class CompiledRegexItem(Regex pattern, Color backgroundColor, Color foregroundColor) {
+		public Regex Pattern { get; } = pattern;
+		public Color? BackgroundColor { get; } = backgroundColor;
+		public Color? ForegroundColor { get; } = foregroundColor;
+	}
+
 	public TableModel(ITableData data) : base(data.ColumnCount, data.RowCount) {
 		Data = data;
 
@@ -50,11 +59,9 @@ public class TableModel : FastGridModelBase, IDisposable {
 		int dataRowCount = Data.RowCount;
 
 		if (IsTransposed) {
-			// 转置后：Grid行数 = 数据可见列数，Grid列数 = 数据行数
 			UpdateRowCount(visibleDataColumnCount);
 			UpdateColumnCount(dataRowCount);
 		} else {
-			// 正常：Grid行数 = 数据行数，Grid列数 = 数据可见列数
 			UpdateRowCount(dataRowCount);
 			UpdateColumnCount(visibleDataColumnCount);
 		}
@@ -88,19 +95,11 @@ public class TableModel : FastGridModelBase, IDisposable {
 		SelectionRect = selectionRect;
 	}
 
-	//public override IFastGridCell GetCell(IFastGridView view, int row, int column) {
-	//	IFastGridCell cell = base.GetCell(view, row, column);
-	//	return cell;
-	//	int realColumnIndex = _visibleColumnMap[column];
-	//	return base.GetCell(view, row, realColumnIndex);
-	//}
 
 	public override string GetColumnHeaderText(int column) {
 		if (IsTransposed) {
-			// 转置后，列标题显示的是原始数据的“行号”
 			return $"Row {column + 1}";
 		} else {
-			// 正常显示列名
 			int realDataColumnIndex = _visibleColumnMap[column];
 			return GetColumnName(realDataColumnIndex);
 		}
@@ -108,11 +107,9 @@ public class TableModel : FastGridModelBase, IDisposable {
 
 	public override string GetRowHeaderText(int row) {
 		if (IsTransposed) {
-			// 转置后，行标题显示的是原始数据的“列名”
 			int realDataColumnIndex = _visibleColumnMap[row];
 			return GetColumnName(realDataColumnIndex);
 		} else {
-			// 正常显示行号
 			return (row + 1).ToString();
 		}
 	}
@@ -131,12 +128,10 @@ public class TableModel : FastGridModelBase, IDisposable {
 
 	public override string GetCellText(int row, int column) {
 		if (IsTransposed) {
-			// Grid中的 row 其实是数据的列，column 其实是数据的行
 			int realDataColumnIndex = _visibleColumnMap[row];
 			int realDataRowIndex = column;
 			return Data.GetCell(realDataRowIndex, realDataColumnIndex).SafeToString();
 		} else {
-			// 正常映射
 			int realDataColumnIndex = _visibleColumnMap[column];
 			int realDataRowIndex = row;
 			return Data.GetCell(realDataRowIndex, realDataColumnIndex).SafeToString();
@@ -201,24 +196,70 @@ public class TableModel : FastGridModelBase, IDisposable {
 	}
 
 	private IEnumerable<ContextMenuModelItem> RowHeaderContextMenuItems() {
-		//yield return new ContextMenuModelItem("2", "", () => { });
 		yield break;
 	}
 
 	private IEnumerable<ContextMenuModelItem> GridHeaderContextMenuItems() {
-		//yield return new ContextMenuModelItem("3", "", () => { });
 		yield break;
 	}
 
 	private IEnumerable<ContextMenuModelItem> CellContextMenuItems() {
-		//yield return new ContextMenuModelItem("4", "", () => { });
 		yield break;
 	}
 
 
+	public override IFastGridCell GetCell(IFastGridView view, int row, int column) {
+		string cellText = GetCellText(row, column);
+
+		FastGridCellImpl cell = new() {
+			Alignment = RenderTextAlignment.Right,
+		};
+
+		cell.AddTextBlock(cellText);
+
+		if (_compiledRegexes.Count == 0) {
+			return cell;
+		}
+
+		foreach (CompiledRegexItem cachedItem in _compiledRegexes) {
+			if (cachedItem.Pattern.IsMatch(cellText)) {
+				cell.BackgroundColor = cachedItem.BackgroundColor;
+				break;
+			}
+		}
+
+		return cell;
+	}
+
+	public void UpdateRegexConfig(RegexConfigModel? regexConfig) {
+		_compiledRegexes.Clear();
+
+		if (regexConfig != null && regexConfig.Items != null) {
+			foreach (RegexConfigModelItem item in regexConfig.Items) {
+				if (item.Regex.IsBlank()) {
+					continue;
+				}
+
+				try {
+					Regex compiledRegex = new(item.Regex, RegexOptions.Compiled);
+
+					CompiledRegexItem cachedItem = new(
+						compiledRegex,
+						item.BackColor.ToMediaColor(),
+						item.TextColor.ToMediaColor()
+					);
+					_compiledRegexes.Add(cachedItem);
+				} catch (ArgumentException) {
+				}
+			}
+		}
+
+		InvalidateAll();
+	}
 
 
 	public void Dispose() {
 		Data.Dispose();
 	}
+
 }

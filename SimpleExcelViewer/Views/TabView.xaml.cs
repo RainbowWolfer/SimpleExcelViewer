@@ -29,7 +29,7 @@ public partial class TabView : UserControl {
 	}
 }
 
-internal class TabViewModel(IAppSettingsService appSettingsService) : ViewModelBase {
+internal class TabViewModel(IAppSettingsService appSettingsService, IRegexConfigService regexConfigService) : ViewModelBase {
 
 	private IMessageBoxServiceEx MessageBoxService => GetService<IMessageBoxServiceEx>();
 	public IDispatcherServiceEx DispatcherService => GetService<IDispatcherServiceEx>();
@@ -64,12 +64,19 @@ internal class TabViewModel(IAppSettingsService appSettingsService) : ViewModelB
 			return;
 		}
 
+		regexConfigService.RegexConfigChanged += RegexConfigService_RegexConfigChanged;
+
 		await Parameter.LoadAsync(DispatcherService);
+
+		Parameter.TableModel?.UpdateRegexConfig(regexConfigService.RegexConfigModel);
 
 		UserControlService.Object.MainFastGridControl.Focus();
 
 	}
 
+	private void RegexConfigService_RegexConfigChanged(IRegexConfigService sender, EventArgs args) {
+		Parameter.TableModel?.UpdateRegexConfig(regexConfigService.RegexConfigModel);
+	}
 
 	private DelegateCommand? manageColumnsCommand;
 	public IDelegateCommand ManageColumnsCommand => manageColumnsCommand ??= new(ManageColumns, CanManageColumns);

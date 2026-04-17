@@ -64,6 +64,7 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 
 			<TextBlock
@@ -149,6 +150,18 @@
 				Grid.Column="2"
 				Margin="0,2"
 				Text="{Binding AppManager.AppStartupTimeSpan, StringFormat='mm\\:ss\\:fff'}"/>
+
+			<TextBlock
+				Grid.Row="7"
+				Grid.Column="0"
+				Margin="0,2"
+				Foreground="Gray"
+				Text="XML Language:"/>
+			<TextBlock
+				Grid.Row="7"
+				Grid.Column="2"
+				Margin="0,2"
+				Text="{Binding AppManager.Language}"/>
 
 		</Grid>
 	</StackPanel>

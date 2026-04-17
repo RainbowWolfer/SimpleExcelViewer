@@ -27,7 +27,6 @@ internal class LibrariesDialogViewModel : DialogViewModelOk<object> {
 	private IEnumerable<LibraryRecord> GetLibraryRecords() {
 		yield return new LibraryRecord("PolySharp", "v1.15.0", "https://www.nuget.org/packages/PolySharp");
 		yield return new LibraryRecord("gong-wpf-dragdrop", "v4.0.0", "https://www.nuget.org/packages/gong-wpf-dragdrop");
-		yield return new LibraryRecord("LiteDB", "v5.0.21", "https://www.nuget.org/packages/LiteDB/");
 		yield return new LibraryRecord("FastWpfGrid", "Modified", "https://github.com/janproch/fastwpfgrid");
 		yield return new LibraryRecord("Autofac", "v9.1.0", "https://www.nuget.org/packages/Autofac");
 		yield return new LibraryRecord("MapsterMapper", "v10.0.7", "https://www.nuget.org/packages/Mapster/");

@@ -37,6 +37,25 @@
 	<Style TargetType="Button" BasedOn="{StaticResource Button.Custom}"/>
 
 
+	<Style x:Key="PopupBorder" TargetType="Border">
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="LightGray"/>
+		<Setter Property="Background" Value="#F4F4F4"/>
+		<Setter Property="Padding" Value="4"/>
+		<Setter Property="Margin" Value="10"/>
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="UseLayoutRounding" Value="True"/>
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect
+					BlurRadius="4"
+					Opacity="0.4"
+					ShadowDepth="4"
+					Color="Gray"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 
 
 	<Style x:Key="DialogStyle" TargetType="UserControl">
@@ -120,5 +139,115 @@
 	</Style>
 
 	<Style TargetType="c:HyperLink" BasedOn="{StaticResource HyperLink}"/>
+
+
+	<Style x:Key="ColorConfigControl" TargetType="c:ColorConfigControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="c:ColorConfigControl">
+					<Grid DataContext="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="auto"/>
+						</Grid.ColumnDefinitions>
+
+						<wpf:SpacingStackPanel Width="150" Orientation="Vertical" VerticalSpacing="4">
+
+							<DockPanel>
+								<Border
+									Width="20"
+									Margin="2,0"
+									Background="Red"
+									CornerRadius="2">
+									<TextBlock
+										VerticalAlignment="Center"
+										Foreground="White"
+										Text="R"
+										TextAlignment="Center"/>
+								</Border>
+								<Border Margin="2,0" DockPanel.Dock="Right">
+									<TextBlock VerticalAlignment="Center" Text="{Binding ColorEditItem.R}"/>
+								</Border>
+								<Slider
+									Margin="2,0,0,0"
+									Minimum="0"
+									Maximum="255"
+									IsSnapToTickEnabled="True"
+									LargeChange="10"
+									SmallChange="1"
+									TickFrequency="1"
+									Value="{Binding ColorEditItem.R}"/>
+							</DockPanel>
+
+							<DockPanel>
+								<Border
+									Width="20"
+									Margin="2,0"
+									Background="Green"
+									CornerRadius="2">
+									<TextBlock
+										VerticalAlignment="Center"
+										Foreground="White"
+										Text="G"
+										TextAlignment="Center"/>
+								</Border>
+								<Border Margin="2,0" DockPanel.Dock="Right">
+									<TextBlock VerticalAlignment="Center" Text="{Binding ColorEditItem.G}"/>
+								</Border>
+								<Slider
+									Margin="2,0,0,0"
+									Minimum="0"
+									Maximum="255"
+									IsSnapToTickEnabled="True"
+									LargeChange="10"
+									SmallChange="1"
+									TickFrequency="1"
+									Value="{Binding ColorEditItem.G}"/>
+							</DockPanel>
+
+							<DockPanel>
+								<Border
+									Width="20"
+									Margin="2,0"
+									Background="Blue"
+									CornerRadius="2">
+									<TextBlock
+										VerticalAlignment="Center"
+										Foreground="White"
+										Text="B"
+										TextAlignment="Center"/>
+								</Border>
+								<Border Margin="2,0" DockPanel.Dock="Right">
+									<TextBlock VerticalAlignment="Center" Text="{Binding ColorEditItem.B}"/>
+								</Border>
+								<Slider
+									Margin="2,0,0,0"
+									Minimum="0"
+									Maximum="255"
+									IsSnapToTickEnabled="True"
+									LargeChange="10"
+									SmallChange="1"
+									TickFrequency="1"
+									Value="{Binding ColorEditItem.B}"/>
+							</DockPanel>
+
+						</wpf:SpacingStackPanel>
+
+						<Border Grid.Column="1">
+							<Rectangle
+								Width="60"
+								Margin="4,2"
+								Fill="{Binding ColorEditItem.Color, Converter={StaticResource ColorToBrushConverter}}"
+								RadiusX="4"
+								RadiusY="4"/>
+						</Border>
+
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style TargetType="c:ColorConfigControl" BasedOn="{StaticResource ColorConfigControl}"/>
 
 </ResourceDictionary>

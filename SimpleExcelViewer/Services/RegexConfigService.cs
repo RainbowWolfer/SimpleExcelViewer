@@ -59,6 +59,9 @@ internal class RegexConfigService(AppFolderConfig folderConfig) : IRegexConfigSe
 			r.BackColor.Color = item.BackColor.ToMediaColor();
 			r.TextColor.Color = item.TextColor.ToMediaColor();
 
+			r.EnableTextColor = item.EnableTextColor;
+			r.EnableBackColor = item.EnableBackColor;
+
 			yield return r;
 		}
 	}
@@ -72,6 +75,8 @@ internal class RegexConfigService(AppFolderConfig folderConfig) : IRegexConfigSe
 					Regex = x.Regex,
 					BackColor = x.BackColor.Color.ToSimpleColor(),
 					TextColor = x.TextColor.Color.ToSimpleColor(),
+					EnableBackColor = x.EnableBackColor,
+					EnableTextColor = x.EnableTextColor,
 				})],
 			};
 
@@ -94,6 +99,8 @@ public class RegexConfigModel {
 
 public class RegexConfigModelItem {
 	public required string Regex { get; init; }
+	public required bool EnableBackColor { get; init; }
+	public required bool EnableTextColor { get; init; }
 	public required SimpleColor BackColor { get; init; }
 	public required SimpleColor TextColor { get; init; }
 }

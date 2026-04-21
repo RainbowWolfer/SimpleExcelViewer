@@ -42,7 +42,7 @@ public class TableModel : FastGridModelBase, IDisposable {
 
 	private readonly List<CompiledRegexItem> _compiledRegexes = [];
 
-	private class CompiledRegexItem(Regex pattern, Color backgroundColor, Color foregroundColor) {
+	private class CompiledRegexItem(Regex pattern, Color? backgroundColor, Color? foregroundColor) {
 		public Regex Pattern { get; } = pattern;
 		public Color? BackgroundColor { get; } = backgroundColor;
 		public Color? ForegroundColor { get; } = foregroundColor;
@@ -215,7 +215,7 @@ public class TableModel : FastGridModelBase, IDisposable {
 			Alignment = RenderTextAlignment.Right,
 		};
 
-		cell.AddTextBlock(cellText);
+		FastGridBlockImpl text = cell.AddTextBlock(cellText);
 
 		if (_compiledRegexes.Count == 0) {
 			return cell;
@@ -223,7 +223,12 @@ public class TableModel : FastGridModelBase, IDisposable {
 
 		foreach (CompiledRegexItem cachedItem in _compiledRegexes) {
 			if (cachedItem.Pattern.IsMatch(cellText)) {
-				cell.BackgroundColor = cachedItem.BackgroundColor;
+				if (cachedItem.BackgroundColor != null) {
+					cell.BackgroundColor = cachedItem.BackgroundColor;
+				}
+				if (cachedItem.ForegroundColor != null) {
+					text.FontColor = cachedItem.ForegroundColor;
+				}
 				break;
 			}
 		}
@@ -244,9 +249,9 @@ public class TableModel : FastGridModelBase, IDisposable {
 					Regex compiledRegex = new(item.Regex, RegexOptions.Compiled);
 
 					CompiledRegexItem cachedItem = new(
-						compiledRegex,
-						item.BackColor.ToMediaColor(),
-						item.TextColor.ToMediaColor()
+						pattern: compiledRegex,
+						backgroundColor: item.EnableBackColor ? item.BackColor.ToMediaColor() : null,
+						foregroundColor: item.EnableTextColor ? item.TextColor.ToMediaColor() : null
 					);
 					_compiledRegexes.Add(cachedItem);
 				} catch (ArgumentException) {

@@ -353,6 +353,10 @@ internal class MainViewModel(
 	private DelegateCommand<MouseButtonEventArgs>? tabItemMouseDownCommand;
 	public IDelegateCommand TabItemMouseDownCommand => tabItemMouseDownCommand ??= new(TabItemMouseDown);
 	private void TabItemMouseDown(MouseButtonEventArgs args) {
+		if (args is null) {
+			return;
+		}
+
 		if (args.ChangedButton is MouseButton.Middle
 			&& args.Source is FrameworkElement frameworkElement
 			&& frameworkElement.DataContext is TabItemViewModel tabItemViewModel

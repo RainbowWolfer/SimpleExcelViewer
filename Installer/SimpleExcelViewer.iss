@@ -2,6 +2,9 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 ; Non-commercial use only
 
+; 引入依赖安装脚本 (请确保 CodeDependencies.iss 与当前文件在同一目录下)
+#include "CodeDependencies.iss"
+
 #define MyAppName "Simple Excel Viewer"
 #define MyAppName2 "SimpleExcelViewer"
 #define MyAppVersion "0.0.1"
@@ -31,11 +34,10 @@ InfoAfterFile={#MyPublishDir}\README.md
 PrivilegesRequiredOverridesAllowed=dialog
 OutputDir=.\SetupFiles
 OutputBaseFilename={#MyAppName2}_v{#MyAppVersion}_Installer
-WizardStyle=modern
+WizardStyle=modern dynamic
 Compression=lzma2
 SolidCompression=yes
 InternalCompressLevel=ultra
-; 允许在 64 位系统上安装到 64 位 Program Files 目录
 ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
@@ -51,91 +53,21 @@ Name: "indonesian"; MessagesFile: "compiler:Languages\Indonesian.isl"
 Name: "malay"; MessagesFile: "compiler:Languages\Malaysian.isl"
 
 [CustomMessages]
-; ========================================
-; English
-; ========================================
 english.ContextMenuName=Open With SimpleExcelViewer
-english.DownloadingNet8=Downloading .NET 8 Desktop Runtime...
-english.Net8MissingPrompt=The system did not detect the .NET 8 Desktop Runtime (Microsoft.WindowsDesktop.App 8.0.x).%n%nSimpleExcelViewer requires this environment to run properly.%n%nWould you like to automatically download and install it now? (Recommended to select "Yes")
-english.Net8DownloadFailed=Download failed, possibly due to network issues. The main program will still be installed, but you may need to manually download .NET 8 from Microsoft's website later.
-
-; ========================================
-; Chinese Simplified
-; ========================================
 chinesesimplified.ContextMenuName=使用 SimpleExcelViewer 打开
-chinesesimplified.DownloadingNet8=正在下载 .NET 8 桌面运行时...
-chinesesimplified.Net8MissingPrompt=系统未检测到 .NET 8 桌面运行时 (Microsoft.WindowsDesktop.App 8.0.x)。%n%nSimpleExcelViewer 需要该环境才能正常运行。%n%n是否立即自动下载并安装？（推荐选择“是”）
-chinesesimplified.Net8DownloadFailed=下载失败，可能是网络原因。主程序仍将安装，但您可能需要稍后手动去微软官网下载 .NET 8。
-
-; ========================================
-; French
-; ========================================
 french.ContextMenuName=Ouvrir avec SimpleExcelViewer
-french.DownloadingNet8=Téléchargement du runtime de bureau .NET 8...
-french.Net8MissingPrompt=Le système n'a pas détecté le runtime de bureau .NET 8 (Microsoft.WindowsDesktop.App 8.0.x).%n%nSimpleExcelViewer nécessite cet environnement pour fonctionner correctement.%n%nVoulez-vous le télécharger et l'installer automatiquement maintenant ? (Il est recommandé de sélectionner "Oui")
-french.Net8DownloadFailed=Le téléchargement a échoué, probablement en raison de problèmes de réseau. Le programme principal sera toujours installé, mais vous devrez peut-être télécharger manuellement .NET 8 sur le site Web de Microsoft ultérieurement.
-
-; ========================================
-; German
-; ========================================
 german.ContextMenuName=Mit SimpleExcelViewer öffnen
-german.DownloadingNet8=.NET 8 Desktop Runtime wird heruntergeladen...
-german.Net8MissingPrompt=Das System hat die .NET 8 Desktop Runtime (Microsoft.WindowsDesktop.App 8.0.x) nicht erkannt.%n%nSimpleExcelViewer benötigt diese Umgebung, um ordnungsgemäß ausgeführt zu werden.%n%nMöchten Sie sie jetzt automatisch herunterladen und installieren? (Es wird empfohlen, "Ja" auszuwählen)
-german.Net8DownloadFailed=Der Download ist fehlgeschlagen, möglicherweise aufgrund von Netzwerkproblemen. Das Hauptprogramm wird weiterhin installiert, aber Sie müssen .NET 8 später möglicherweise manuell von der Microsoft-Website herunterladen.
-
-; ========================================
-; Italian
-; ========================================
 italian.ContextMenuName=Apri con SimpleExcelViewer
-italian.DownloadingNet8=Download di .NET 8 Desktop Runtime in corso...
-italian.Net8MissingPrompt=Il sistema non ha rilevato .NET 8 Desktop Runtime (Microsoft.WindowsDesktop.App 8.0.x).%n%nSimpleExcelViewer richiede questo ambiente per funzionare correttamente.%n%nVuoi scaricarlo e installarlo automaticamente ora? (Si consiglia di selezionare "Sì")
-italian.Net8DownloadFailed=Download non riuscito, probabilmente a causa di problemi di rete. Il programma principale verrà comunque installato, ma potresti dover scaricare manualmente .NET 8 dal sito Web di Microsoft in un secondo momento.
-
-; ========================================
-; Japanese
-; ========================================
 japanese.ContextMenuName=SimpleExcelViewer で開く
-japanese.DownloadingNet8=.NET 8 デスクトップ ランタイムをダウンロードしています...
-japanese.Net8MissingPrompt=システムで .NET 8 デスクトップ ランタイム (Microsoft.WindowsDesktop.App 8.0.x) が検出されませんでした。%n%nSimpleExcelViewer を正常に実行するには、この環境が必要です。%n%n今すぐ自動的にダウンロードしてインストールしますか? (「はい」を選択することをお勧めします)
-japanese.Net8DownloadFailed=ダウンロードに失敗しました。ネットワークの問題である可能性があります。メイン プログラムは引き続きインストールされますが、後で Microsoft の Web サイトから .NET 8 を手動でダウンロードする必要がある場合があります。
-
-; ========================================
-; Korean
-; ========================================
 korean.ContextMenuName=SimpleExcelViewer로 열기
-korean.DownloadingNet8=.NET 8 데스크톱 런타임 다운로드 중...
-korean.Net8MissingPrompt=시스템에서 .NET 8 데스크톱 런타임(Microsoft.WindowsDesktop.App 8.0.x)을 감지하지 못했습니다.%n%nSimpleExcelViewer가 제대로 실행되려면 이 환경이 필요합니다.%n%n지금 자동으로 다운로드하여 설치하시겠습니까? ("예"를 선택하는 것이 좋습니다)
-korean.Net8DownloadFailed=네트워크 문제로 인해 다운로드에 실패했을 수 있습니다. 기본 프로그램은 계속 설치되지만 나중에 Microsoft 웹 사이트에서 수동으로 .NET 8을 다운로드해야 할 수도 있습니다.
-
-; ========================================
-; Russian
-; ========================================
 russian.ContextMenuName=Открыть с помощью SimpleExcelViewer
-russian.DownloadingNet8=Загрузка среды выполнения .NET 8...
-russian.Net8MissingPrompt=Система не обнаружила среду выполнения классических приложений .NET 8 (Microsoft.WindowsDesktop.App 8.0.x).%n%nДля правильной работы SimpleExcelViewer требуется эта среда.%n%nХотите автоматически загрузить и установить её сейчас? (Рекомендуется выбрать «Да»)
-russian.Net8DownloadFailed=Сбой загрузки, возможно, из-за проблем с сетью. Основная программа все равно будет установлена, но позже вам может потребоваться вручную загрузить .NET 8 с веб-сайта Microsoft.
-
-; ========================================
-; Indonesian
-; ========================================
 indonesian.ContextMenuName=Buka dengan SimpleExcelViewer
-indonesian.DownloadingNet8=Mengunduh .NET 8 Desktop Runtime...
-indonesian.Net8MissingPrompt=Sistem tidak mendeteksi .NET 8 Desktop Runtime (Microsoft.WindowsDesktop.App 8.0.x).%n%nSimpleExcelViewer memerlukan lingkungan ini agar dapat berjalan dengan baik.%n%nApakah Anda ingin mengunduh dan menginstalnya secara otomatis sekarang? (Disarankan untuk memilih "Ya")
-indonesian.Net8DownloadFailed=Unduhan gagal, kemungkinan karena masalah jaringan. Program utama akan tetap diinstal, tetapi Anda mungkin perlu mengunduh .NET 8 secara manual dari situs web Microsoft nanti.
-
-; ========================================
-; Malay
-; ========================================
 malay.ContextMenuName=Buka dengan SimpleExcelViewer
-malay.DownloadingNet8=Memuat turun .NET 8 Desktop Runtime...
-malay.Net8MissingPrompt=Sistem tidak mengesan .NET 8 Desktop Runtime (Microsoft.WindowsDesktop.App 8.0.x).%n%nSimpleExcelViewer memerlukan persekitaran ini untuk berfungsi dengan baik.%n%nAdakah anda ingin memuat turun dan memasangnya secara automatik sekarang? (Disyorkan untuk memilih "Ya")
-malay.Net8DownloadFailed=Muat turun gagal, mungkin disebabkan oleh masalah rangkaian. Program utama akan tetap dipasang, tetapi anda mungkin perlu memuat turun .NET 8 secara manual dari laman web Microsoft kemudian.
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-; 智能识别架构，复制对应的单文件，并统一重命名为 SimpleExcelViewer.exe
 Source: "{#MyPublishDir}\SimpleExcelViewer_x64.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Check: Is64BitInstallMode; Flags: ignoreversion solidbreak
 Source: "{#MyPublishDir}\SimpleExcelViewer_x86.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Check: not Is64BitInstallMode; Flags: ignoreversion solidbreak
 
@@ -158,101 +90,9 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
-; ==============================================================================
-; [Code] 魔法区域：物理目录检测 .NET 8 与 用户交互式下载
-; ==============================================================================
 [Code]
-var
-  Net8DownloadPage: TDownloadWizardPage;
-  RequiresNet8Download: Boolean;
-
-function IsNet8DesktopInstalled(): Boolean;
-var
-  DotNetPath: string;
-  FindRec: TFindRec;
+function InitializeSetup: Boolean;
 begin
-  Result := False;
-
-  if Is64BitInstallMode then
-    DotNetPath := ExpandConstant('{pf64}\dotnet\shared\Microsoft.WindowsDesktop.App')
-  else
-    DotNetPath := ExpandConstant('{pf32}\dotnet\shared\Microsoft.WindowsDesktop.App');
-
-  if FindFirst(DotNetPath + '\8.0.*', FindRec) then
-  begin
-    try
-      repeat
-        if (FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY <> 0) and
-           (FindRec.Name <> '.') and (FindRec.Name <> '..') then
-        begin
-          Result := True;
-          Break;
-        end;
-      until not FindNext(FindRec);
-    finally
-      FindClose(FindRec);
-    end;
-  end;
-end;
-
-procedure InitializeWizard;
-begin
-  Net8DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), CustomMessage('DownloadingNet8'), nil);
-end;
-
-function NextButtonClick(CurPageID: Integer): Boolean;
-begin
+  Dependency_AddDotNet80Desktop;
   Result := True;
-  
-  if CurPageID = wpReady then
-  begin
-    RequiresNet8Download := False;
-
-    if not IsNet8DesktopInstalled() then
-    begin
-      // 调用 CustomMessage 获取多语言对应的提示文本
-      if MsgBox(CustomMessage('Net8MissingPrompt'), mbConfirmation, MB_YESNO) = IDYES then
-      begin
-        RequiresNet8Download := True; 
-        Net8DownloadPage.Clear;
-        
-        if Is64BitInstallMode then
-          Net8DownloadPage.Add('https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x64.exe', 'dotnet8_installer.exe', '')
-        else
-          Net8DownloadPage.Add('https://aka.ms/dotnet/8.0/windowsdesktop-runtime-win-x86.exe', 'dotnet8_installer.exe', '');
-
-        Net8DownloadPage.Show;
-        try
-          try
-            Net8DownloadPage.Download; 
-          except
-            if Net8DownloadPage.AbortedByUser then
-              Log('User aborted the download.')
-            else
-              MsgBox(CustomMessage('Net8DownloadFailed'), mbError, MB_OK);
-            
-            RequiresNet8Download := False; 
-          end;
-        finally
-          Net8DownloadPage.Hide;
-        end;
-      end
-      else
-      begin
-        Log('User declined to download .NET 8 runtime.');
-      end;
-    end;
-  end;
-end;
-
-function PrepareToInstall(var NeedsRestart: Boolean): String;
-var
-  ResultCode: Integer;
-begin
-  Result := '';
-  if RequiresNet8Download then
-  begin
-    // 使用 /passive 开启带有界面和进度条的无人值守安装
-    Exec(ExpandConstant('{tmp}\dotnet8_installer.exe'), '/install /passive /norestart', '', SW_SHOW, ewWaitUntilTerminated, ResultCode);
-  end;
 end;

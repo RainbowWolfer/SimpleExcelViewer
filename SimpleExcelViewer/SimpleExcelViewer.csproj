@@ -11,7 +11,7 @@
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<DebugType>embedded</DebugType>
 
-		<Version>0.0.1</Version>
+		<Version>0.0.2</Version>
 		<Authors>RainbowWolfer</Authors>
 		<Company>RainbowWolfer</Company>
 		<Copyright>RainbowWolfer</Copyright>

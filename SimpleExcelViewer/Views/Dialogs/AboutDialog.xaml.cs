@@ -27,6 +27,7 @@ internal class AboutDialogViewModel(AppManagerEx appManager) : DialogViewModelOk
 	// 绑定属性
 	public string AdministratorStatus { get; } = SystemHelper.IsAdministratorSafe ? "True" : "False";
 	public string ProcessArchitecture { get; } = RuntimeInformation.ProcessArchitecture.ToString();
+	public string OSArchitecture { get; } = RuntimeInformation.OSArchitecture.ToString();
 	public string DeploymentMode { get; } = CheckDeploymentMode();
 	public string FrameworkVersion { get; } = RuntimeInformation.FrameworkDescription;
 	public string OSDescription { get; } = RuntimeInformation.OSDescription;

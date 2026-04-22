@@ -7,7 +7,7 @@
 
 #define MyAppName "Simple Excel Viewer"
 #define MyAppName2 "SimpleExcelViewer"
-#define MyAppVersion "0.0.1"
+#define MyAppVersion "0.0.2"
 #define MyAppPublisher "RainbowWolfer"
 #define MyAppURL "https://github.com/RainbowWolfer/SimpleExcelViewer"
 #define MyAppExeName "SimpleExcelViewer.exe"

@@ -15,6 +15,14 @@
 	DataContext="{base:DISource Type=local:AboutDialogViewModel}"
 	mc:Ignorable="d">
 
+	<UserControl.Resources>
+		<Style x:Key="Row" TargetType="wpf:TitleContent" BasedOn="{StaticResource TitleContentBaseStyle}">
+			<Setter Property="Foreground" Value="Gray"/>
+			<Setter Property="Placement" Value="Left"/>
+			<Setter Property="TitleWidth" Value="140"/>
+		</Style>
+	</UserControl.Resources>
+
 	<StackPanel>
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -49,121 +57,46 @@
 		</Border>
 
 		<Separator Margin="0,6,0,2"/>
-		<Grid Margin="4,0">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"/>
-				<ColumnDefinition Width="12"/>
-				<ColumnDefinition Width="*"/>
-			</Grid.ColumnDefinitions>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="Auto"/>
-			</Grid.RowDefinitions>
 
-			<TextBlock
-				Grid.Row="0"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Administrator:"/>
-			<TextBlock
-				Grid.Row="0"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding AdministratorStatus}"/>
+		<wpf:SpacingStackPanel Margin="4,0" Orientation="Vertical" VerticalSpacing="2">
 
-			<TextBlock
-				Grid.Row="1"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Architecture:"/>
-			<TextBlock
-				Grid.Row="1"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding ProcessArchitecture}"/>
+			<wpf:TitleContent Title="Administrator:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding AdministratorStatus}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="2"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Build Mode:"/>
-			<TextBlock
-				Grid.Row="2"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding AppManager.BuildMode}"/>
+			<wpf:TitleContent Title="Process Architecture:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding ProcessArchitecture}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="3"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Deployment Mode:"/>
-			<TextBlock
-				Grid.Row="3"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding DeploymentMode}"/>
+			<wpf:TitleContent Title="OS Architecture:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding OSArchitecture}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="4"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Runtime:"/>
-			<TextBlock
-				Grid.Row="4"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding FrameworkVersion}"/>
+			<wpf:TitleContent Title="Build Mode:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding AppManager.BuildMode}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="5"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="OS:"/>
-			<TextBlock
-				Grid.Row="5"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding OSDescription}"/>
+			<wpf:TitleContent Title="Deployment Mode:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding DeploymentMode}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="6"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="Startup Time:"/>
-			<TextBlock
-				Grid.Row="6"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding AppManager.AppStartupTimeSpan, StringFormat='mm\\:ss\\:fff'}"/>
+			<wpf:TitleContent Title="Runtime:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding FrameworkVersion}"/>
+			</wpf:TitleContent>
 
-			<TextBlock
-				Grid.Row="7"
-				Grid.Column="0"
-				Margin="0,2"
-				Foreground="Gray"
-				Text="XML Language:"/>
-			<TextBlock
-				Grid.Row="7"
-				Grid.Column="2"
-				Margin="0,2"
-				Text="{Binding AppManager.Language}"/>
+			<wpf:TitleContent Title="OS:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding OSDescription}"/>
+			</wpf:TitleContent>
 
-		</Grid>
+			<wpf:TitleContent Title="Startup Time:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding AppManager.AppStartupTimeSpan, StringFormat='mm\\:ss\\:fff'}"/>
+			</wpf:TitleContent>
+
+			<wpf:TitleContent Title="XML Language:" Style="{StaticResource Row}">
+				<TextBlock Text="{Binding AppManager.Language}"/>
+			</wpf:TitleContent>
+
+		</wpf:SpacingStackPanel>
 	</StackPanel>
 
 </UserControl>

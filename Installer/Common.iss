@@ -92,6 +92,72 @@ russian.UninstallProgram=Удалить {#MyAppName}
 indonesian.UninstallProgram=Uninstall {#MyAppName}
 malay.UninstallProgram=Nyahpasang {#MyAppName}
 
+; ==================== 卸载向导多语言文字 ====================
+english.UninstallWizardTitle=Uninstall Wizard - Simple Excel Viewer
+chinesesimplified.UninstallWizardTitle=卸载向导 - Simple Excel Viewer
+french.UninstallWizardTitle=Assistant de désinstallation - Simple Excel Viewer
+german.UninstallWizardTitle=Deinstallations-Assistent - Simple Excel Viewer
+italian.UninstallWizardTitle=Procedura guidata di disinstallazione - Simple Excel Viewer
+japanese.UninstallWizardTitle=アンインストールウィザード - Simple Excel Viewer
+korean.UninstallWizardTitle=제거 마법사 - Simple Excel Viewer
+russian.UninstallWizardTitle=Мастер удаления - Simple Excel Viewer
+indonesian.UninstallWizardTitle=Wizard Uninstall - Simple Excel Viewer
+malay.UninstallWizardTitle=Wizard Nyahpasang - Simple Excel Viewer
+
+english.UninstallProcessRunning=Warning: SimpleExcelViewer is detected to be running.%nClicking "Continue Uninstall" will force close the program.
+chinesesimplified.UninstallProcessRunning=警告：检测到 SimpleExcelViewer 正在运行。%n点击“继续卸载”将会强制关闭该程序。
+french.UninstallProcessRunning=Avertissement : SimpleExcelViewer est détecté en cours d'exécution.%nCliquer sur "Continuer la désinstallation" fermera de force le programme.
+german.UninstallProcessRunning=Warnung: SimpleExcelViewer wird als laufend erkannt.%nDurch Klicken auf "Weiter deinstallieren" wird das Programm zwangsweise geschlossen.
+italian.UninstallProcessRunning=Avviso: SimpleExcelViewer è in esecuzione.%nCliccando su "Continua disinstallazione" il programma verrà chiuso forzatamente.
+japanese.UninstallProcessRunning=警告：SimpleExcelViewer が実行中であることが検出されました。%n「続行してアンインストール」をクリックするとプログラムが強制終了されます。
+korean.UninstallProcessRunning=경고: SimpleExcelViewer가 실행 중인 것으로 감지되었습니다.%n"계속 제거"를 클릭하면 프로그램이 강제 종료됩니다.
+russian.UninstallProcessRunning=Предупреждение: Обнаружено, что SimpleExcelViewer запущен.%nНажатие "Продолжить удаление" принудительно закроет программу.
+indonesian.UninstallProcessRunning=Peringatan: SimpleExcelViewer terdeteksi sedang berjalan.%nMengklik "Lanjutkan Uninstall" akan memaksa menutup program.
+malay.UninstallProcessRunning=Amaran: SimpleExcelViewer dikesan sedang berjalan.%nMengklik "Teruskan Nyahpasang" akan memaksa tutup program.
+
+english.UninstallPreparing=You are about to uninstall SimpleExcelViewer.
+chinesesimplified.UninstallPreparing=您正在准备卸载 SimpleExcelViewer。
+french.UninstallPreparing=Vous êtes sur le point de désinstaller SimpleExcelViewer.
+german.UninstallPreparing=Sie sind dabei, SimpleExcelViewer zu deinstallieren.
+italian.UninstallPreparing=Stai per disinstallare SimpleExcelViewer.
+japanese.UninstallPreparing=SimpleExcelViewer をアンインストールしようとしています。
+korean.UninstallPreparing=SimpleExcelViewer를 제거하려고 합니다.
+russian.UninstallPreparing=Вы собираетесь удалить SimpleExcelViewer.
+indonesian.UninstallPreparing=Anda akan menghapus SimpleExcelViewer.
+malay.UninstallPreparing=Anda akan menyahpasang SimpleExcelViewer.
+
+english.KeepUserData=Keep user configuration data (located in AppData/Local directory)
+chinesesimplified.KeepUserData=保留用户配置数据 (位于 AppData/Local 目录中)
+french.KeepUserData=Conserver les données de configuration utilisateur (situées dans le répertoire AppData/Local)
+german.KeepUserData=Benutzerkonfigurationsdaten beibehalten (im AppData/Local-Verzeichnis)
+italian.KeepUserData=Mantieni i dati di configurazione utente (situati nella directory AppData/Local)
+japanese.KeepUserData=ユーザー設定データを保持する (AppData/Local ディレクトリにあります)
+korean.KeepUserData=사용자 구성 데이터 유지 (AppData/Local 디렉토리에 위치)
+russian.KeepUserData=Сохранить данные конфигурации пользователя (расположены в каталоге AppData/Local)
+indonesian.KeepUserData=Simpan data konfigurasi pengguna (berada di direktori AppData/Local)
+malay.KeepUserData=Simpan data konfigurasi pengguna (terletak di direktori AppData/Local)
+
+english.ContinueUninstall=Continue Uninstall
+chinesesimplified.ContinueUninstall=继续卸载
+french.ContinueUninstall=Continuer la désinstallation
+german.ContinueUninstall=Weiter deinstallieren
+italian.ContinueUninstall=Continua disinstallazione
+japanese.ContinueUninstall=アンインストールを続行
+korean.ContinueUninstall=계속 제거
+russian.ContinueUninstall=Продолжить удаление
+indonesian.ContinueUninstall=Lanjutkan Uninstall
+malay.ContinueUninstall=Teruskan Nyahpasang
+
+english.UninstallCancel=Cancel
+chinesesimplified.UninstallCancel=取消
+french.UninstallCancel=Annuler
+german.UninstallCancel=Abbrechen
+italian.UninstallCancel=Annulla
+japanese.UninstallCancel=キャンセル
+korean.UninstallCancel=취소
+russian.UninstallCancel=Отмена
+indonesian.UninstallCancel=Batal
+malay.UninstallCancel=Batal
 
 
 ; ==================== 以下全部为两个脚本完全相同的部分 ====================
@@ -134,8 +200,7 @@ end;
 var
   ShouldDeleteAppData: Boolean;
   
-  
-function PromptUninstallOptions(): Boolean;
+  function PromptUninstallOptions(): Boolean;
 var
   CustomForm: TForm;
   ProcessRunning: Boolean;
@@ -143,71 +208,90 @@ var
   InfoLabel: TLabel;
   KeepDataCheck: TNewCheckBox;
   BtnUninstall, BtnCancel: TNewButton;
+  TempLabel: TLabel;
 begin
+	// MsgBox('Current Language: ' + ActiveLanguage + #13#10 + 'Raw CM: ' + ExpandConstant('{cm:UninstallWizardTitle}'), mbInformation, MB_OK);
   Result := False;
   ShouldDeleteAppData := False;
-
   // 检测进程是否运行
   ProcessRunning := False;
-  Exec(ExpandConstant('{cmd}'), '/c tasklist | find /I "SimpleExcelViewer.exe"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec(ExpandConstant('{cmd}'), '/c tasklist | find /I "{#MyAppExeName}"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   if ResultCode = 0 then ProcessRunning := True;
-
   CustomForm := TForm.Create(nil);
   try
     CustomForm.ClientWidth := 500;
     CustomForm.ClientHeight := 270;
-    CustomForm.Caption := '卸载向导 - Simple Excel Viewer';
+    CustomForm.Caption := ExpandConstant('{cm:UninstallWizardTitle}');
     CustomForm.Position := poScreenCenter;
     CustomForm.BorderStyle := bsDialog;
-
     InfoLabel := TLabel.Create(CustomForm);
     InfoLabel.Parent := CustomForm;
     InfoLabel.Left := 25;
     InfoLabel.Top := 20;
     InfoLabel.AutoSize := False;
     InfoLabel.Width := 450;
-    InfoLabel.Height := 145; 
+    InfoLabel.Height := 145;
     InfoLabel.WordWrap := True;
-
     if ProcessRunning then
-      InfoLabel.Caption := '警告：检测到 SimpleExcelViewer 正在运行。' + #13#10#13#10 +
-                           '点击“继续卸载”将会强制关闭该程序。' + #13#10#13#10 +
-                           '请先选择是否保留您的个人配置数据。'
+      InfoLabel.Caption := ExpandConstant('{cm:UninstallProcessRunning}')
     else
-      InfoLabel.Caption := '您正在准备卸载 SimpleExcelViewer。' + #13#10#13#10 +
-                           '在继续之前，请选择是否保留您的个人配置数据。';
-
-    // 复选框（下移）
+      InfoLabel.Caption := ExpandConstant('{cm:UninstallPreparing}');
+    // 复选框
     KeepDataCheck := TNewCheckBox.Create(CustomForm);
     KeepDataCheck.Parent := CustomForm;
     KeepDataCheck.Left := 25;
     KeepDataCheck.Top := 175;
     KeepDataCheck.Width := 450;
-    KeepDataCheck.Caption := '保留用户配置数据 (位于 AppData/Local 目录中)';
+    KeepDataCheck.Caption := ExpandConstant('{cm:KeepUserData}');
     KeepDataCheck.Checked := False;
 
     // 按钮
+    // --- 先创建按钮并赋值文字 ---
+    
     BtnUninstall := TNewButton.Create(CustomForm);
     BtnUninstall.Parent := CustomForm;
-    BtnUninstall.Left := CustomForm.ClientWidth - 195;
-    BtnUninstall.Top := CustomForm.ClientHeight - 45;
-    BtnUninstall.Width := 90;
-    BtnUninstall.Caption := '继续卸载';
+    BtnUninstall.Caption := ExpandConstant('{cm:ContinueUninstall}');
     BtnUninstall.ModalResult := mrOk;
-
+    BtnUninstall.Top := CustomForm.ClientHeight - 45;
+    
     BtnCancel := TNewButton.Create(CustomForm);
     BtnCancel.Parent := CustomForm;
-    BtnCancel.Left := CustomForm.ClientWidth - 95;
-    BtnCancel.Top := CustomForm.ClientHeight - 45;
-    BtnCancel.Width := 85;
-    BtnCancel.Caption := '取消';
+    BtnCancel.Caption := ExpandConstant('{cm:UninstallCancel}');
     BtnCancel.ModalResult := mrCancel;
+    BtnCancel.Top := CustomForm.ClientHeight - 45;
 
+    // --- 创建隐藏的 Label 作为尺子 ---
+    TempLabel := TLabel.Create(CustomForm);
+    TempLabel.Parent := CustomForm;
+    TempLabel.AutoSize := True;
+    TempLabel.Visible := False; // 必须隐藏，不让用户看到
+
+    // --- 动态计算宽度 ---
+    
+    // 测算取消按钮
+    TempLabel.Caption := BtnCancel.Caption;
+    BtnCancel.Width := TempLabel.Width + 30; // 标签自动撑开后的宽度 + 左右各15px内边距
+    if BtnCancel.Width < 85 then BtnCancel.Width := 85; // 保底宽度
+    
+    // 测算卸载按钮
+    TempLabel.Caption := BtnUninstall.Caption;
+    BtnUninstall.Width := TempLabel.Width + 30; // 标签自动撑开后的宽度 + 左右各15px内边距
+    if BtnUninstall.Width < 90 then BtnUninstall.Width := 90; // 保底宽度
+    
+    // --- 动态计算位置 (从右向左排版) ---
+    
+    // 最右侧留白 10 像素
+    BtnCancel.Left := CustomForm.ClientWidth - BtnCancel.Width - 10;
+    
+    // 卸载按钮放在取消按钮的左边，中间留白 10 像素
+    BtnUninstall.Left := BtnCancel.Left - BtnUninstall.Width - 10;
+	
+	
     if CustomForm.ShowModal() = mrOk then
     begin
       if ProcessRunning then
       begin
-        Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM SimpleExcelViewer.exe /T', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+        Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM {#MyAppExeName} /T', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
         Sleep(500);
       end;
       ShouldDeleteAppData := not KeepDataCheck.Checked;

@@ -39,6 +39,8 @@ Compression=lzma2
 SolidCompression=yes
 InternalCompressLevel=ultra
 ArchitecturesInstallIn64BitMode=x64
+CloseApplications=yes
+LicenseFile=License.txt
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

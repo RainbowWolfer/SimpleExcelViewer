@@ -27,8 +27,6 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={autopf}\{#MyAppName}
 
-AppMutex=SimpleExcelViewerMutex
-
 WizardStyle=modern dynamic
 WizardResizable=yes
 CloseApplications=yes
@@ -118,6 +116,10 @@ Name: "{autoprograms}\{#MyAppName}\{#MyAppName}"; Filename: "{app}\{#MyAppExeNam
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{autoprograms}\{#MyAppName}\{cm:UninstallProgram}"; Filename: "{uninstallexe}"; Tasks: uninstshortcut
 
+[UninstallDelete]
+; 卸载时强行删除整个安装目录及其内部的所有文件和子文件夹
+Type: filesandordirs; Name: "{app}"
+
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
@@ -128,13 +130,11 @@ begin
   Result := True;
 end;
 
-
 // 全局变量，用于记录用户是否选择删除配置数据
 var
   ShouldDeleteAppData: Boolean;
   
   
-  // 自定义卸载选项页面
 function PromptUninstallOptions(): Boolean;
 var
   CustomForm: TForm;
@@ -144,107 +144,98 @@ var
   KeepDataCheck: TNewCheckBox;
   BtnUninstall, BtnCancel: TNewButton;
 begin
-  Result := False; // 默认返回 False (取消卸载)
-  ShouldDeleteAppData := False; 
+  Result := False;
+  ShouldDeleteAppData := False;
 
-  // 1. 静默检测进程是否在运行
+  // 检测进程是否运行
   ProcessRunning := False;
   Exec(ExpandConstant('{cmd}'), '/c tasklist | find /I "SimpleExcelViewer.exe"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   if ResultCode = 0 then ProcessRunning := True;
 
-  // 2. 创建自定义普通窗体
-  CustomForm := TForm.Create(nil); 
+  CustomForm := TForm.Create(nil);
   try
-    CustomForm.ClientWidth := 420;
-    CustomForm.ClientHeight := 180;
-    CustomForm.Caption := '卸载向导 - SimpleExcelViewer'; // 修改标题更正式
-    CustomForm.Position := poScreenCenter; 
-    CustomForm.BorderStyle := bsDialog;    
+    CustomForm.ClientWidth := 500;
+    CustomForm.ClientHeight := 270;
+    CustomForm.Caption := '卸载向导 - Simple Excel Viewer';
+    CustomForm.Position := poScreenCenter;
+    CustomForm.BorderStyle := bsDialog;
 
-    // 3. 添加提示文本 (Label)
     InfoLabel := TLabel.Create(CustomForm);
     InfoLabel.Parent := CustomForm;
-    InfoLabel.Left := 20;
+    InfoLabel.Left := 25;
     InfoLabel.Top := 20;
-    InfoLabel.AutoSize := False; // 【关键修改】：关闭自动缩放
-    InfoLabel.Width := 380;
-    InfoLabel.Height := 60;      // 【关键修改】：给定固定高度，防止文字挤压
+    InfoLabel.AutoSize := False;
+    InfoLabel.Width := 450;
+    InfoLabel.Height := 145; 
     InfoLabel.WordWrap := True;
-    
-    if ProcessRunning then
-    begin
-      InfoLabel.Caption := '警告：检测到 SimpleExcelViewer 正在运行。' + #13#10 + '点击“继续卸载”将会强制关闭该程序。在此之前，请选择是否保留您的个人配置数据。';
-      InfoLabel.Font.Color := clRed; 
-    end
-    else
-    begin
-      InfoLabel.Caption := '您正在准备卸载 SimpleExcelViewer。' + #13#10 + '在继续之前，请选择是否保留您的个人配置数据。';
-    end;
 
-    // 4. 添加复选框 (Checkbox)
+    if ProcessRunning then
+      InfoLabel.Caption := '警告：检测到 SimpleExcelViewer 正在运行。' + #13#10#13#10 +
+                           '点击“继续卸载”将会强制关闭该程序。' + #13#10#13#10 +
+                           '请先选择是否保留您的个人配置数据。'
+    else
+      InfoLabel.Caption := '您正在准备卸载 SimpleExcelViewer。' + #13#10#13#10 +
+                           '在继续之前，请选择是否保留您的个人配置数据。';
+
+    // 复选框（下移）
     KeepDataCheck := TNewCheckBox.Create(CustomForm);
     KeepDataCheck.Parent := CustomForm;
-    KeepDataCheck.Left := 20;
-    KeepDataCheck.Top := 85;     // 【关键修改】：往下移，给上面的文字留足空间
-    KeepDataCheck.Width := 380;
-    KeepDataCheck.Caption := '保留用户配置数据 (位于 AppData 目录中)';
-    KeepDataCheck.Checked := True; // 默认勾选“保留”
+    KeepDataCheck.Left := 25;
+    KeepDataCheck.Top := 175;
+    KeepDataCheck.Width := 450;
+    KeepDataCheck.Caption := '保留用户配置数据 (位于 AppData/Local 目录中)';
+    KeepDataCheck.Checked := False;
 
-    // 5. 添加“继续卸载”按钮
+    // 按钮
     BtnUninstall := TNewButton.Create(CustomForm);
     BtnUninstall.Parent := CustomForm;
-    BtnUninstall.Left := CustomForm.ClientWidth - 190;
+    BtnUninstall.Left := CustomForm.ClientWidth - 195;
     BtnUninstall.Top := CustomForm.ClientHeight - 45;
-    BtnUninstall.Width := 80;
+    BtnUninstall.Width := 90;
     BtnUninstall.Caption := '继续卸载';
-    BtnUninstall.ModalResult := mrOk; 
+    BtnUninstall.ModalResult := mrOk;
 
-    // 6. 添加“取消”按钮
     BtnCancel := TNewButton.Create(CustomForm);
     BtnCancel.Parent := CustomForm;
-    BtnCancel.Left := CustomForm.ClientWidth - 100;
+    BtnCancel.Left := CustomForm.ClientWidth - 95;
     BtnCancel.Top := CustomForm.ClientHeight - 45;
-    BtnCancel.Width := 80;
+    BtnCancel.Width := 85;
     BtnCancel.Caption := '取消';
-    BtnCancel.ModalResult := mrCancel; 
+    BtnCancel.ModalResult := mrCancel;
 
-    // 7. 显示窗体并等待用户点击
     if CustomForm.ShowModal() = mrOk then
     begin
       if ProcessRunning then
       begin
         Exec(ExpandConstant('{sys}\taskkill.exe'), '/F /IM SimpleExcelViewer.exe /T', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-        Sleep(500); 
+        Sleep(500);
       end;
-
       ShouldDeleteAppData := not KeepDataCheck.Checked;
-      Result := True; 
+      Result := True;
     end;
   finally
     CustomForm.Free;
   end;
 end;
 
-// 卸载初始化函数
-function InitializeUninstall(): Boolean;
-begin
-  // 调用自定义界面，用户点击了“取消”或者直接关闭了窗口，就中止卸载
-  Result := PromptUninstallOptions();
-end;
-
-// 卸载过程状态改变时的回调函数（用于在卸载完文件后清理 AppData）
+// 关键修改：把自定义窗口放在这里
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
-  // 当标准卸载步骤完成 (usPostUninstall) 时执行
-  if CurUninstallStep = usPostUninstall then
+  if CurUninstallStep = usUninstall then
   begin
+    // 显示自定义卸载选项窗口
+    if not PromptUninstallOptions() then
+    begin
+      // 用户点击了取消，中止卸载
+      Abort;
+    end;
+  end
+  else if CurUninstallStep = usPostUninstall then
+  begin
+    // 卸载完成后清理配置数据
     if ShouldDeleteAppData then
     begin
-      // 使用 DelTree 删除指定的 AppData 文件夹。
-      // 请根据你 C# 程序实际存储的路径修改下面这行代码！
-      // {userappdata} 代表 C:\Users\用户名\AppData\Roaming
-      // {localappdata} 代表 C:\Users\用户名\AppData\Local
-      DelTree(ExpandConstant('{userappdata}\SimpleExcelViewer'), True, True, True);
+      DelTree(ExpandConstant('{localappdata}\RainbowWolfer\SimpleExcelViewer'), True, True, True);
     end;
   end;
 end;
